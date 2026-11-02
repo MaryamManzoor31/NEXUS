@@ -1,0 +1,41 @@
+{
+ "dataset": "synthetic_S3_100_seed329",
+ "synthetic": true,
+ "ortools": "9.15.6755",
+ "results": [
+  {
+   "method": "greedy",
+   "validator_status": "VALID_INCOMPLETE",
+   "solver_status": "HEURISTIC",
+   "hard_violations": 0,
+   "violations_by_rule": {},
+   "scheduled_sections": "46/46",
+   "unplaced_selections": "39/900",
+   "fully_scheduled_students_pct": 64.0,
+   "room_utilization_pct": 16.0,
+   "faculty_load_range_h": [
+    2,
+    6
+   ],
+   "faculty_load_std_h": 1.37,
+   "runtime_s": 0.14
+  },
+  {
+   "method": "cpsat",
+   "validator_status": "VALID_INCOMPLETE",
+   "solver_status": "UNKNOWN",
+   "hard_violations": 0,
+   "violations_by_rule": {},
+   "scheduled_sections": "0/46",
+   "unplaced_selections": "900/900",
+   "fully_scheduled_students_pct": 0.0,
+   "room_utilization_pct": 0.0,
+   "faculty_load_range_h": [
+    0,
+    0
+   ],
+   "faculty_load_std_h": 0.0,
+   "runtime_s": 30.49
+  }
+ ]
+}

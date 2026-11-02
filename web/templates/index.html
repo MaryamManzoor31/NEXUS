@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS - NEP Timetable Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <!-- Minimal Top Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-icon">🗓️</div>
+        <div>
+          <h1 class="brand-title">NEXUS Timetable Generator</h1>
+          <p class="brand-subtitle">AI-Assisted Scheduling Engine for NEP Multidisciplinary Programmes</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btnExportCsv" class="btn btn-secondary btn-sm" title="Export current schedule as CSV">
+          ⬇ Export CSV
+        </button>
+        <button id="btnPrint" class="btn btn-secondary btn-sm" title="Print or save as PDF">
+          🖨 Print View
+        </button>
+        <button id="btnThemeToggle" class="btn btn-icon" title="Toggle Light/Dark Theme" aria-label="Toggle theme">
+          <span id="themeIcon">🌙</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <!-- Generator Control Card (Very Simple 1-Click Interface) -->
+    <section class="card control-card">
+      <div class="control-row">
+        <!-- Scenario / Dataset Source -->
+        <div class="field-group">
+          <label for="selectScenario" class="field-label">Curriculum / Dataset Source</label>
+          <select id="selectScenario" class="select-input">
+            <option value="excel" selected>🎓 Jan 2025 University Allocation (Real Excel)</option>
+            <option value="S1">S1: Traditional (Single discipline, cohorts)</option>
+            <option value="S2">S2: Flexible (NEP Minors & Electives)</option>
+            <option value="S3">S3: Multidisciplinary (Cross-department)</option>
+          </select>
+        </div>
+
+        <!-- Semester Scope (for Excel dataset) -->
+        <div class="field-group" id="groupSemester">
+          <label for="selectSemester" class="field-label">Semester Scope</label>
+          <select id="selectSemester" class="select-input">
+            <option value="6" selected>Semester 6 (Finalized Batch)</option>
+            <option value="4">Semester 4</option>
+            <option value="8">Semester 8</option>
+            <option value="all">All Semesters (Whole Institution)</option>
+          </select>
+        </div>
+
+        <!-- Student Count (for synthetic scenarios) -->
+        <div class="field-group hidden" id="groupStudents">
+          <label for="selectStudents" class="field-label">Student Cohort</label>
+          <select id="selectStudents" class="select-input">
+            <option value="20">20 Students (Fast Demo)</option>
+            <option value="50">50 Students (Standard)</option>
+            <option value="100" selected>100 Students (Full NEP Batch)</option>
+          </select>
+        </div>
+
+        <!-- Solver Algorithm -->
+        <div class="field-group">
+          <label for="selectAlgorithm" class="field-label">Algorithm</label>
+          <select id="selectAlgorithm" class="select-input">
+            <option value="greedy" selected>Greedy Heuristic (Fast Clash-Free)</option>
+            <option value="cpsat">CP-SAT (Google AI Constraint Solver)</option>
+            <option value="compare">Compare Both (CP-SAT vs Greedy)</option>
+          </select>
+        </div>
+
+        <!-- Main Action Buttons -->
+        <div class="field-actions">
+          <button id="btnGenerate" class="btn btn-primary" title="Generate conflict-free weekly timetable">
+            <span id="btnGenSpinner" class="spinner hidden"></span>
+            <span id="btnGenText">⚡ Generate Timetable</span>
+          </button>
+          <button id="btnAllocateMembers" class="btn btn-secondary" title="Run intelligent faculty member allocation">
+            👥 Allocate Members
+          </button>
+          <button id="btnLoadExcel" class="btn btn-outline" title="Reload original Excel file">
+            🎓 Reset to Excel
+          </button>
+          <button id="btnOpenUpload" class="btn btn-outline" title="Upload custom Excel or CSV files">
+            ⬆ Upload File
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Metrics Summary Bar -->
+    <section id="metricsBar" class="metrics-grid">
+      <div class="metric-card" id="cardStatus">
+        <div class="metric-title">Validation Status</div>
+        <div class="metric-value status-badge" id="valStatusBadge">VALID_COMPLETE</div>
+        <div class="metric-caption" id="valStatusSub">14/14 Hard Constraints Met</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-title">Student Placed Selections</div>
+        <div class="metric-value" id="valEnrolment">100%</div>
+        <div class="metric-caption" id="valEnrolmentSub">All students scheduled clash-free</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-title">Sections Scheduled</div>
+        <div class="metric-value" id="valSections">308 / 318</div>
+        <div class="metric-caption" id="valSectionsSub">Room & Lab placements active</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-title">Solver Execution Time</div>
+        <div class="metric-value" id="valRuntime">0.65 s</div>
+        <div class="metric-caption" id="valRuntimeSub">Engine: GREEDY (HEURISTIC)</div>
+      </div>
+    </section>
+
+    <!-- Comparison Banner (Only shown in 'compare' mode) -->
+    <section id="compareSection" class="card compare-card hidden">
+      <div class="compare-header">
+        <h3 class="compare-title">📊 Side-by-Side Algorithm Comparison</h3>
+        <span class="compare-dataset" id="compareDatasetName">Dataset: univ_jan2025_sem_6</span>
+      </div>
+      <div class="compare-table-wrapper">
+        <table class="table compare-table">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Status</th>
+              <th>Fully Scheduled</th>
+              <th>Unplaced Choices</th>
+              <th>Faculty Load Std</th>
+              <th>Room Utilization</th>
+              <th>Runtime</th>
+            </tr>
+          </thead>
+          <tbody id="compareTableBody">
+            <!-- populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Navigation Tabs for Timetable Views -->
+    <nav class="view-tabs" aria-label="Timetable Views">
+      <button class="tab-btn active" data-tab="section">🏫 Section Timetable</button>
+      <button class="tab-btn" data-tab="faculty">👨‍🏫 Faculty Timetable</button>
+      <button class="tab-btn" data-tab="allocations">👥 Faculty Allocation & Workload</button>
+      <button class="tab-btn" data-tab="room">🚪 Room Timetable</button>
+      <button class="tab-btn" data-tab="student">🎓 Student Timetable</button>
+      <button class="tab-btn" data-tab="master">📋 Master Table</button>
+      <button class="tab-btn" data-tab="constraints">🛡️ Constraint Audit (H1–H14)</button>
+      <button class="tab-btn" data-tab="disruption">🔧 Disruption Repair</button>
+    </nav>
+
+    <!-- Active View Area -->
+    <section class="card content-card">
+      <!-- Entity Filter Bar (Switches based on active tab) -->
+      <div class="view-toolbar" id="viewToolbar">
+        <div class="toolbar-left">
+          <label id="selectorLabel" for="entitySelect" class="toolbar-label">Select Section:</label>
+          <select id="entitySelect" class="select-input select-entity"></select>
+          <span id="entityInfo" class="entity-info-pill"></span>
+        </div>
+        <div class="toolbar-right">
+          <div class="legend">
+            <span class="legend-item"><span class="badge badge-lecture"></span> Lecture (1 hr)</span>
+            <span class="legend-item"><span class="badge badge-lab"></span> Lab Session (2 hrs)</span>
+            <span class="legend-item"><span class="badge badge-free"></span> Free Period</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timetable Grid Container (Monday-Friday x Periods 1-6) -->
+      <div id="gridWrapper" class="timetable-wrapper">
+        <table class="timetable-grid" id="timetableGrid">
+          <thead>
+            <tr>
+              <th class="col-time">Period / Time</th>
+              <th>Monday</th>
+              <th>Tuesday</th>
+              <th>Wednesday</th>
+              <th>Thursday</th>
+              <th>Friday</th>
+            </tr>
+          </thead>
+          <tbody id="gridTbody">
+            <!-- Populated dynamically by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Master List View (Hidden by default, shown when 'master' tab is active) -->
+      <div id="masterWrapper" class="table-container hidden">
+        <div class="search-bar">
+          <input type="text" id="masterSearch" class="search-input" placeholder="Search by course, section, faculty, or room...">
+        </div>
+        <table class="table master-table">
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>Period & Time</th>
+              <th>Section</th>
+              <th>Course Code & Title</th>
+              <th>Category</th>
+              <th>Type</th>
+              <th>Room</th>
+              <th>Faculty</th>
+            </tr>
+          </thead>
+          <tbody id="masterTbody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Faculty Allocation & Workload View (Hidden by default, shown when 'allocations' tab is active) -->
+      <div id="allocationsWrapper" class="allocations-container hidden">
+        <div class="allocations-header">
+          <div>
+            <h3>👥 Faculty Member Allocation & Workload Tracker</h3>
+            <p class="text-muted">Statutory workload targets: Professor (12h), Associate Professor (14h), Assistant Professor (16h). Real data from Jan 2025 allocation sheet.</p>
+          </div>
+          <div class="allocations-actions">
+            <button id="btnReallocateInView" class="btn btn-primary btn-sm">⚡ Re-run Member Allocation</button>
+          </div>
+        </div>
+
+        <div class="allocation-stats-bar" id="allocationStatsBar">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="search-bar" style="margin-top: 0.5rem; display: flex; gap: 10px;">
+          <input type="text" id="facultySearch" class="search-input" placeholder="Search faculty by name, designation, department, or subject...">
+          <select id="facultyStatusFilter" class="select-input" style="width: auto;">
+            <option value="all">All Statuses</option>
+            <option value="OPTIMAL">Optimal (Full Quota)</option>
+            <option value="UNDERLOADED">Underloaded (&lt; Max)</option>
+            <option value="OVERLOADED">Overloaded</option>
+            <option value="AVAILABLE">Available (0 hrs)</option>
+          </select>
+        </div>
+
+        <div class="table-container">
+          <table class="table allocation-table">
+            <thead>
+              <tr>
+                <th>Faculty Member</th>
+                <th>Designation & Dept</th>
+                <th>Workload (Assigned / Max)</th>
+                <th>Status</th>
+                <th>Sections</th>
+                <th>Assigned Courses & Practicals</th>
+              </tr>
+            </thead>
+            <tbody id="allocationTbody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Constraints Audit View (Hidden by default) -->
+      <div id="constraintsWrapper" class="constraints-container hidden">
+        <div class="constraints-header">
+          <h3>Independent Validator Report (14 Hard Constraints)</h3>
+          <p class="text-muted">Every rule is independently verified against the canonical dataset to mathematically guarantee a clash-free schedule.</p>
+        </div>
+        <div class="constraints-list" id="constraintsList">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Disruption Repair View (Hidden by default) -->
+      <div id="disruptionWrapper" class="disruption-container hidden">
+        <div class="disruption-header">
+          <h3>Emergency Disruption Simulator (Module M9)</h3>
+          <p class="text-muted">Simulate real-world university emergencies (e.g. room flooded, faculty emergency leave) and let the CP-SAT engine repair the schedule with minimal disruption.</p>
+        </div>
+        <div class="disruption-form">
+          <div class="disruption-inputs">
+            <div class="field-group">
+              <label for="blockedRoomSelect" class="field-label">Block Room (Simulate Room Flooding/Maintenance):</label>
+              <select id="blockedRoomSelect" class="select-input">
+                <option value="">-- None --</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label for="blockedFacultySelect" class="field-label">Block Faculty (Simulate Emergency Medical Leave):</label>
+              <select id="blockedFacultySelect" class="select-input">
+                <option value="">-- None --</option>
+              </select>
+            </div>
+            <div class="disruption-btn-wrap">
+              <button id="btnApplyRepair" class="btn btn-warning">
+                🚨 Simulate Emergency & Repair Timetable
+              </button>
+            </div>
+          </div>
+          <div id="repairResultNotice" class="repair-notice hidden"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Upload Modal -->
+  <dialog id="uploadModal" class="modal">
+    <div class="modal-content" style="max-width: 620px;">
+      <div class="modal-header">
+        <h2 class="modal-title">Upload Dataset</h2>
+        <button id="btnCloseUpload" class="btn-close" aria-label="Close dialog">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Excel Upload Form -->
+        <div class="upload-section card" style="padding: 1rem; margin-bottom: 1.5rem; background: var(--bg-subtle);">
+          <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">📄 Option 1: University Allocation Excel (.xlsx) [Recommended]</h3>
+          <p class="text-muted" style="font-size: 0.8rem; margin-bottom: 1rem;">Upload any university course & faculty allocation workbook directly:</p>
+          <form id="excelUploadForm">
+            <div class="upload-field" style="margin-bottom: 0.75rem;">
+              <input type="file" id="excelFileInput" name="excel_file" accept=".xlsx" required class="select-input">
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 1rem;">
+              <label for="uploadSemesterSelect" style="font-size: 0.82rem; font-weight: 600;">Semester Scope:</label>
+              <select id="uploadSemesterSelect" name="semester" class="select-input" style="width: auto;">
+                <option value="6" selected>Semester 6</option>
+                <option value="4">Semester 4</option>
+                <option value="8">Semester 8</option>
+                <option value="all">All Semesters</option>
+              </select>
+            </div>
+            <button type="submit" id="btnSubmitExcel" class="btn btn-primary btn-sm">Upload & Generate Timetable</button>
+          </form>
+        </div>
+
+        <!-- CSV Upload Form -->
+        <details>
+          <summary style="cursor: pointer; font-weight: 600; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+            📁 Option 2: Upload 5 Canonical CSV Files (Advanced)
+          </summary>
+          <form id="uploadForm" style="margin-top: 0.5rem;">
+            <div class="upload-field">
+              <label>1. courses.csv (course_id, title, category, credits, pattern)</label>
+              <input type="file" name="courses" accept=".csv">
+            </div>
+            <div class="upload-field">
+              <label>2. sections.csv (section_id, course_id, capacity)</label>
+              <input type="file" name="sections" accept=".csv">
+            </div>
+            <div class="upload-field">
+              <label>3. faculty.csv (faculty_id, name, qualified, max_hours, unavailable)</label>
+              <input type="file" name="faculty" accept=".csv">
+            </div>
+            <div class="upload-field">
+              <label>4. rooms.csv (room_id, type, capacity, unavailable)</label>
+              <input type="file" name="rooms" accept=".csv">
+            </div>
+            <div class="upload-field">
+              <label>5. students.csv (student_id, programme, selections)</label>
+              <input type="file" name="students" accept=".csv">
+            </div>
+            <div class="modal-footer" style="padding-top: 1rem;">
+              <button type="button" id="btnCancelUpload" class="btn btn-secondary btn-sm">Cancel</button>
+              <button type="submit" id="btnSubmitUpload" class="btn btn-outline btn-sm">Validate CSVs & Generate</button>
+            </div>
+          </form>
+        </details>
+
+        <div id="uploadIssues" class="alert alert-danger hidden" style="margin-top: 1rem;"></div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <p>NEXUS Core • AI-Assisted Timetable Generation • 5th Semester Design Project (Review II)</p>
+    </div>
+  </footer>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

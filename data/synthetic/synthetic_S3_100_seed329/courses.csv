@@ -1,0 +1,54 @@
+course_id,title,category,credits,pattern
+C01,CSE Major 1,Major,4,1:CLASS;1:CLASS;2:LAB
+C02,CSE Major 2,Major,4,1:CLASS;1:CLASS
+C03,CSE Major 3,Major,4,1:CLASS;1:CLASS
+C04,CSE Major 4,Major,4,1:CLASS;1:CLASS;2:LAB
+C05,CSE Major 5,Major,4,1:CLASS;1:CLASS
+C06,CSE Major 6,Major,4,1:CLASS;1:CLASS
+C07,ECE Major 1,Major,4,1:CLASS;1:CLASS;2:LAB
+C08,ECE Major 2,Major,4,1:CLASS;1:CLASS
+C09,ECE Major 3,Major,4,1:CLASS;1:CLASS
+C10,ECE Major 4,Major,4,1:CLASS;1:CLASS;2:LAB
+C11,ECE Major 5,Major,4,1:CLASS;1:CLASS
+C12,ECE Major 6,Major,4,1:CLASS;1:CLASS
+C13,MECH Major 1,Major,4,1:CLASS;1:CLASS;2:LAB
+C14,MECH Major 2,Major,4,1:CLASS;1:CLASS
+C15,MECH Major 3,Major,4,1:CLASS;1:CLASS
+C16,MECH Major 4,Major,4,1:CLASS;1:CLASS;2:LAB
+C17,MECH Major 5,Major,4,1:CLASS;1:CLASS
+C18,MECH Major 6,Major,4,1:CLASS;1:CLASS
+C19,BBA Major 1,Major,4,1:CLASS;1:CLASS;2:LAB
+C20,BBA Major 2,Major,4,1:CLASS;1:CLASS
+C21,BBA Major 3,Major,4,1:CLASS;1:CLASS
+C22,BBA Major 4,Major,4,1:CLASS;1:CLASS;2:LAB
+C23,BBA Major 5,Major,4,1:CLASS;1:CLASS
+C24,BBA Major 6,Major,4,1:CLASS;1:CLASS
+C25,PSY Major 1,Major,4,1:CLASS;1:CLASS;2:LAB
+C26,PSY Major 2,Major,4,1:CLASS;1:CLASS
+C27,PSY Major 3,Major,4,1:CLASS;1:CLASS
+C28,PSY Major 4,Major,4,1:CLASS;1:CLASS;2:LAB
+C29,PSY Major 5,Major,4,1:CLASS;1:CLASS
+C30,PSY Major 6,Major,4,1:CLASS;1:CLASS
+C31,Minor 1,Minor,3,1:CLASS;1:CLASS;2:LAB
+C32,Minor 2,Minor,3,1:CLASS;1:CLASS
+C33,Minor 3,Minor,3,1:CLASS;1:CLASS
+C34,Minor 4,Minor,3,1:CLASS;1:CLASS
+C35,Minor 5,Minor,3,1:CLASS;1:CLASS;2:LAB
+C36,Minor 6,Minor,3,1:CLASS;1:CLASS
+C37,Minor 7,Minor,3,1:CLASS;1:CLASS
+C38,Minor 8,Minor,3,1:CLASS;1:CLASS
+C39,Minor 9,Minor,3,1:CLASS;1:CLASS;2:LAB
+C40,Minor 10,Minor,3,1:CLASS;1:CLASS
+C41,Skill-Based 1,Skill-Based,2,1:CLASS;1:CLASS
+C42,Skill-Based 2,Skill-Based,2,1:CLASS;1:CLASS
+C43,Skill-Based 3,Skill-Based,2,1:CLASS;1:CLASS
+C44,Skill-Based 4,Skill-Based,2,1:CLASS;1:CLASS
+C45,Skill-Based 5,Skill-Based,2,1:CLASS;1:CLASS
+C46,Ability-Enhancement 1,Ability-Enhancement,2,1:CLASS;1:CLASS
+C47,Ability-Enhancement 2,Ability-Enhancement,2,1:CLASS;1:CLASS
+C48,Ability-Enhancement 3,Ability-Enhancement,2,1:CLASS;1:CLASS
+C49,Ability-Enhancement 4,Ability-Enhancement,2,1:CLASS;1:CLASS
+C50,Value-Added 1,Value-Added,2,1:CLASS;1:CLASS
+C51,Value-Added 2,Value-Added,2,1:CLASS;1:CLASS
+C52,Value-Added 3,Value-Added,2,1:CLASS;1:CLASS
+C53,Value-Added 4,Value-Added,2,1:CLASS;1:CLASS

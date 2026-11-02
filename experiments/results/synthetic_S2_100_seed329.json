@@ -1,0 +1,41 @@
+{
+ "dataset": "synthetic_S2_100_seed329",
+ "synthetic": true,
+ "ortools": "9.15.6755",
+ "results": [
+  {
+   "method": "greedy",
+   "validator_status": "VALID_COMPLETE",
+   "solver_status": "HEURISTIC",
+   "hard_violations": 0,
+   "violations_by_rule": {},
+   "scheduled_sections": "36/36",
+   "unplaced_selections": "0/645",
+   "fully_scheduled_students_pct": 100.0,
+   "room_utilization_pct": 13.3,
+   "faculty_load_range_h": [
+    0,
+    8
+   ],
+   "faculty_load_std_h": 2.09,
+   "runtime_s": 0.03
+  },
+  {
+   "method": "cpsat",
+   "validator_status": "VALID_COMPLETE",
+   "solver_status": "OPTIMAL",
+   "hard_violations": 0,
+   "violations_by_rule": {},
+   "scheduled_sections": "36/36",
+   "unplaced_selections": "0/645",
+   "fully_scheduled_students_pct": 100.0,
+   "room_utilization_pct": 13.3,
+   "faculty_load_range_h": [
+    0,
+    8
+   ],
+   "faculty_load_std_h": 2.09,
+   "runtime_s": 18.12
+  }
+ ]
+}
