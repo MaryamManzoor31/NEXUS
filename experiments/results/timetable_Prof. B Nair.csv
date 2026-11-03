@@ -1,0 +1,5 @@
+Day,Period,Time Range,Section,Course Code,Course Title,Category,Duration (Hrs),Room,Room Type,Faculty ID,Faculty Name
+Monday,Period 1,09:00 - 10:00,CS101_A,CS101,Programming Fundamentals,Major,1,LT_101,CLASS,F001,Dr. A Sharma
+Monday,Period 2,10:00 - 11:00,CS101_A,CS101,Programming Fundamentals,Major,1,LT_101,CLASS,F001,Dr. A Sharma
+Tuesday,Period 1,09:00 - 10:00,CS102_A,CS102,Data Structures Lab,Skill-Based,2,LAB_01,LAB,F001,Dr. A Sharma
+Wednesday,Period 3,11:15 - 12:15,HU201_A,HU201,Ethics and Values,Value-Added,1,LT_102,CLASS,F002,Prof. B Nair

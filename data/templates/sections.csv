@@ -1,0 +1,4 @@
+section_id,course_id,capacity,school_id,department_id,programme_id,stream,semester,batch
+CS101_A,CS101,60,SOET,CSE,BTECH,CSE,3,A
+CS102_A,CS102,30,SOET,CSE,BTECH,CSE,3,A
+HU201_A,HU201,60,SOET,HSS,BTECH,Open,3,A

@@ -133,7 +133,8 @@ def allocate_faculty_members(
                         name=f"Adjunct Faculty / Co-Faculty {adjunct_counter}",
                         qualified=frozenset(ds.courses.keys()),
                         max_hours=16,
-                        unavailable=frozenset()
+                        unavailable=frozenset(),
+                        designation="Adjunct",
                     )
                 assigned[sec.id] = adjunct_id
                 fac_load[adjunct_id] += sec_hours

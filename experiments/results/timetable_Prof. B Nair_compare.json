@@ -1,0 +1,67 @@
+{
+  "original_status": "BASELINE",
+  "optimized_status": "OPTIMAL",
+  "original_validator": "VALID_INCOMPLETE",
+  "optimized_validator": "VALID_COMPLETE",
+  "moved_classes": [],
+  "faculty_changes": [],
+  "room_changes": [],
+  "unscheduled_original": [],
+  "unscheduled_optimized": [],
+  "conflict_delta": {
+    "original_hard_violations": 0,
+    "optimized_hard_violations": 0,
+    "original_by_rule": {},
+    "optimized_by_rule": {},
+    "original_unplaced_selections": 7,
+    "optimized_unplaced_selections": 0
+  },
+  "metrics_original": {
+    "method": "baseline",
+    "validator_status": "VALID_INCOMPLETE",
+    "solver_status": "BASELINE",
+    "stage_a_status": "BASELINE",
+    "stage_b_status": "NOT_RUN",
+    "stage_b_status_reason": null,
+    "hard_violations": 0,
+    "violations_by_rule": {},
+    "scheduled_sections": "3/3",
+    "unplaced_selections": "7/7",
+    "fully_scheduled_students_pct": 0.0,
+    "room_utilization_pct": 5.6,
+    "faculty_load_range_h": [
+      1,
+      4
+    ],
+    "faculty_load_std_h": 1.5,
+    "runtime_s": 0.0
+  },
+  "metrics_optimized": {
+    "method": "cpsat",
+    "validator_status": "VALID_COMPLETE",
+    "solver_status": "OPTIMAL",
+    "stage_a_status": "OPTIMAL",
+    "stage_b_status": "OPTIMAL",
+    "stage_b_status_reason": null,
+    "hard_violations": 0,
+    "violations_by_rule": {},
+    "scheduled_sections": "3/3",
+    "unplaced_selections": "0/7",
+    "fully_scheduled_students_pct": 100.0,
+    "room_utilization_pct": 5.6,
+    "faculty_load_range_h": [
+      1,
+      4
+    ],
+    "faculty_load_std_h": 1.5,
+    "runtime_s": 0.02
+  },
+  "notes": [
+    "Hard-violation count is unchanged; review soft metrics before claiming improvement."
+  ],
+  "counts": {
+    "moved_classes": 0,
+    "faculty_changes": 0,
+    "room_changes": 0
+  }
+}

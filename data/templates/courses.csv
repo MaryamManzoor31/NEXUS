@@ -1,0 +1,4 @@
+course_id,title,category,credits,pattern,school_id,department_id,programme_id,stream,semester,academic_year,course_type
+CS101,Programming Fundamentals,Major,4,1:CLASS;1:CLASS,SOET,CSE,BTECH,CSE,3,2025-26,major
+CS102,Data Structures Lab,Skill-Based,2,2:LAB,SOET,CSE,BTECH,CSE,3,2025-26,skill
+HU201,Ethics and Values,Value-Added,2,1:CLASS,SOET,HSS,BTECH,Open,3,2025-26,value-added

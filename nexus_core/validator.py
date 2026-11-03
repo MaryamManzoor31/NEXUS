@@ -1,6 +1,5 @@
 """M4 - independent validator. Sees ONLY the dataset and the schedule; never trusts a solver flag.
-Status: INVALID | VALID_INCOMPLETE | VALID_COMPLETE. A pass means only that the implemented checks passed
-(H10 block/fixed activities are not modelled yet)."""
+Status: INVALID | VALID_INCOMPLETE | VALID_COMPLETE."""
 from __future__ import annotations
 from collections import defaultdict
 from dataclasses import dataclass, field
@@ -13,6 +12,7 @@ class Report:
     violations: list = field(default_factory=list)       # (rule, message)
     unscheduled: list = field(default_factory=list)
     unplaced: list = field(default_factory=list)         # (student, course)
+    missing_info: list = field(default_factory=list)     # informational gaps
 
     def count(self, rule):
         return sum(1 for r, _ in self.violations if r == rule)
@@ -22,6 +22,17 @@ class Report:
         for r, _ in self.violations:
             d[r] += 1
         return dict(d)
+
+    def to_dict(self):
+        return {
+            "status": self.status,
+            "hard_violations": len(self.violations),
+            "violations_by_rule": self.by_rule(),
+            "violations": [{"rule": r, "message": m} for r, m in self.violations],
+            "unscheduled_sections": list(self.unscheduled),
+            "unassigned_selections": [{"student": s, "course": c} for s, c in self.unplaced],
+            "missing_info": list(self.missing_info),
+        }
 
 
 def section_slots(ds, sched, sec_id):
@@ -122,6 +133,28 @@ def validate(ds: Dataset, sched: Schedule) -> Report:
     for sid, n in count.items():
         if n > ds.sections[sid].capacity:
             add("H12", f"{sid} has {n} students > capacity {ds.sections[sid].capacity}")
+    # ---- H10 fixed baseline preservation ----------------------------------------------------------
+    missing_info = []
+    for (sid, k), ba in ds.baseline.items():
+        if ba.mode != FIXED:
+            continue
+        if sid not in scheduled:
+            add("H10", f"fixed assignment for {sid}#{k} is unscheduled")
+            continue
+        if (sid, k) not in sched.placement:
+            add("H10", f"fixed assignment for {sid}#{k} missing from placement")
+            continue
+        st, rid = sched.placement[(sid, k)]
+        if st != ba.start_slot:
+            add("H10", f"{sid}#{k} start moved from fixed slot {ba.start_slot} to {st}")
+        if rid != ba.room_id:
+            add("H10", f"{sid}#{k} room changed from fixed {ba.room_id} to {rid}")
+        if sched.faculty.get(sid) != ba.faculty_id:
+            add("H10", f"{sid} faculty changed from fixed {ba.faculty_id} to {sched.faculty.get(sid)}")
+    if not ds.students:
+        missing_info.append("No students in dataset; course-allocation completeness cannot be assessed.")
+    if ds.baseline and not any(ba.mode == FIXED for ba in ds.baseline.values()):
+        missing_info.append("Baseline timetable present but no assignments marked fixed.")
     uns = [s for s in ds.sections if s not in scheduled]
     # Incomplete schedules are distinct from schedules that break hard rules.
     if V:
@@ -130,4 +163,4 @@ def validate(ds: Dataset, sched: Schedule) -> Report:
         status = "VALID_INCOMPLETE"
     else:
         status = "VALID_COMPLETE"
-    return Report(status, V, uns, unplaced)
+    return Report(status, V, uns, unplaced, missing_info)

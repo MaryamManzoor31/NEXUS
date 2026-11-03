@@ -1,0 +1,4 @@
+student_id,programme,selections,school_id,stream,semester,batch
+STU001,BTECH,CS101;CS102;HU201,SOET,CSE,3,A
+STU002,BTECH,CS101;HU201,SOET,CSE,3,A
+STU003,BTECH,CS102;HU201,SOET,CSE,3,A

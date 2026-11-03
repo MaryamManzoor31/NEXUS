@@ -237,7 +237,13 @@ def parse_allocation_workbook(file_source: str | bytes | io.BytesIO, semester_fi
                     title=title,
                     category=category,
                     credits=credits,
-                    sessions=sessions
+                    sessions=sessions,
+                    programme_id=prog,
+                    stream=prog,
+                    semester=sem,
+                    course_type=ctype,
+                    department_id="CSE",
+                    school_id="SOET",
                 )
 
             # Unique section identifier
@@ -250,7 +256,13 @@ def parse_allocation_workbook(file_source: str | bytes | io.BytesIO, semester_fi
             sections_dict[sec_id] = Section(
                 id=sec_id,
                 course_id=code,
-                capacity=capacity
+                capacity=capacity,
+                programme_id=prog,
+                stream=prog,
+                semester=sem,
+                batch=sec_name,
+                department_id="CSE",
+                school_id="SOET",
             )
 
             # Check faculty assignment
@@ -288,7 +300,10 @@ def parse_allocation_workbook(file_source: str | bytes | io.BytesIO, semester_fi
             name=f['name'],
             qualified=qual,
             max_hours=f['max_hours'],
-            unavailable=frozenset()
+            unavailable=frozenset(),
+            department_id=f.get('dept', '') or '',
+            designation=f.get('designation', '') or '',
+            school_id="SOET",
         )
 
     # 4. Create Room Objects

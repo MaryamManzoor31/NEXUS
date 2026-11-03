@@ -27,7 +27,7 @@ CONSTRAINT_SPECS = [
     ("H7", "Availability", "Faculty and room availability restrictions respected", "PS"),
     ("H8", "Day Boundary", "Each session fits completely within the same day", "TD"),
     ("H9", "Complete Schedule", "Each section is fully placed or marked unscheduled", "TD"),
-    ("H10", "Block Activities", "Internships/teaching practice (not modeled in Review 2)", "PS O6"),
+    ("H10", "Fixed Assignments", "Fixed baseline timetable assignments must be preserved", "PS O6 / real-data baseline"),
     ("H11", "Enrolment Integrity", "At most one section per course selected by student", "TD"),
     ("H12", "Section Capacity", "Student enrolment does not exceed section limit", "TD"),
     ("H13", "Resource Blocking", "Blocked/unavailable resources remain unused", "PS"),
@@ -49,10 +49,7 @@ def serialize_schedule(ds: Dataset, sched: Schedule, report: Report = None, metr
     constraints_list = []
     for cid, name, desc, src in CONSTRAINT_SPECS:
         v_count = len(violations_map.get(cid, []))
-        if cid == "H10":
-            status = "NOT_MODELLED"
-            badge = "neutral"
-        elif v_count == 0:
+        if v_count == 0:
             status = "PASSED"
             badge = "success"
         else:

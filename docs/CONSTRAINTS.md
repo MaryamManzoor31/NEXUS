@@ -13,7 +13,7 @@ Source column: PS = signed problem statement 329; TD = team design decision; Pla
 | H7 | Faculty and room availability respected | yes | yes | test_m_faculty/room_unavailable_H7 | PS |
 | H8 | Session stays inside one day and the week | yes | yes | test_m_day_boundary_H8 | TD |
 | H9 | Each section fully scheduled, or listed unscheduled | yes | yes | test_m_missing_session_H9 | TD |
-| H10 | Block / fixed activities (internships, field work, teaching practice) | **not modelled** | no | none | PS scope item O6 - representation awaiting mentor decision |
+| H10 | Fixed baseline timetable assignments preserved (time/room/faculty) | yes | yes | test_fixed_assignment_preserved / test_validator_detects_broken_fixed_assignment | PS O6 + real-data baseline |
 | H11 | One section per selected course, only of that course | yes | Stage B | test_m_enrol_*_H11 | TD |
 | H12 | Section enrolment limit | yes | Stage B | test_m_section_capacity_H12 | TD |
 | H13 | Unavailable resources unused during repair | via blocked_* arguments | yes (engine level) | test_blocked_room_is_never_used | PS (adjustments); repair module M9 pending |
@@ -24,7 +24,8 @@ Source column: PS = signed problem statement 329; TD = team design decision; Pla
 | S1 | Maximise placed student selections | Stage B CP-SAT objective |
 | S2 | Avoid overlap of courses sharing many students | Stage A CP-SAT penalty weighted by shared-student count |
 | S3 | Balance faculty workload | Stage A: minimise maximum load |
-| S4-S8 | utilization, gaps, preferences, fairness, change cost | not implemented |
+| S4-S7 | utilization, gaps, preferences, fairness | not implemented |
+| S8 | Minimal change from original timetable (preferred baseline) | Stage A soft weights `w_move` / `w_room` / `w_fac` (defaults 5/2/3 when baseline present) |
 
 Stage A status is passed through unchanged (OPTIMAL / FEASIBLE / INFEASIBLE / UNKNOWN / MODEL_INVALID). A CP-SAT timeout
 does not promote a heuristic hint to a solver-produced schedule. Student allocation has its own `status_b` result;

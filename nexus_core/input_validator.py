@@ -80,24 +80,61 @@ def check_dataset(ds: Dataset):
 
 
 def save_csv(ds: Dataset, folder):
-    # Export each dataset entity type to its own CSV table.
+    # Export each dataset entity type to its own CSV table (classic schema + optional institutional fields).
     os.makedirs(folder, exist_ok=True)
     def w(name, header, rows):
-        with open(os.path.join(folder, name), "w", newline="") as fh:
+        with open(os.path.join(folder, name), "w", newline="", encoding="utf-8") as fh:
             cw = csv.writer(fh); cw.writerow(header); cw.writerows(rows)
-    w("courses.csv", ["course_id", "title", "category", "credits", "pattern"],
-      [[c.id, c.title, c.category, c.credits, ";".join(f"{x.duration}:{x.room_type}" for x in c.sessions)] for c in ds.courses.values()])
-    w("sections.csv", ["section_id", "course_id", "capacity"], [[s.id, s.course_id, s.capacity] for s in ds.sections.values()])
-    w("faculty.csv", ["faculty_id", "name", "qualified", "max_hours", "unavailable"],
-      [[f.id, f.name, ";".join(sorted(f.qualified)), f.max_hours, ";".join(map(str, sorted(f.unavailable)))] for f in ds.faculty.values()])
-    w("rooms.csv", ["room_id", "type", "capacity", "unavailable"],
-      [[r.id, r.type, r.capacity, ";".join(map(str, sorted(r.unavailable)))] for r in ds.rooms.values()])
-    w("students.csv", ["student_id", "programme", "selections"],
-      [[s.id, s.programme, ";".join(s.selections)] for s in ds.students.values()])
+    w("courses.csv",
+      ["course_id", "title", "category", "credits", "pattern",
+       "school_id", "department_id", "programme_id", "stream", "semester", "academic_year", "course_type"],
+      [[c.id, c.title, c.category, c.credits, ";".join(f"{x.duration}:{x.room_type}" for x in c.sessions),
+        c.school_id, c.department_id, c.programme_id, c.stream, c.semester, c.academic_year, c.course_type]
+       for c in ds.courses.values()])
+    w("sections.csv",
+      ["section_id", "course_id", "capacity", "school_id", "department_id", "programme_id", "stream", "semester", "batch"],
+      [[s.id, s.course_id, s.capacity, s.school_id, s.department_id, s.programme_id, s.stream, s.semester, s.batch]
+       for s in ds.sections.values()])
+    w("faculty.csv",
+      ["faculty_id", "name", "qualified", "max_hours", "unavailable", "school_id", "department_id", "designation"],
+      [[f.id, f.name, ";".join(sorted(f.qualified)), f.max_hours, ";".join(map(str, sorted(f.unavailable))),
+        f.school_id, f.department_id, f.designation]
+       for f in ds.faculty.values()])
+    w("rooms.csv",
+      ["room_id", "type", "capacity", "unavailable", "school_id", "building"],
+      [[r.id, r.type, r.capacity, ";".join(map(str, sorted(r.unavailable))), r.school_id, r.building]
+       for r in ds.rooms.values()])
+    w("students.csv",
+      ["student_id", "programme", "selections", "school_id", "stream", "semester", "batch"],
+      [[s.id, s.programme, ";".join(s.selections), s.school_id, s.stream, s.semester, s.batch]
+       for s in ds.students.values()])
+    if ds.baseline:
+        from .models import slot_to_day_period
+        rows = []
+        for ba in sorted(ds.baseline.values(), key=lambda x: (x.section_id, x.session_index)):
+            day, period = slot_to_day_period(ba.start_slot)
+            sec = ds.sections[ba.section_id]
+            course = ds.courses[sec.course_id]
+            fac = ds.faculty.get(ba.faculty_id)
+            room = ds.rooms.get(ba.room_id)
+            rows.append([
+                day, f"Period {period}", ba.section_id, sec.course_id, course.title, course.category,
+                ds.section_sessions(ba.section_id)[ba.session_index].duration,
+                ba.room_id, room.type if room else "", ba.faculty_id, fac.name if fac else "",
+                ba.mode, ba.session_index, sec.school_id, sec.stream,
+            ])
+        w("timetable.csv",
+          ["Day", "Period", "Section", "Course Code", "Course Title", "Category", "Duration (Hrs)",
+           "Room", "Room Type", "Faculty ID", "Faculty Name", "mode", "session_index", "school_id", "stream"],
+          rows)
 
 
-def load_csv(folder, name="csv_import"):
-    """Returns (Dataset | None, issues). Dataset is None if any ERROR exists."""
+def load_csv(folder, name="csv_import", default_assignment_mode="preferred"):
+    """Returns (Dataset | None, issues). Dataset is None if any ERROR exists.
+
+    Classic fixed-schema CSV folders remain supported. Extra institutional columns are
+    accepted when present. An optional timetable.csv is attached as the optimization baseline.
+    """
     # Read required files first; malformed rows and semantic issues are reported below.
     issues, tables = [], {}
     spec = {"courses.csv": ["course_id", "title", "category", "credits", "pattern"],
@@ -109,7 +146,7 @@ def load_csv(folder, name="csv_import"):
         path = os.path.join(folder, fn)
         if not os.path.exists(path):
             issues.append(Issue("ERROR", fn, "file missing")); continue
-        with open(path, newline="") as fh:
+        with open(path, newline="", encoding="utf-8-sig") as fh:
             rd = csv.DictReader(fh)
             if rd.fieldnames is None or any(c not in rd.fieldnames for c in cols):
                 issues.append(Issue("ERROR", fn, f"expected columns {cols}, found {rd.fieldnames}")); continue
@@ -117,6 +154,9 @@ def load_csv(folder, name="csv_import"):
     if issues:
         return None, issues
     objs = {k: {} for k in ("courses", "sections", "faculty", "rooms", "students")}
+    def g(row, key, default=""):
+        return (row.get(key) or default).strip()
+
     def build(fn, key, idcol, make):
         for i, row in enumerate(tables[fn], start=2):
             where = f"{fn} line {i}"
@@ -127,13 +167,39 @@ def load_csv(folder, name="csv_import"):
             if row[idcol] in objs[key]:
                 issues.append(Issue("ERROR", where, f"duplicate id {row[idcol]}")); continue
             objs[key][row[idcol]] = o
-    build("courses.csv", "courses", "course_id", lambda r: Course(r["course_id"], r["title"], r["category"], int(r["credits"]), parse_pattern(r["pattern"])))
-    build("sections.csv", "sections", "section_id", lambda r: Section(r["section_id"], r["course_id"], int(r["capacity"])))
-    build("faculty.csv", "faculty", "faculty_id", lambda r: Faculty(r["faculty_id"], r["name"], frozenset(x for x in r["qualified"].split(";") if x), int(r["max_hours"]), _slots(r["unavailable"])))
-    build("rooms.csv", "rooms", "room_id", lambda r: Room(r["room_id"], r["type"].upper(), int(r["capacity"]), _slots(r["unavailable"])))
-    build("students.csv", "students", "student_id", lambda r: Student(r["student_id"], r["programme"], tuple(x for x in r["selections"].split(";") if x)))
+    build("courses.csv", "courses", "course_id", lambda r: Course(
+        r["course_id"], r["title"], r["category"], int(r["credits"]), parse_pattern(r["pattern"]),
+        school_id=g(r, "school_id"), department_id=g(r, "department_id"), programme_id=g(r, "programme_id"),
+        stream=g(r, "stream"), semester=g(r, "semester"), academic_year=g(r, "academic_year"),
+        course_type=g(r, "course_type")))
+    build("sections.csv", "sections", "section_id", lambda r: Section(
+        r["section_id"], r["course_id"], int(r["capacity"]),
+        school_id=g(r, "school_id"), department_id=g(r, "department_id"), programme_id=g(r, "programme_id"),
+        stream=g(r, "stream"), semester=g(r, "semester"), batch=g(r, "batch")))
+    build("faculty.csv", "faculty", "faculty_id", lambda r: Faculty(
+        r["faculty_id"], r["name"], frozenset(x for x in r["qualified"].split(";") if x),
+        int(r["max_hours"]), _slots(r["unavailable"]),
+        school_id=g(r, "school_id"), department_id=g(r, "department_id"), designation=g(r, "designation")))
+    build("rooms.csv", "rooms", "room_id", lambda r: Room(
+        r["room_id"], r["type"].upper(), int(r["capacity"]), _slots(r["unavailable"]),
+        school_id=g(r, "school_id"), building=g(r, "building")))
+    build("students.csv", "students", "student_id", lambda r: Student(
+        r["student_id"], r["programme"], tuple(x for x in r["selections"].split(";") if x),
+        school_id=g(r, "school_id"), stream=g(r, "stream"), semester=g(r, "semester"), batch=g(r, "batch")))
     ds = Dataset(name, objs["courses"], objs["sections"], objs["faculty"], objs["rooms"], objs["students"], synthetic=False)
     issues += check_dataset(ds)
     if any(i.severity == "ERROR" for i in issues):
         return None, issues
+
+    # Optional original timetable baseline (preserves uploaded CSV; attaches normalized baseline only).
+    for tt_name in ("timetable.csv", "assignments.csv", "baseline.csv"):
+        tt_path = os.path.join(folder, tt_name)
+        if os.path.isfile(tt_path):
+            from .importer import load_timetable_csv
+            result = load_timetable_csv(tt_path, ds=ds, default_mode=default_assignment_mode)
+            issues.extend(result.issues)
+            if result.dataset is None:
+                return None, issues
+            ds = result.dataset
+            break
     return ds, issues

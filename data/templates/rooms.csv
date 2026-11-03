@@ -1,0 +1,4 @@
+room_id,type,capacity,unavailable,school_id,building
+LT_101,CLASS,80,,SOET,Block-1
+LT_102,CLASS,60,,SOET,Block-1
+LAB_01,LAB,40,,SOET,Block-2

@@ -8,6 +8,10 @@ from .models import *
 from .common import shared_counts, starts_for, sec_slots
 
 W_PLACED = 1000
+# Soft change-cost weights (S8). Documented defaults; override via cpsat(..., w_move=...).
+W_MOVE_DEFAULT = 5
+W_ROOM_DEFAULT = 2
+W_FAC_DEFAULT = 3
 
 
 def _solver(limit, seed, workers, num_sections=0):
@@ -24,15 +28,38 @@ def _solver(limit, seed, workers, num_sections=0):
     return s
 
 
+def _baseline_hint_schedule(ds: Dataset, hint: Schedule | None) -> Schedule | None:
+    """Prefer an explicit hint; otherwise materialize Dataset.baseline as a warm-start schedule."""
+    if hint is not None:
+        return hint
+    if ds.baseline:
+        return ds.baseline_schedule()
+    return None
+
+
 def stage_a(ds: Dataset, limit=30, seed=329, workers=None, allow_unscheduled=True, top_pairs=100000,
             blocked_rooms=frozenset(), blocked_faculty=frozenset(), blocked_slots=frozenset(), prev=None,
-            w_move=0, w_room=0, w_fac=0, hint=None):
-    """Returns (status, Schedule-without-enrolment, extra info). prev/w_* are reserved for the repair module (M9)."""
+            w_move=None, w_room=None, w_fac=None, hint=None):
+    """Returns (status, Schedule-without-enrolment, extra info).
+
+    Fixed baseline assignments (Dataset.baseline mode=fixed) are hard-constrained (H10).
+    Preferred assignments contribute soft change costs when w_* > 0; flexible ones are hints only.
+    """
     t0 = time.time()
     m = cp_model.CpModel()
+    hint = _baseline_hint_schedule(ds, hint)
+    if w_move is None:
+        w_move = W_MOVE_DEFAULT if ds.baseline else 0
+    if w_room is None:
+        w_room = W_ROOM_DEFAULT if ds.baseline else 0
+    if w_fac is None:
+        w_fac = W_FAC_DEFAULT if ds.baseline else 0
+
     # Decision variables represent session times, chosen rooms/faculty, and section placement.
     start, rlit, flit, placed = {}, {}, {}, {}
     room_iv, fac_iv = defaultdict(list), defaultdict(list)
+    change_terms = []
+    fixed_applied = 0
     sec_ids = sorted(ds.sections)
     for sid in sec_ids:
         sec = ds.sections[sid]
@@ -42,7 +69,25 @@ def stage_a(ds: Dataset, limit=30, seed=329, workers=None, allow_unscheduled=Tru
         for f in facs:
             flit[sid, f.id] = m.NewBoolVar(f"f_{sid}_{f.id}")
         m.Add(sum(flit[sid, f.id] for f in facs) == placed[sid])          # empty sum -> forces unplaced / infeasible
-        hours = ds.section_hours(sid)
+
+        # Fixed faculty from any baseline row for this section (H10).
+        fixed_fac = next(
+            (ba.faculty_id for k in range(len(specs))
+             if (ba := ds.baseline.get((sid, k))) and ba.mode == FIXED),
+            None,
+        )
+        if fixed_fac is not None:
+            if (sid, fixed_fac) in flit:
+                m.Add(flit[sid, fixed_fac] == placed[sid])
+                fixed_applied += 1
+            else:
+                # Fixed faculty is not a feasible candidate -> force unscheduled when allowed.
+                if allow_unscheduled:
+                    m.Add(placed[sid] == 0)
+                else:
+                    m.Add(placed[sid] == 1)
+                    m.Add(sum(flit[sid, f.id] for f in facs) == 1)  # remains infeasible if empty
+
         for k, spec in enumerate(specs):
             ok = starts_for(spec.duration)
             start[sid, k] = m.NewIntVarFromDomain(cp_model.Domain.FromValues(ok), f"st_{sid}_{k}")
@@ -62,6 +107,32 @@ def stage_a(ds: Dataset, limit=30, seed=329, workers=None, allow_unscheduled=Tru
                     allowed = [v for v in ok if not any(t in bad for t in range(v, v + spec.duration))]
                     m.AddLinearExpressionInDomain(start[sid, k], cp_model.Domain.FromValues(allowed)).OnlyEnforceIf(flit[sid, f.id])
                 fac_iv[f.id].append(m.NewOptionalFixedSizeIntervalVar(start[sid, k], spec.duration, flit[sid, f.id], ""))
+
+            ba = ds.baseline.get((sid, k))
+            if ba is None:
+                continue
+            if ba.mode == FIXED:
+                # Hard-lock time and room when the resources remain legal candidates.
+                if ba.start_slot in ok:
+                    m.Add(start[sid, k] == ba.start_slot).OnlyEnforceIf(placed[sid])
+                    fixed_applied += 1
+                if (sid, k, ba.room_id) in rlit:
+                    m.Add(rlit[sid, k, ba.room_id] == placed[sid])
+                    fixed_applied += 1
+                elif allow_unscheduled:
+                    m.Add(placed[sid] == 0)
+            elif ba.mode == PREFERRED and (w_move or w_room or w_fac):
+                # Soft minimal-change penalties for preferred baseline rows (S8).
+                if w_move and ba.start_slot in ok:
+                    same_t = m.NewBoolVar(f"same_t_{sid}_{k}")
+                    m.Add(start[sid, k] == ba.start_slot).OnlyEnforceIf(same_t)
+                    m.Add(start[sid, k] != ba.start_slot).OnlyEnforceIf(same_t.Not())
+                    change_terms.append(w_move * (1 - same_t))
+                if w_room and (sid, k, ba.room_id) in rlit:
+                    change_terms.append(w_room * (1 - rlit[sid, k, ba.room_id]))
+                if w_fac and (sid, ba.faculty_id) in flit:
+                    change_terms.append(w_fac * (1 - flit[sid, ba.faculty_id]))
+
     for r in room_iv:
         m.AddNoOverlap(room_iv[r])                                          # H2
     for f in fac_iv:
@@ -112,7 +183,7 @@ def stage_a(ds: Dataset, limit=30, seed=329, workers=None, allow_unscheduled=Tru
         if len(conf) >= MAX_CONF_TERMS:
             break
 
-    if hint is not None:                                                    # warm start from a feasible schedule
+    if hint is not None:                                                    # warm start from baseline / prior schedule
         fac_loads = defaultdict(int)
         for sid in sec_ids:
             is_placed = int(sid not in hint.unscheduled and (sid, 0) in hint.placement)
@@ -144,14 +215,20 @@ def stage_a(ds: Dataset, limit=30, seed=329, workers=None, allow_unscheduled=Tru
         m.AddHint(maxload, max_l)
 
     obj = sum(W_PLACED * (1 - placed[s]) for s in sec_ids) if allow_unscheduled else 0
-    # Prefer placing sections, then reduce student conflicts and peak faculty workload.
-    obj = obj + sum(w * ov for w, ov in conf) + maxload
+    # Prefer placing sections, then reduce student conflicts, peak load, and unnecessary baseline changes.
+    obj = obj + sum(w * ov for w, ov in conf) + maxload + sum(change_terms)
     m.Minimize(obj)
     solver = _solver(limit, seed, workers, num_sections=len(sec_ids))
     st = solver.Solve(m)
     name = solver.StatusName(st)
     sched = Schedule(method="cpsat", status=name)
-    info = {"n_conflict_terms": len(conf), "wall_a": solver.WallTime()}
+    info = {
+        "n_conflict_terms": len(conf),
+        "wall_a": solver.WallTime(),
+        "fixed_constraints_applied": fixed_applied,
+        "change_cost_terms": len(change_terms),
+        "w_move": w_move, "w_room": w_room, "w_fac": w_fac,
+    }
     if st in (cp_model.OPTIMAL, cp_model.FEASIBLE):
         info["objective"] = solver.ObjectiveValue(); info["best_bound"] = solver.BestObjectiveBound()
         for sid in sec_ids:

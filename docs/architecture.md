@@ -25,6 +25,7 @@ erDiagram
     TIMETABLE_RUNS ||--o{ ENROLMENTS : produces
 ```
 
-Timetable generation and student allocation use CP-SAT. The standalone heuristic scheduler has been removed; no
-optimization route silently substitutes a heuristic schedule when CP-SAT returns `UNKNOWN`. Dataset column mapping,
-baseline/fixed timetable assignments, Excel export, and original-versus-optimized comparison are not implemented yet.
+Timetable generation and student allocation use CP-SAT only. Failed CP-SAT runs are not replaced by heuristic schedules.
+Real university Excel/CSV import, optional baseline `timetable.csv`, fixed/preferred/flexible assignment modes,
+independent H10 validation, and original-versus-optimized comparison are implemented. Flexible column mapping is
+available through `nexus_core.importer` and `/api/import/*`. Full Excel export remains limited (CSV/JSON export work).

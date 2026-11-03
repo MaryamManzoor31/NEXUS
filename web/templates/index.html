@@ -311,6 +311,10 @@
                 <option value="all">All Semesters</option>
               </select>
             </div>
+            <div class="upload-field" style="margin-bottom: 0.75rem;">
+              <label for="excelBaselineInput" style="font-size: 0.82rem; font-weight: 600;">Optional existing timetable CSV (baseline)</label>
+              <input type="file" id="excelBaselineInput" name="timetable_file" accept=".csv" class="select-input">
+            </div>
             <button type="submit" id="btnSubmitExcel" class="btn btn-primary btn-sm">Upload & Generate Timetable</button>
           </form>
         </div>
@@ -318,7 +322,7 @@
         <!-- CSV Upload Form -->
         <details>
           <summary style="cursor: pointer; font-weight: 600; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">
-            📁 Option 2: Upload 5 Canonical CSV Files (Advanced)
+            📁 Option 2: Upload CSV Files (courses/sections/faculty/rooms/students + optional timetable)
           </summary>
           <form id="uploadForm" style="margin-top: 0.5rem;">
             <div class="upload-field">
@@ -340,6 +344,18 @@
             <div class="upload-field">
               <label>5. students.csv (student_id, programme, selections)</label>
               <input type="file" name="students" accept=".csv">
+            </div>
+            <div class="upload-field">
+              <label>6. timetable.csv (optional baseline: Day, Period, Section, Room, Faculty ID, ...)</label>
+              <input type="file" name="timetable" accept=".csv">
+            </div>
+            <div class="upload-field">
+              <label for="csvAssignmentMode">Baseline assignment mode</label>
+              <select id="csvAssignmentMode" name="assignment_mode" class="select-input">
+                <option value="preferred" selected>Preferred (soft / changeable)</option>
+                <option value="fixed">Fixed (must keep)</option>
+                <option value="flexible">Flexible (free to move)</option>
+              </select>
             </div>
             <div class="modal-footer" style="padding-top: 1rem;">
               <button type="button" id="btnCancelUpload" class="btn btn-secondary btn-sm">Cancel</button>
