@@ -74,9 +74,7 @@
         <div class="field-group">
           <label for="selectAlgorithm" class="field-label">Algorithm</label>
           <select id="selectAlgorithm" class="select-input">
-            <option value="greedy" selected>Greedy Heuristic (Fast Clash-Free)</option>
-            <option value="cpsat">CP-SAT (Google AI Constraint Solver)</option>
-            <option value="compare">Compare Both (CP-SAT vs Greedy)</option>
+            <option value="cpsat" selected>CP-SAT (Google OR-Tools constraint solver)</option>
           </select>
         </div>
 
@@ -122,33 +120,7 @@
       <div class="metric-card">
         <div class="metric-title">Solver Execution Time</div>
         <div class="metric-value" id="valRuntime">0.65 s</div>
-        <div class="metric-caption" id="valRuntimeSub">Engine: GREEDY (HEURISTIC)</div>
-      </div>
-    </section>
-
-    <!-- Comparison Banner (Only shown in 'compare' mode) -->
-    <section id="compareSection" class="card compare-card hidden">
-      <div class="compare-header">
-        <h3 class="compare-title">📊 Side-by-Side Algorithm Comparison</h3>
-        <span class="compare-dataset" id="compareDatasetName">Dataset: univ_jan2025_sem_6</span>
-      </div>
-      <div class="compare-table-wrapper">
-        <table class="table compare-table">
-          <thead>
-            <tr>
-              <th>Method</th>
-              <th>Status</th>
-              <th>Fully Scheduled</th>
-              <th>Unplaced Choices</th>
-              <th>Faculty Load Std</th>
-              <th>Room Utilization</th>
-              <th>Runtime</th>
-            </tr>
-          </thead>
-          <tbody id="compareTableBody">
-            <!-- populated by JS -->
-          </tbody>
-        </table>
+        <div class="metric-caption" id="valRuntimeSub">Engine: CP-SAT</div>
       </div>
     </section>
 

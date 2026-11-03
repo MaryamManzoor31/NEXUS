@@ -6,7 +6,6 @@
 // Application State
 let appState = {
   data: null,
-  compareData: null,
   activeTab: 'section',
   activeEntityId: null,
   theme: localStorage.getItem('nexus_theme') || 'light'
@@ -41,11 +40,6 @@ const elements = {
   valSectionsSub: document.getElementById('valSectionsSub'),
   valRuntime: document.getElementById('valRuntime'),
   valRuntimeSub: document.getElementById('valRuntimeSub'),
-
-  // Compare section
-  compareSection: document.getElementById('compareSection'),
-  compareTableBody: document.getElementById('compareTableBody'),
-  compareDatasetName: document.getElementById('compareDatasetName'),
 
   // Views & Tabs
   tabs: document.querySelectorAll('.tab-btn'),
@@ -219,16 +213,9 @@ async function onGenerate() {
       const json = await res.json();
       if (json.success) {
         appState.data = json.data;
-        appState.compareData = json.compare_data;
         updateMetrics();
         populateEntitySelectors();
         renderActiveTab();
-
-        if (algorithm === 'compare' && appState.compareData) {
-          renderComparison(appState.data, appState.compareData);
-        } else {
-          elements.compareSection.classList.add('hidden');
-        }
       } else {
         alert('Error generating timetable from Excel: ' + (json.error || 'Unknown error'));
       }
@@ -259,16 +246,9 @@ async function onGenerate() {
     const json = await res.json();
     if (json.success) {
       appState.data = json.data;
-      appState.compareData = json.compare_data;
       updateMetrics();
       populateEntitySelectors();
       renderActiveTab();
-
-      if (algorithm === 'compare' && appState.compareData) {
-        renderComparison(appState.data, appState.compareData);
-      } else {
-        elements.compareSection.classList.add('hidden');
-      }
     } else {
       alert('Error generating schedule: ' + (json.error || 'Unknown error'));
     }
@@ -329,7 +309,6 @@ async function onExcelUploadSubmit(e) {
     if (json.success) {
       elements.uploadModal.close();
       appState.data = json.data;
-      elements.compareSection.classList.add('hidden');
       elements.selectScenario.value = 'excel';
       onScenarioChange();
       updateMetrics();
@@ -355,7 +334,6 @@ async function onLoadSample() {
     const json = await res.json();
     if (json.success) {
       appState.data = json.data;
-      elements.compareSection.classList.add('hidden');
       updateMetrics();
       populateEntitySelectors();
       renderActiveTab();
@@ -385,7 +363,6 @@ async function onUploadSubmit(e) {
     if (json.success) {
       elements.uploadModal.close();
       appState.data = json.data;
-      elements.compareSection.classList.add('hidden');
       updateMetrics();
       populateEntitySelectors();
       renderActiveTab();
@@ -475,30 +452,9 @@ function updateMetrics() {
 
   // Runtime
   elements.valRuntime.textContent = `${m.runtime_s} s`;
-  elements.valRuntimeSub.textContent = `Engine: ${m.method.toUpperCase()} (${m.solver_status})`;
-}
-
-// Render Comparison Table (CP-SAT vs Greedy)
-function renderComparison(cpsatData, greedyData) {
-  elements.compareSection.classList.remove('hidden');
-  elements.compareDatasetName.textContent = `Dataset: ${cpsatData.meta.dataset_name} (${cpsatData.meta.total_students} students)`;
-
-  const rows = [
-    { name: 'CP-SAT (Stage A + B)', d: cpsatData.metrics },
-    { name: 'Greedy Heuristic Baseline', d: greedyData.metrics }
-  ];
-
-  elements.compareTableBody.innerHTML = rows.map(r => `
-    <tr>
-      <td><strong>${r.name}</strong></td>
-      <td><span class="status-badge ${r.d.validator_status === 'VALID_COMPLETE' ? 'success' : 'warning'}">${r.d.validator_status}</span></td>
-      <td><strong>${r.d.fully_scheduled_students_pct}%</strong></td>
-      <td>${r.d.unplaced_selections}</td>
-      <td>±${r.d.faculty_load_std_h} h</td>
-      <td>${r.d.room_utilization_pct}%</td>
-      <td><strong>${r.d.runtime_s} s</strong></td>
-    </tr>
-  `).join('');
+  const stageBStatus = m.stage_b_status || 'NOT_RUN';
+  const stageBLabel = stageBStatus === 'NOT_RUN' ? '' : `; Stage B: ${stageBStatus}`;
+  elements.valRuntimeSub.textContent = `Engine: CP-SAT (Stage A: ${m.stage_a_status || m.solver_status}${stageBLabel})`;
 }
 
 // Populate dropdown selectors

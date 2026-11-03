@@ -20,16 +20,27 @@ class WebAppTests(unittest.TestCase):
         self.assertIn("metrics", data["data"])
         self.assertIn("grid_data", data["data"])
 
-    def test_generate_greedy(self):
+    def test_generate_cpsat(self):
         resp = self.client.post("/api/generate", json={
             "scenario": "S1",
             "students": 20,
-            "algorithm": "greedy"
+            "algorithm": "cpsat"
         })
         self.assertEqual(resp.status_code, 200)
         data = resp.json
         self.assertTrue(data["success"])
         self.assertEqual(data["data"]["metrics"]["validator_status"], "VALID_COMPLETE")
+        self.assertIn("stage_a_status", data["data"]["metrics"])
+        self.assertIn("stage_b_status", data["data"]["metrics"])
+
+    def test_generation_rejects_non_cpsat_algorithm(self):
+        resp = self.client.post("/api/generate", json={
+            "scenario": "S1",
+            "students": 20,
+            "algorithm": "greedy"
+        })
+        self.assertEqual(resp.status_code, 400)
+        self.assertIn("Only CP-SAT", resp.json["error"])
 
     def test_export_csv(self):
         resp = self.client.get("/api/export/csv")

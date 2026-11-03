@@ -1,7 +1,6 @@
 """M6 + M7 - CP-SAT engine. Stage A places sections (start, room, faculty); Stage B assigns students with times fixed.
-Status strings are passed through unchanged: OPTIMAL / FEASIBLE / INFEASIBLE / UNKNOWN (never blurred)."""
+Status strings are passed through unchanged: OPTIMAL / FEASIBLE / INFEASIBLE / UNKNOWN / MODEL_INVALID."""
 from __future__ import annotations
-import os
 import time
 from collections import defaultdict
 from ortools.sat.python import cp_model
@@ -16,7 +15,7 @@ def _solver(limit, seed, workers, num_sections=0):
     s = cp_model.CpSolver()
     s.parameters.max_time_in_seconds = limit
     s.parameters.random_seed = seed
-    s.parameters.num_workers = workers if workers is not None else min(4, os.cpu_count() or 1)
+    s.parameters.num_workers = workers if workers is not None else 1
     # For large datasets (e.g. real university scale with >60 sections) or tight limits,
     # prevent presolve probing & symmetry detection from exhausting the entire search time budget.
     if num_sections > 60 or limit <= 20:
@@ -162,15 +161,7 @@ def stage_a(ds: Dataset, limit=30, seed=329, workers=None, allow_unscheduled=Tru
                 rid = next(r for (s, kk, r), l in rlit.items() if s == sid and kk == k and solver.Value(l))
                 sched.placement[(sid, k)] = (solver.Value(start[sid, k]), rid)
             sched.faculty[sid] = next(f for (s, f), l in flit.items() if s == sid and solver.Value(l))
-    elif hint is not None and getattr(hint, "placement", None) and name not in ("INFEASIBLE",):
-        # Fallback gracefully to the warm-start hint if solver timed out before improving
-        name = "FEASIBLE"
-        sched.status = "FEASIBLE"
-        sched.placement = dict(hint.placement)
-        sched.faculty = dict(hint.faculty)
-        sched.unscheduled = list(hint.unscheduled)
-        info["fallback_to_hint"] = True
-    else:                                                                   # no solution found: report honestly, never a half schedule
+    else:                                                                   # never report a hint as a solver-produced schedule
         sched.unscheduled = list(sec_ids)
     sched.runtime = time.time() - t0
     return name, sched, info
@@ -203,11 +194,6 @@ def stage_b(ds: Dataset, sched: Schedule, limit=30, seed=329, workers=None):
         per_sec[s].append(v)
     for s, vs in per_sec.items():
         m.Add(sum(vs) <= ds.sections[s].capacity)                            # H12
-    from .greedy import assign_students_greedy
-    import copy
-    g = copy.copy(sched); assign_students_greedy(ds, g)                     # hint = greedy sectioning on the same times
-    for (stid, s_), v in a.items():
-        m.AddHint(v, int(g.enrolment.get(stid, {}).get(ds.sections[s_].course_id) == s_))
     m.Maximize(sum(a.values()))
     solver = _solver(limit, seed, workers, num_sections=len(ds.sections))
     st = solver.Solve(m)
@@ -221,18 +207,18 @@ def stage_b(ds: Dataset, sched: Schedule, limit=30, seed=329, workers=None):
     return name, time.time() - t0
 
 
-def cpsat(ds: Dataset, limit_a=30, limit_b=30, seed=329, workers=None, warm_start=True, **kw) -> Schedule:
+def cpsat(ds: Dataset, limit_a=30, limit_b=30, seed=329, workers=None, **kw) -> Schedule:
     t0 = time.time()
-    # A greedy schedule can guide CP-SAT toward a useful initial solution.
-    if warm_start and "hint" not in kw:
-        from .greedy import greedy
-        kw["hint"] = greedy(ds)
     name, sched, info = stage_a(ds, limit=limit_a, seed=seed, workers=workers, **kw)
     sched.info.update(info)
     if name in ("OPTIMAL", "FEASIBLE"):
         nb, _ = stage_b(ds, sched, limit=limit_b, seed=seed, workers=workers)
         sched.info["status_b"] = nb
+        if nb not in ("OPTIMAL", "FEASIBLE"):
+            sched.info["status_b_reason"] = f"Stage B ended with {nb}; student selections may remain unassigned."
+    else:
+        sched.info["status_b"] = "NOT_RUN"
+        sched.info["status_b_reason"] = f"Stage A ended with {name}; no student allocation was attempted."
     sched.status = name
     sched.runtime = time.time() - t0
     return sched
-

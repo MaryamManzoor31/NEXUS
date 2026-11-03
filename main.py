@@ -1,7 +1,6 @@
-"""NEXUS command line.  python main.py generate|compare|validate-csv ..."""
+"""NEXUS command line.  Use `python main.py optimize|export-csv|validate-csv|excel|web`."""
 import argparse, csv, json, os, sys
 from nexus_core.data_generator import generate
-from nexus_core.greedy import greedy
 from nexus_core.cpsat import cpsat
 from nexus_core.metrics import compute
 from nexus_core.validator import validate
@@ -9,22 +8,13 @@ from nexus_core.input_validator import load_csv, save_csv, check_dataset
 from nexus_core import db
 
 
-def run_methods(ds, methods, limit_a, limit_b, seed):
-    # Run each requested scheduler on the same dataset and calculate its metrics.
-    out = []
-    for m in methods:
-        sch = greedy(ds, seed) if m == "greedy" else cpsat(ds, limit_a, limit_b, seed)
-        out.append((sch, compute(ds, sch)))
-    return out
-
-
 def main():
     # Each subcommand selects one operation and its command-line options.
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
-    g = sub.add_parser("compare", help="generate a SYNTHETIC instance and run greedy and CP-SAT on it")
+    g = sub.add_parser("optimize", aliases=["compare"], help="generate a SYNTHETIC instance and run CP-SAT")
     g.add_argument("--students", type=int, default=100); g.add_argument("--scenario", default="S3", choices=["S1", "S2", "S3"])
-    g.add_argument("--seed", type=int, default=329); g.add_argument("--methods", default="greedy,cpsat")
+    g.add_argument("--seed", type=int, default=329)
     g.add_argument("--limit-a", type=int, default=30); g.add_argument("--limit-b", type=int, default=20)
     g.add_argument("--out", default="experiments/results"); g.add_argument("--db", default=None)
     e = sub.add_parser("export-csv", help="write a synthetic instance as CSV files (data/synthetic/<name>)")
@@ -36,7 +26,6 @@ def main():
     x = sub.add_parser("excel", help="load a university allocation Excel file, allocate members, and generate timetable")
     x.add_argument("file", help="path to the .xlsx workbook")
     x.add_argument("--sem", default="6", help="semester filter: 2, 4, 6, 8, or all (default: 6)")
-    x.add_argument("--algorithm", default="greedy", choices=["greedy", "cpsat"])
     x.add_argument("--allocate-members", action="store_true", default=True, help="allocate unassigned faculty members")
     x.add_argument("--out", default="experiments/results", help="output directory for results")
     a = ap.parse_args()
@@ -65,8 +54,8 @@ def main():
                         unavailable=ds.faculty[fid].unavailable
                     )
 
-        print(f"[TIMETABLE SOLVER] Running {a.algorithm.upper()}...")
-        sch = greedy(ds, 329) if a.algorithm == "greedy" else cpsat(ds, limit_a=30, limit_b=20, seed=329)
+        print("[TIMETABLE SOLVER] Running CP-SAT...")
+        sch = cpsat(ds, limit_a=30, limit_b=20, seed=329)
         rep = validate(ds, sch)
         met = compute(ds, sch)
         print(f"Solver Status: {sch.status} | Validator: {rep.status}")
@@ -90,16 +79,16 @@ def main():
         print("REJECTED" if ds is None else f"LOADED {len(ds.courses)} courses, {len(ds.sections)} sections, {len(ds.students)} students")
         sys.exit(1 if ds is None else 0)
     else:
-        # Compare schedulers, persist run details, and save a JSON summary.
+        # Run CP-SAT, persist run details, and save a JSON summary.
         ds = generate(a.students, a.scenario, a.seed)
         print(f"[SYNTHETIC] {ds.name}: {len(ds.courses)} courses, {len(ds.sections)} sections, {len(ds.faculty)} faculty, {len(ds.rooms)} rooms, {len(ds.students)} students")
-        res = run_methods(ds, a.methods.split(","), a.limit_a, a.limit_b, a.seed)
+        sch = cpsat(ds, a.limit_a, a.limit_b, a.seed)
         os.makedirs(a.out, exist_ok=True)
         con = db.connect(a.db or ":memory:"); db.save_dataset(con, ds)
-        rows = []
-        for sch, m in res:
-            db.save_run(con, ds, sch, validate(ds, sch)); rows.append(m)
-            print(json.dumps(m))
+        metrics = compute(ds, sch)
+        db.save_run(con, ds, sch, validate(ds, sch))
+        rows = [metrics]
+        print(json.dumps(metrics))
         base = os.path.join(a.out, f"{ds.name}")
         json.dump({"dataset": ds.name, "synthetic": True, "ortools": __import__("ortools").__version__, "results": rows}, open(base + ".json", "w"), indent=1, default=list)
         print("saved", base + ".json")

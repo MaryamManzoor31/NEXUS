@@ -8,7 +8,6 @@ from flask import Flask, request, jsonify, render_template, send_from_directory,
 
 from nexus_core.models import Dataset, Schedule
 from nexus_core.data_generator import generate
-from nexus_core.greedy import greedy
 from nexus_core.cpsat import cpsat, stage_a, stage_b
 from nexus_core.validator import validate
 from nexus_core.metrics import compute
@@ -27,8 +26,7 @@ DEFAULT_EXCEL_PATH = os.path.abspath(os.path.join(
 STATE = {
     "dataset": None,
     "schedule": None,
-    "compare_schedule": None,
-    "active_method": "greedy",
+    "active_method": "cpsat",
     "meta": {},
     "alloc_result": None,
 }
@@ -50,21 +48,21 @@ def _ensure_default_dataset():
                             max_hours=ds.faculty[fid].max_hours,
                             unavailable=ds.faculty[fid].unavailable
                         )
-                sch = greedy(ds, 329)
+                sch = cpsat(ds, limit_a=15, limit_b=10, seed=329)
                 STATE["dataset"] = ds
                 STATE["schedule"] = sch
                 STATE["meta"] = meta
                 STATE["alloc_result"] = alloc
-                STATE["active_method"] = "greedy"
+                STATE["active_method"] = "cpsat"
                 return
             except Exception as e:
                 print(f"[NEXUS] Default Excel load notice: {e}, falling back to synthetic S1")
         # Fallback: generate demo dataset S1
         ds = generate(20, "S1", 329)
-        sch = greedy(ds, 329)
+        sch = cpsat(ds, limit_a=15, limit_b=10, seed=329)
         STATE["dataset"] = ds
         STATE["schedule"] = sch
-        STATE["active_method"] = "greedy"
+        STATE["active_method"] = "cpsat"
 
 
 @app.route("/")
@@ -84,7 +82,7 @@ def get_current():
     return jsonify({
         "success": True,
         "data": data,
-        "active_method": STATE.get("active_method", "greedy"),
+        "active_method": STATE.get("active_method", "cpsat"),
         "is_excel": bool(ds.meta.get("source_file"))
     })
 
@@ -98,18 +96,12 @@ def api_generate():
     algorithm = body.get("algorithm", "cpsat")
     limit_a = int(body.get("limit_a", 15))
     limit_b = int(body.get("limit_b", 10))
+    if algorithm != "cpsat":
+        return jsonify({"success": False, "error": "Only CP-SAT timetable generation is supported."}), 400
 
     try:
         ds = generate(students, scenario, seed)
-        if algorithm == "greedy":
-            sch = greedy(ds, seed)
-        elif algorithm == "cpsat":
-            sch = cpsat(ds, limit_a=limit_a, limit_b=limit_b, seed=seed)
-        else: # compare mode
-            sch_cpsat = cpsat(ds, limit_a=limit_a, limit_b=limit_b, seed=seed)
-            sch_greedy = greedy(ds, seed)
-            sch = sch_cpsat
-            STATE["compare_schedule"] = sch_greedy
+        sch = cpsat(ds, limit_a=limit_a, limit_b=limit_b, seed=seed)
 
         STATE["dataset"] = ds
         STATE["schedule"] = sch
@@ -119,18 +111,10 @@ def api_generate():
         metrics = compute(ds, sch)
         data = serialize_schedule(ds, sch, report, metrics)
 
-        compare_data = None
-        if algorithm == "compare" and STATE.get("compare_schedule"):
-            comp_sch = STATE["compare_schedule"]
-            comp_rep = validate(ds, comp_sch)
-            comp_met = compute(ds, comp_sch)
-            compare_data = serialize_schedule(ds, comp_sch, comp_rep, comp_met)
-
         return jsonify({
             "success": True,
             "data": data,
-            "compare_data": compare_data,
-            "active_method": algorithm
+            "active_method": "cpsat"
         })
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
@@ -141,10 +125,12 @@ def api_load_excel():
     """Load real university allocation Excel spreadsheet with chosen semester filter."""
     body = request.get_json(force=True, silent=True) or {}
     semester = str(body.get("semester", "6"))
-    algorithm = body.get("algorithm", "greedy")
+    algorithm = body.get("algorithm", "cpsat")
     limit_a = int(body.get("limit_a", 15))
     limit_b = int(body.get("limit_b", 10))
     allocate_members = body.get("allocate_members", True)
+    if algorithm != "cpsat":
+        return jsonify({"success": False, "error": "Only CP-SAT timetable generation is supported."}), 400
 
     if not os.path.isfile(DEFAULT_EXCEL_PATH):
         return jsonify({"success": False, "error": f"Excel file not found at {DEFAULT_EXCEL_PATH}"}), 404
@@ -165,38 +151,22 @@ def api_load_excel():
                         unavailable=ds.faculty[fid].unavailable
                     )
 
-        if algorithm == "greedy":
-            sch = greedy(ds, 329)
-        elif algorithm == "cpsat":
-            sch = cpsat(ds, limit_a=limit_a, limit_b=limit_b, seed=329)
-        else: # compare mode
-            sch_cpsat = cpsat(ds, limit_a=limit_a, limit_b=limit_b, seed=329)
-            sch_greedy = greedy(ds, 329)
-            sch = sch_cpsat
-            STATE["compare_schedule"] = sch_greedy
+        sch = cpsat(ds, limit_a=limit_a, limit_b=limit_b, seed=329)
 
         STATE["dataset"] = ds
         STATE["schedule"] = sch
         STATE["meta"] = meta
         STATE["alloc_result"] = alloc_res
-        STATE["active_method"] = algorithm
+        STATE["active_method"] = "cpsat"
 
         report = validate(ds, sch)
         metrics = compute(ds, sch)
         data = serialize_schedule(ds, sch, report, metrics)
 
-        compare_data = None
-        if algorithm == "compare" and STATE.get("compare_schedule"):
-            comp_sch = STATE["compare_schedule"]
-            comp_rep = validate(ds, comp_sch)
-            comp_met = compute(ds, comp_sch)
-            compare_data = serialize_schedule(ds, comp_sch, comp_rep, comp_met)
-
         return jsonify({
             "success": True,
             "data": data,
-            "compare_data": compare_data,
-            "active_method": algorithm,
+            "active_method": "cpsat",
             "allocation_stats": alloc_res.stats if alloc_res else None
         })
     except Exception as e:
@@ -211,12 +181,16 @@ def api_upload_excel():
         return jsonify({"success": False, "error": "No Excel file provided"}), 400
 
     semester = request.form.get("semester", "6")
-    algorithm = request.form.get("algorithm", "greedy")
+    algorithm = request.form.get("algorithm", "cpsat")
     limit_a = int(request.form.get("limit_a", 15))
     limit_b = int(request.form.get("limit_b", 10))
+    if algorithm != "cpsat":
+        return jsonify({"success": False, "error": "Only CP-SAT timetable generation is supported."}), 400
 
-    temp_path = tempfile.mktemp(suffix=".xlsx", prefix="nexus_upload_")
+    temp_path = None
     try:
+        with tempfile.NamedTemporaryFile(suffix=".xlsx", prefix="nexus_upload_", delete=False) as upload:
+            temp_path = upload.name
         excel_file.save(temp_path)
         ds, meta = parse_allocation_workbook(temp_path, semester_filter=semester)
         alloc_res = allocate_faculty_members(ds, meta["pre_assigned_faculty"], meta["raw_faculty_info"])
@@ -230,16 +204,13 @@ def api_upload_excel():
                     unavailable=ds.faculty[fid].unavailable
                 )
 
-        if algorithm == "greedy":
-            sch = greedy(ds, 329)
-        else:
-            sch = cpsat(ds, limit_a=limit_a, limit_b=limit_b, seed=329)
+        sch = cpsat(ds, limit_a=limit_a, limit_b=limit_b, seed=329)
 
         STATE["dataset"] = ds
         STATE["schedule"] = sch
         STATE["meta"] = meta
         STATE["alloc_result"] = alloc_res
-        STATE["active_method"] = algorithm
+        STATE["active_method"] = "cpsat"
 
         report = validate(ds, sch)
         metrics = compute(ds, sch)
@@ -253,7 +224,7 @@ def api_upload_excel():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
     finally:
-        if os.path.exists(temp_path):
+        if temp_path and os.path.exists(temp_path):
             try:
                 os.remove(temp_path)
             except OSError:
@@ -287,11 +258,7 @@ def api_allocate_members():
                 )
 
         # Re-solve schedule with updated allocations
-        active_method = STATE.get("active_method", "greedy")
-        if active_method == "cpsat":
-            sch = cpsat(ds, limit_a=15, limit_b=10, seed=329)
-        else:
-            sch = greedy(ds, seed=329)
+        sch = cpsat(ds, limit_a=15, limit_b=10, seed=329)
         STATE["schedule"] = sch
 
         report = validate(ds, sch)
@@ -322,11 +289,10 @@ def load_sample():
             "issues": [str(i) for i in issues]
         }), 400
 
-    # Run quick solver
-    sch = greedy(ds, 329)
+    sch = cpsat(ds, limit_a=15, limit_b=10, seed=329)
     STATE["dataset"] = ds
     STATE["schedule"] = sch
-    STATE["active_method"] = "greedy"
+    STATE["active_method"] = "cpsat"
 
     report = validate(ds, sch)
     metrics = compute(ds, sch)
@@ -369,15 +335,14 @@ def upload_csv():
         algorithm = request.form.get("algorithm", "cpsat")
         limit_a = int(request.form.get("limit_a", 15))
         limit_b = int(request.form.get("limit_b", 10))
+        if algorithm != "cpsat":
+            return jsonify({"success": False, "error": "Only CP-SAT timetable generation is supported."}), 400
 
-        if algorithm == "greedy":
-            sch = greedy(ds, 329)
-        else:
-            sch = cpsat(ds, limit_a=limit_a, limit_b=limit_b, seed=329)
+        sch = cpsat(ds, limit_a=limit_a, limit_b=limit_b, seed=329)
 
         STATE["dataset"] = ds
         STATE["schedule"] = sch
-        STATE["active_method"] = algorithm
+        STATE["active_method"] = "cpsat"
 
         report = validate(ds, sch)
         metrics = compute(ds, sch)
@@ -415,7 +380,11 @@ def simulate_disruption():
             blocked_faculty=blocked_faculty
         )
         if st_a in ("OPTIMAL", "FEASIBLE"):
-            stage_b(ds, sch_a, limit=10, seed=329)
+            st_b, _ = stage_b(ds, sch_a, limit=10, seed=329)
+            sch_a.info["status_b"] = st_b
+        else:
+            sch_a.info["status_b"] = "NOT_RUN"
+            sch_a.info["status_b_reason"] = f"Stage A ended with {st_a}; no student allocation was attempted."
         sch_b = sch_a
         STATE["schedule"] = sch_b
         STATE["active_method"] = "cpsat-repair"

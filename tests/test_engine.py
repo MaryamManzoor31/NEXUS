@@ -1,25 +1,13 @@
 """M5/M6/M7/M8 acceptance: every scheduler's output is judged by the independent validator, not by its own flag."""
 import unittest
+from unittest.mock import patch
+from ortools.sat.python import cp_model
 from nexus_core.data_generator import generate
-from nexus_core.greedy import greedy
-from nexus_core.cpsat import cpsat, stage_a
+from nexus_core.cpsat import cpsat, stage_a, stage_b
 from nexus_core.validator import validate
 from nexus_core.metrics import compute
 from nexus_core.models import *
 from tests.fixtures import tiny, tiny_valid
-
-
-class GreedyTests(unittest.TestCase):
-    # The heuristic may be incomplete, but it must not emit invalid placements.
-    def test_no_violations_on_feasible(self):
-        for sc in ("S1", "S2", "S3"):
-            ds = generate(60, sc, 11); r = validate(ds, greedy(ds))
-            self.assertNotEqual(r.status, "INVALID", r.violations[:3])
-
-    def test_reports_unscheduled(self):
-        ds = generate(40, "S3", 3, unqualified_course=True); s = greedy(ds); r = validate(ds, s)
-        self.assertNotEqual(r.status, "INVALID"); self.assertTrue(r.unscheduled)
-        self.assertEqual(sorted(r.unscheduled), sorted(s.unscheduled))
 
 
 class CpSatTests(unittest.TestCase):
@@ -49,6 +37,67 @@ class CpSatTests(unittest.TestCase):
     def test_blocked_room_is_never_used(self):
         ds = tiny(); name, s, _ = stage_a(ds, limit=10, blocked_rooms={"R1"})
         self.assertTrue(all(r != "R1" for _, r in s.placement.values()))
+
+    def test_unknown_does_not_fall_back_to_hint(self):
+        class UnknownSolver:
+            def Solve(self, model):
+                return cp_model.UNKNOWN
+
+            def StatusName(self, status):
+                return "UNKNOWN"
+
+            def WallTime(self):
+                return 0.0
+
+        ds = tiny()
+        with patch("nexus_core.cpsat._solver", return_value=UnknownSolver()):
+            status, sched, _ = stage_a(ds, hint=tiny_valid())
+        self.assertEqual(status, "UNKNOWN")
+        self.assertEqual(sched.status, "UNKNOWN")
+        self.assertFalse(sched.placement)
+        self.assertEqual(set(sched.unscheduled), set(ds.sections))
+
+    def test_unknown_stage_a_is_reported_and_skips_stage_b(self):
+        class UnknownSolver:
+            def Solve(self, model):
+                return cp_model.UNKNOWN
+
+            def StatusName(self, status):
+                return "UNKNOWN"
+
+            def WallTime(self):
+                return 0.0
+
+        with patch("nexus_core.cpsat._solver", return_value=UnknownSolver()):
+            sched = cpsat(tiny())
+        self.assertEqual(sched.status, "UNKNOWN")
+        self.assertEqual(sched.info["status_b"], "NOT_RUN")
+        self.assertIn("Stage A ended with UNKNOWN", sched.info["status_b_reason"])
+        self.assertEqual(validate(tiny(), sched).status, "VALID_INCOMPLETE")
+
+    def test_unknown_stage_b_status_is_preserved(self):
+        class UnknownSolver:
+            def Solve(self, model):
+                return cp_model.UNKNOWN
+
+            def StatusName(self, status):
+                return "UNKNOWN"
+
+        sched = tiny_valid()
+        with patch("nexus_core.cpsat._solver", return_value=UnknownSolver()):
+            status, _ = stage_b(tiny(), sched)
+        self.assertEqual(status, "UNKNOWN")
+        self.assertEqual(sched.enrolment, {stid: {} for stid in tiny().students})
+
+    def test_stage_b_timeout_is_exposed_in_metrics(self):
+        sched = tiny_valid()
+        with patch("nexus_core.cpsat.stage_a", return_value=("FEASIBLE", sched, {})):
+            with patch("nexus_core.cpsat.stage_b", return_value=("UNKNOWN", 0.0)):
+                result = cpsat(tiny())
+        self.assertEqual(result.status, "FEASIBLE")
+        metrics = compute(tiny(), result)
+        self.assertEqual(metrics["stage_b_status"], "UNKNOWN")
+        self.assertIn("student selections may remain unassigned", metrics["stage_b_status_reason"])
 
 
 class MetricsTests(unittest.TestCase):

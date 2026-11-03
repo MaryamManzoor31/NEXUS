@@ -27,6 +27,9 @@ def compute(ds: Dataset, sched: Schedule):
     loads = [load.get(f, 0) for f in ds.faculty]
     return {
         "method": sched.method, "validator_status": rep.status, "solver_status": sched.status,
+        "stage_a_status": sched.status,
+        "stage_b_status": sched.info.get("status_b", "NOT_RUN"),
+        "stage_b_status_reason": sched.info.get("status_b_reason"),
         "hard_violations": len(rep.violations), "violations_by_rule": rep.by_rule(),
         "scheduled_sections": f"{len(ds.sections) - len(rep.unscheduled)}/{len(ds.sections)}",
         "unplaced_selections": f"{unplaced}/{total_sel}",

@@ -7,4 +7,5 @@
 | LIB-01 | library | CP-SAT solver | Google OR-Tools 9.15.6755 (pip), Apache-2.0 (verify) | used |
 | SYN-01 | synthetic | S1/S2/S3 experiments | team-designed rules in GENERATOR_RULES.md, seed 329 | used |
 | DATA-01 | public benchmark | ITC-2007 Track 2 / ITC-2019 loaders | - | NOT YET USED |
-Team-designed: H8, H9, H11, H12, H14, generator rules, conflict-weight objective, greedy ordering, warm start.
+Team-designed: H8, H9, H11, H12, H14, generator rules, and the conflict-weight objective. Earlier experiment files may
+contain heuristic results; they are historical benchmarks and are not used by current timetable-generation routes.

@@ -1,18 +1,15 @@
-# Architecture (status labels match the code)
+# Architecture
 ```mermaid
 flowchart TD
-    A[CSV import + input validation - IMPLEMENTED] --> B[Canonical data model + SQLite schema - IMPLEMENTED]
-    G[Synthetic generator S1/S2/S3 - IMPLEMENTED] --> B
-    B --> E1[Greedy baseline - IMPLEMENTED]
-    B --> E3[CP-SAT Stage A + Stage B, greedy warm start - IMPLEMENTED]
-    B --> E2[GA baseline - PLANNED]
-    E1 --> F[Independent validator - IMPLEMENTED]
-    E3 --> F
-    E2 --> F
-    F --> M[Metrics + comparison JSON - IMPLEMENTED, table/plots PLANNED]
-    M --> J[Disruption simulator + minimal-change repair - PLANNED]
-    J --> F
-    M --> H[Web UI + PDF/Excel export + REST API - PLANNED]
+    A[Fixed-schema CSV import + validation] --> B[Canonical data model + SQLite schema]
+    G[Synthetic generator S1/S2/S3 for testing] --> B
+    B --> E[Google OR-Tools CP-SAT]
+    E --> EA[Stage A: section time, room, faculty]
+    EA --> EB[Stage B: student-to-section allocation]
+    EB --> F[Independent validator]
+    F --> M[Metrics and JSON/CSV reporting]
+    M --> H[Flask UI and API]
+    H --> J[CP-SAT disruption repair]
 ```
 ```mermaid
 erDiagram
@@ -27,3 +24,7 @@ erDiagram
     TIMETABLE_RUNS ||--o{ ASSIGNMENTS : produces
     TIMETABLE_RUNS ||--o{ ENROLMENTS : produces
 ```
+
+Timetable generation and student allocation use CP-SAT. The standalone heuristic scheduler has been removed; no
+optimization route silently substitutes a heuristic schedule when CP-SAT returns `UNKNOWN`. Dataset column mapping,
+baseline/fixed timetable assignments, Excel export, and original-versus-optimized comparison are not implemented yet.
