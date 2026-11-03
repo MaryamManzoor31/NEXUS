@@ -2,6 +2,7 @@
 import os, shutil, tempfile, unittest
 from nexus_core.input_validator import load_csv, save_csv, check_dataset
 from nexus_core.data_generator import generate
+from nexus_core.models import Section, SessionSpec, LAB
 from nexus_core import db
 from tests.fixtures import tiny
 
@@ -60,6 +61,17 @@ class LoaderTests(unittest.TestCase):
         self.assertEqual(set(back.courses), set(ds.courses)); self.assertEqual(back.students["S0001"].selections, ds.students["S0001"].selections)
         self.assertEqual(back.faculty["F01"].qualified, ds.faculty["F01"].qualified)
         self.assertEqual({c.id: c.sessions for c in back.courses.values()}, {c.id: c.sessions for c in ds.courses.values()})
+
+    def test_database_roundtrip_preserves_section_session_overrides(self):
+        ds = tiny()
+        ds.sections["A1"] = Section("A1", "A", 20, sessions=(SessionSpec(2, LAB),))
+        con = db.connect()
+        db.save_dataset(con, ds)
+
+        back = db.load_dataset(con)
+
+        self.assertEqual(back.section_sessions("A1"), (SessionSpec(2, LAB),))
+        self.assertIsNone(back.sections["B1"].sessions)
 
     def test_generated_data_has_no_errors(self):
         for sc in ("S1", "S2", "S3"):

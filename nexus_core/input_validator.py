@@ -50,7 +50,7 @@ def check_dataset(ds: Dataset):
             continue
         if s.capacity <= 0:
             iss.append(Issue("ERROR", f"section {s.id}", "capacity must be positive"))
-        for x in ds.courses[s.course_id].sessions:
+        for x in ds.section_sessions(s.id):
             if s.capacity > max_cap.get(x.room_type, 0):
                 iss.append(Issue("WARNING", f"section {s.id}", f"capacity {s.capacity} exceeds every {x.room_type} room"))
         if not any(s.course_id in f.qualified for f in ds.faculty.values()):
@@ -92,8 +92,9 @@ def save_csv(ds: Dataset, folder):
         c.school_id, c.department_id, c.programme_id, c.stream, c.semester, c.academic_year, c.course_type]
        for c in ds.courses.values()])
     w("sections.csv",
-      ["section_id", "course_id", "capacity", "school_id", "department_id", "programme_id", "stream", "semester", "batch"],
-      [[s.id, s.course_id, s.capacity, s.school_id, s.department_id, s.programme_id, s.stream, s.semester, s.batch]
+      ["section_id", "course_id", "capacity", "school_id", "department_id", "programme_id", "stream", "semester", "batch", "session_pattern"],
+      [[s.id, s.course_id, s.capacity, s.school_id, s.department_id, s.programme_id, s.stream, s.semester, s.batch,
+        ";".join(f"{x.duration}:{x.room_type}" for x in s.sessions) if s.sessions is not None else ""]
        for s in ds.sections.values()])
     w("faculty.csv",
       ["faculty_id", "name", "qualified", "max_hours", "unavailable", "school_id", "department_id", "designation"],
@@ -175,7 +176,8 @@ def load_csv(folder, name="csv_import", default_assignment_mode="preferred"):
     build("sections.csv", "sections", "section_id", lambda r: Section(
         r["section_id"], r["course_id"], int(r["capacity"]),
         school_id=g(r, "school_id"), department_id=g(r, "department_id"), programme_id=g(r, "programme_id"),
-        stream=g(r, "stream"), semester=g(r, "semester"), batch=g(r, "batch")))
+        stream=g(r, "stream"), semester=g(r, "semester"), batch=g(r, "batch"),
+        sessions=parse_pattern(g(r, "session_pattern")) if g(r, "session_pattern") else None))
     build("faculty.csv", "faculty", "faculty_id", lambda r: Faculty(
         r["faculty_id"], r["name"], frozenset(x for x in r["qualified"].split(";") if x),
         int(r["max_hours"]), _slots(r["unavailable"]),

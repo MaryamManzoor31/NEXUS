@@ -7,14 +7,37 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/css/style.css?v=20261103-section-calendar-v3">
 </head>
 <body>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="icon-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></symbol>
+    <symbol id="icon-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5M12 15V3"></path></symbol>
+    <symbol id="icon-printer" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 14h12v7H6zM18 12h.01"></path></symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"></path></symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path></symbol>
+    <symbol id="icon-graduation" viewBox="0 0 24 24"><path d="m2 10 10-5 10 5-10 5-10-5Z"></path><path d="M6 12v5c3.5 3 8.5 3 12 0v-5m4-2v6"></path></symbol>
+    <symbol id="icon-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="10" cy="7" r="4"></circle><path d="M20 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path></symbol>
+    <symbol id="icon-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m17 8-5-5-5 5m5-5v12"></path></symbol>
+    <symbol id="icon-building" viewBox="0 0 24 24"><path d="M3 21h18M5 21V5l7-3 7 3v16M9 9h.01M15 9h.01M9 13h.01M15 13h.01M10 21v-4h4v4"></path></symbol>
+    <symbol id="icon-faculty" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></symbol>
+    <symbol id="icon-door" viewBox="0 0 24 24"><path d="M4 21h16M6 21V4l12-2v19M14 12h.01"></path></symbol>
+    <symbol id="icon-table" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="1"></rect><path d="M3 10h18M9 4v16M15 4v16"></path></symbol>
+    <symbol id="icon-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"></path><path d="m9 12 2 2 4-4"></path></symbol>
+    <symbol id="icon-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a5 5 0 0 0-6.4 6.4L3 18l3 3 5.3-5.3a5 5 0 0 0 6.4-6.4L14 12l-3-3 3.7-2.7Z"></path></symbol>
+    <symbol id="icon-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"></path><path d="M5.6 9A7 7 0 0 1 18 6l2 2M4 16l2 2a7 7 0 0 0 12.4-3"></path></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"></path></symbol>
+    <symbol id="icon-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20h15.8a2 2 0 0 0 1.7-2.5L13.7 3.9a2 2 0 0 0-3.4 0Z"></path><path d="M12 9v4m0 4h.01"></path></symbol>
+    <symbol id="icon-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6M8 13h8m-8 4h8"></path></symbol>
+    <symbol id="icon-folder" viewBox="0 0 24 24"><path d="M3 6a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></symbol>
+    <symbol id="icon-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"></path></symbol>
+  </svg>
   <!-- Minimal Top Header -->
   <header class="app-header">
     <div class="header-container">
       <div class="brand">
-        <div class="brand-icon">🗓️</div>
+        <div class="brand-icon"><svg class="icon"><use href="#icon-calendar"></use></svg></div>
         <div>
           <h1 class="brand-title">NEXUS Timetable Generator</h1>
           <p class="brand-subtitle">AI-Assisted Scheduling Engine for NEP Multidisciplinary Programmes</p>
@@ -22,13 +45,13 @@
       </div>
       <div class="header-actions">
         <button id="btnExportCsv" class="btn btn-secondary btn-sm" title="Export current schedule as CSV">
-          ⬇ Export CSV
+          <svg class="icon"><use href="#icon-download"></use></svg> Export CSV
         </button>
         <button id="btnPrint" class="btn btn-secondary btn-sm" title="Print or save as PDF">
-          🖨 Print View
+          <svg class="icon"><use href="#icon-printer"></use></svg> Print View
         </button>
         <button id="btnThemeToggle" class="btn btn-icon" title="Toggle Light/Dark Theme" aria-label="Toggle theme">
-          <span id="themeIcon">🌙</span>
+          <span id="themeIcon"><svg class="icon"><use href="#icon-moon"></use></svg></span>
         </button>
       </div>
     </div>
@@ -42,7 +65,7 @@
         <div class="field-group">
           <label for="selectScenario" class="field-label">Curriculum / Dataset Source</label>
           <select id="selectScenario" class="select-input">
-            <option value="excel" selected>🎓 Jan 2025 University Allocation (Real Excel)</option>
+            <option value="excel" selected>Jan 2025 University Allocation (Real Excel)</option>
             <option value="S1">S1: Traditional (Single discipline, cohorts)</option>
             <option value="S2">S2: Flexible (NEP Minors & Electives)</option>
             <option value="S3">S3: Multidisciplinary (Cross-department)</option>
@@ -82,16 +105,16 @@
         <div class="field-actions">
           <button id="btnGenerate" class="btn btn-primary" title="Generate conflict-free weekly timetable">
             <span id="btnGenSpinner" class="spinner hidden"></span>
-            <span id="btnGenText">⚡ Generate Timetable</span>
+            <span id="btnGenText"><svg class="icon"><use href="#icon-calendar"></use></svg> Generate Timetable</span>
           </button>
           <button id="btnAllocateMembers" class="btn btn-secondary" title="Run intelligent faculty member allocation">
-            👥 Allocate Members
+            <svg class="icon"><use href="#icon-users"></use></svg> Allocate Members
           </button>
           <button id="btnLoadExcel" class="btn btn-outline" title="Reload original Excel file">
-            🎓 Reset to Excel
+            <svg class="icon"><use href="#icon-refresh"></use></svg> Reset to Excel
           </button>
           <button id="btnOpenUpload" class="btn btn-outline" title="Upload custom Excel or CSV files">
-            ⬆ Upload File
+            <svg class="icon"><use href="#icon-upload"></use></svg> Upload File
           </button>
         </div>
       </div>
@@ -126,52 +149,131 @@
 
     <!-- Navigation Tabs for Timetable Views -->
     <nav class="view-tabs" aria-label="Timetable Views">
-      <button class="tab-btn active" data-tab="section">🏫 Section Timetable</button>
-      <button class="tab-btn" data-tab="faculty">👨‍🏫 Faculty Timetable</button>
-      <button class="tab-btn" data-tab="allocations">👥 Faculty Allocation & Workload</button>
-      <button class="tab-btn" data-tab="room">🚪 Room Timetable</button>
-      <button class="tab-btn" data-tab="student">🎓 Student Timetable</button>
-      <button class="tab-btn" data-tab="master">📋 Master Table</button>
-      <button class="tab-btn" data-tab="constraints">🛡️ Constraint Audit (H1–H14)</button>
-      <button class="tab-btn" data-tab="disruption">🔧 Disruption Repair</button>
+      <button class="tab-btn active" data-tab="section"><svg class="icon"><use href="#icon-building"></use></svg> Section Timetable</button>
+      <button class="tab-btn" data-tab="faculty"><svg class="icon"><use href="#icon-faculty"></use></svg> Faculty Timetable</button>
+      <button class="tab-btn" data-tab="allocations"><svg class="icon"><use href="#icon-users"></use></svg> Faculty Allocation & Workload</button>
+      <button class="tab-btn" data-tab="room"><svg class="icon"><use href="#icon-door"></use></svg> Room Timetable</button>
+      <button class="tab-btn" data-tab="student"><svg class="icon"><use href="#icon-graduation"></use></svg> Student Timetable</button>
+      <button class="tab-btn" data-tab="master"><svg class="icon"><use href="#icon-table"></use></svg> Master Table</button>
+      <button class="tab-btn" data-tab="constraints"><svg class="icon"><use href="#icon-shield"></use></svg> Constraint Audit (H1–H14)</button>
+      <button class="tab-btn" data-tab="disruption"><svg class="icon"><use href="#icon-wrench"></use></svg> Disruption Repair</button>
     </nav>
 
     <!-- Active View Area -->
     <section class="card content-card">
-      <!-- Entity Filter Bar (Switches based on active tab) -->
-      <div class="view-toolbar" id="viewToolbar">
-        <div class="toolbar-left">
-          <label id="selectorLabel" for="entitySelect" class="toolbar-label">Select Section:</label>
-          <select id="entitySelect" class="select-input select-entity"></select>
-          <span id="entityInfo" class="entity-info-pill"></span>
+      <aside class="schedule-sidebar" id="scheduleSidebar">
+        <div class="sidebar-heading">
+          <span class="sidebar-eyebrow">TIMETABLE VIEW</span>
+          <h2>Section schedule</h2>
+          <p>Choose a semester, then view a university class section and its courses.</p>
         </div>
-        <div class="toolbar-right">
-          <div class="legend">
-            <span class="legend-item"><span class="badge badge-lecture"></span> Lecture (1 hr)</span>
-            <span class="legend-item"><span class="badge badge-lab"></span> Lab Session (2 hrs)</span>
-            <span class="legend-item"><span class="badge badge-free"></span> Free Period</span>
+        <div class="sidebar-field">
+          <label for="filterSemester" class="field-label">Semester</label>
+          <select id="filterSemester" class="select-input"></select>
+        </div>
+        <div class="sidebar-field">
+          <label for="filterSection" class="field-label">Section</label>
+          <select id="filterSection" class="select-input"></select>
+        </div>
+        <div id="selectedSectionSummary" class="section-summary"></div>
+
+        <details class="sidebar-disclosure">
+          <summary>Additional constraints</summary>
+          <div class="sidebar-disclosure-content">
+            <div class="constraint-checklist" id="sidebarConstraintList"></div>
+
+            <div class="sidebar-field baseline-control">
+              <label for="baselineModeSelect" class="field-label">Baseline assignment policy</label>
+              <select id="baselineModeSelect" class="select-input">
+                <option value="fixed">Fixed — preserve time, room & faculty</option>
+                <option value="preferred">Preferred — minimize changes</option>
+                <option value="flexible">Flexible — allow rescheduling</option>
+              </select>
+              <button id="btnApplyBaselineMode" class="btn btn-outline btn-sm">Apply to this section</button>
+            </div>
+
+            <div class="sidebar-field">
+              <label for="sidebarBlockedRoomSelect" class="field-label">Temporarily avoid room</label>
+              <select id="sidebarBlockedRoomSelect" class="select-input">
+                <option value="">No room restriction</option>
+              </select>
+            </div>
+            <div class="sidebar-field">
+              <label for="sidebarBlockedFacultySelect" class="field-label">Temporarily avoid faculty</label>
+              <select id="sidebarBlockedFacultySelect" class="select-input">
+                <option value="">No faculty restriction</option>
+              </select>
+            </div>
+            <p class="sidebar-help">Temporary resource exclusions apply to the entire timetable during repair.</p>
+            <button id="btnApplySidebarConstraints" class="btn btn-primary sidebar-action">Apply &amp; repair timetable</button>
+            <div id="sidebarConstraintNotice" class="sidebar-notice hidden" role="status"></div>
+          </div>
+        </details>
+      </aside>
+
+      <div class="schedule-workspace">
+        <!-- Entity Filter Bar for faculty, room, and student views -->
+        <div class="view-toolbar" id="viewToolbar">
+          <div class="toolbar-left">
+            <label id="selectorLabel" for="entitySelect" class="toolbar-label">Select Faculty:</label>
+            <select id="entitySelect" class="select-input select-entity"></select>
+            <span id="entityInfo" class="entity-info-pill"></span>
+          </div>
+          <div class="toolbar-right">
+            <div class="legend">
+              <span class="legend-item"><span class="badge badge-lecture"></span> Lecture</span>
+              <span class="legend-item"><span class="badge badge-lab"></span> Lab session</span>
+              <span class="legend-item"><span class="badge badge-free"></span> Free period</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Timetable Grid Container (Monday-Friday x Periods 1-6) -->
-      <div id="gridWrapper" class="timetable-wrapper">
-        <table class="timetable-grid" id="timetableGrid">
-          <thead>
-            <tr>
-              <th class="col-time">Period / Time</th>
-              <th>Monday</th>
-              <th>Tuesday</th>
-              <th>Wednesday</th>
-              <th>Thursday</th>
-              <th>Friday</th>
-            </tr>
-          </thead>
-          <tbody id="gridTbody">
-            <!-- Populated dynamically by JavaScript -->
-          </tbody>
-        </table>
-      </div>
+        <div class="section-view-header" id="sectionViewHeader">
+          <div class="section-view-title">
+            <span class="sidebar-eyebrow">GENERATED TIMETABLE</span>
+            <h2 id="scheduleTitle">Section Time Table</h2>
+            <p id="scheduleSubtitle">Weekly view · Monday to Friday</p>
+          </div>
+          <div class="section-view-tabs" role="tablist" aria-label="Section timetable format">
+            <button type="button" class="section-view-tab active" id="btnCalendarView" role="tab" aria-selected="true">Calendar View</button>
+            <button type="button" class="section-view-tab" id="btnTabularView" role="tab" aria-selected="false">Tabular View</button>
+          </div>
+        </div>
+
+        <!-- Timetable Grid Container (Monday-Friday x Periods 1-6) -->
+        <div id="gridWrapper" class="timetable-wrapper">
+          <table class="timetable-grid" id="timetableGrid">
+            <thead>
+              <tr>
+                <th class="col-time">Time</th>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+              </tr>
+            </thead>
+            <tbody id="gridTbody">
+              <!-- Populated dynamically by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="sectionTableWrapper" class="table-container section-table-wrapper hidden">
+          <table class="table section-table">
+            <thead>
+              <tr>
+                <th>Day</th>
+                <th>Time</th>
+                <th>Course</th>
+                <th>Type</th>
+                <th>Room</th>
+                <th>Faculty</th>
+              </tr>
+            </thead>
+            <tbody id="sectionTableBody"></tbody>
+          </table>
+        </div>
 
       <!-- Master List View (Hidden by default, shown when 'master' tab is active) -->
       <div id="masterWrapper" class="table-container hidden">
@@ -201,11 +303,11 @@
       <div id="allocationsWrapper" class="allocations-container hidden">
         <div class="allocations-header">
           <div>
-            <h3>👥 Faculty Member Allocation & Workload Tracker</h3>
+            <h3><svg class="icon"><use href="#icon-users"></use></svg> Faculty Member Allocation & Workload Tracker</h3>
             <p class="text-muted">Statutory workload targets: Professor (12h), Associate Professor (14h), Assistant Professor (16h). Real data from Jan 2025 allocation sheet.</p>
           </div>
           <div class="allocations-actions">
-            <button id="btnReallocateInView" class="btn btn-primary btn-sm">⚡ Re-run Member Allocation</button>
+            <button id="btnReallocateInView" class="btn btn-primary btn-sm"><svg class="icon"><use href="#icon-refresh"></use></svg> Re-run Member Allocation</button>
           </div>
         </div>
 
@@ -276,12 +378,13 @@
             </div>
             <div class="disruption-btn-wrap">
               <button id="btnApplyRepair" class="btn btn-warning">
-                🚨 Simulate Emergency & Repair Timetable
+                <svg class="icon"><use href="#icon-alert"></use></svg> Simulate Emergency & Repair Timetable
               </button>
             </div>
           </div>
           <div id="repairResultNotice" class="repair-notice hidden"></div>
         </div>
+      </div>
       </div>
     </section>
   </main>
@@ -296,7 +399,7 @@
       <div class="modal-body">
         <!-- Excel Upload Form -->
         <div class="upload-section card" style="padding: 1rem; margin-bottom: 1.5rem; background: var(--bg-subtle);">
-          <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">📄 Option 1: University Allocation Excel (.xlsx) [Recommended]</h3>
+          <h3 style="font-size: 1rem; margin-bottom: 0.5rem;"><svg class="icon"><use href="#icon-file"></use></svg> Option 1: University Allocation Excel (.xlsx) [Recommended]</h3>
           <p class="text-muted" style="font-size: 0.8rem; margin-bottom: 1rem;">Upload any university course & faculty allocation workbook directly:</p>
           <form id="excelUploadForm">
             <div class="upload-field" style="margin-bottom: 0.75rem;">
@@ -322,7 +425,7 @@
         <!-- CSV Upload Form -->
         <details>
           <summary style="cursor: pointer; font-weight: 600; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">
-            📁 Option 2: Upload CSV Files (courses/sections/faculty/rooms/students + optional timetable)
+            <svg class="icon"><use href="#icon-folder"></use></svg> Option 2: Upload CSV Files (courses/sections/faculty/rooms/students + optional timetable)
           </summary>
           <form id="uploadForm" style="margin-top: 0.5rem;">
             <div class="upload-field">
@@ -376,6 +479,6 @@
     </div>
   </footer>
 
-  <script src="/static/js/app.js"></script>
+  <script src="/static/js/app.js?v=20261103-section-calendar-v8"></script>
 </body>
 </html>

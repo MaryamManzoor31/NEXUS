@@ -50,6 +50,7 @@ class Section:
     stream: str = ""
     semester: str = ""
     batch: str = ""
+    sessions: tuple[SessionSpec, ...] | None = None
 
 
 @dataclass(frozen=True)
@@ -114,7 +115,8 @@ class Dataset:
         return [s for s in self.sections.values() if s.course_id == course_id]
 
     def section_sessions(self, sec_id):
-        return self.courses[self.sections[sec_id].course_id].sessions
+        section = self.sections[sec_id]
+        return section.sessions if section.sessions is not None else self.courses[section.course_id].sessions
 
     def section_hours(self, sec_id):
         return sum(x.duration for x in self.section_sessions(sec_id))

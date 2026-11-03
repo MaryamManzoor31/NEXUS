@@ -3,7 +3,7 @@ import unittest
 from unittest.mock import patch
 from ortools.sat.python import cp_model
 from nexus_core.data_generator import generate
-from nexus_core.cpsat import cpsat, stage_a, stage_b
+from nexus_core.cpsat import cpsat, stage_a, stage_b, _priority_course_pairs
 from nexus_core.validator import validate
 from nexus_core.metrics import compute
 from nexus_core.models import *
@@ -37,6 +37,17 @@ class CpSatTests(unittest.TestCase):
     def test_blocked_room_is_never_used(self):
         ds = tiny(); name, s, _ = stage_a(ds, limit=10, blocked_rooms={"R1"})
         self.assertTrue(all(r != "R1" for _, r in s.placement.values()))
+
+    def test_unplaced_choices_prioritize_conflicting_course_pairs(self):
+        ds = tiny()
+        pairs = dict(_priority_course_pairs(ds, [("S1", "A"), ("S2", "A")]))
+        self.assertEqual(pairs[("A", "B")], 1000)
+        self.assertEqual(pairs[("A", "L")], 1000)
+
+    def test_stage_a_adds_priority_conflict_terms(self):
+        ds = tiny()
+        _, _, info = stage_a(ds, limit=10, top_pairs=0, priority_pairs=[(("A", "B"), 1000)])
+        self.assertGreater(info["n_conflict_terms"], 0)
 
     def test_unknown_does_not_fall_back_to_hint(self):
         class UnknownSolver:

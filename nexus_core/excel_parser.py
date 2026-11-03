@@ -263,6 +263,7 @@ def parse_allocation_workbook(file_source: str | bytes | io.BytesIO, semester_fi
                 batch=sec_name,
                 department_id="CSE",
                 school_id="SOET",
+                sessions=sessions,
             )
 
             # Check faculty assignment
@@ -321,7 +322,7 @@ def parse_allocation_workbook(file_source: str | bytes | io.BytesIO, semester_fi
         final_rooms[lid] = Room(
             id=lid,
             type=LAB,
-            capacity=60,
+            capacity=80,
             unavailable=frozenset()
         )
 
@@ -329,19 +330,25 @@ def parse_allocation_workbook(file_source: str | bytes | io.BytesIO, semester_fi
     # Group sections by common class cohort (e.g., 'AIML_A', 'CS_B', 'CSE_Gen_A')
     cohort_sections = defaultdict(list)
     for sid, sec in sections_dict.items():
-        # Extract cohort name from section id
-        parts = sid.split('_', 1)
-        if len(parts) > 1:
-            cohort_name = parts[1].replace('_lab', '')
-            cohort_sections[cohort_name].append(sec.course_id)
+        cohort_names = [
+            re.sub(
+                r"\s+", " ",
+                re.sub(r"\s+(?:lab|practical)$", "", name.strip(), flags=re.IGNORECASE).strip()
+            )
+            for name in sec.batch.split(",")
+        ] if sec.batch.strip() else [sid]
+        for cohort_name in filter(None, cohort_names):
+            cohort_key = (sec.semester, cohort_name.casefold())
+            cohort_sections[cohort_key].append((cohort_name, sec.course_id))
 
     final_students = {}
     st_counter = 1
-    for cohort_name, course_ids in cohort_sections.items():
-        unique_courses = tuple(dict.fromkeys(course_ids))
+    for (semester, _), offerings in cohort_sections.items():
+        cohort_name = offerings[0][0]
+        unique_courses = tuple(dict.fromkeys(course_id for _, course_id in offerings))
         # Create a representative student cohort for each group
         for _ in range(2):  # 2 representative students per cohort for constraint H3
-            stid = f"STU_{st_counter:03d}_{cohort_name}"
+            stid = f"STU_{st_counter:03d}_{semester}_{cohort_name}"
             final_students[stid] = Student(
                 id=stid,
                 programme=cohort_name,

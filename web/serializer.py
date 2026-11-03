@@ -2,6 +2,7 @@
 from __future__ import annotations
 import csv
 import io
+import re
 from collections import defaultdict
 from nexus_core.models import Dataset, Schedule, DAYS, PERIODS, CLASS, LAB
 from nexus_core.validator import validate, Report
@@ -105,19 +106,44 @@ def serialize_schedule(ds: Dataset, sched: Schedule, report: Report = None, metr
         }
 
     sections_dict = {}
+    baseline_modes_by_section = defaultdict(set)
+    for assignment in ds.baseline.values():
+        baseline_modes_by_section[assignment.section_id].add(assignment.mode)
+
     for s in ds.sections.values():
         fid = sched.faculty.get(s.id, "")
         fname = faculty_dict[fid]["name"] if fid in faculty_dict else "Unassigned"
         c = ds.courses.get(s.course_id)
+        baseline_modes = baseline_modes_by_section.get(s.id, set())
+        university_section_names = [
+            re.sub(
+                r"\s+", " ",
+                re.sub(r"\s+(?:lab|practical)$", "", name.strip(), flags=re.IGNORECASE).strip()
+            )
+            for name in s.batch.split(",")
+        ] if s.batch.strip() else [s.id]
+        university_section_names = [name for name in university_section_names if name] or [s.id]
+        university_section = university_section_names[0]
+        semester = s.semester or (c.semester if c else "")
         sections_dict[s.id] = {
             "id": s.id,
             "course_id": s.course_id,
             "course_title": c.title if c else s.course_id,
             "category": c.category if c else "",
             "capacity": s.capacity,
+            "semester": semester,
+            "batch": s.batch,
+            "university_section": university_section,
+            "university_section_names": university_section_names,
+            "university_section_key": f"{semester.casefold()}::{university_section.casefold()}",
+            "stream": s.stream or (c.stream if c else ""),
+            "programme": s.programme_id or (c.programme_id if c else ""),
             "faculty_id": fid,
             "faculty_name": fname,
             "hours": ds.section_hours(s.id),
+            "has_baseline": bool(baseline_modes),
+            "baseline_mode": next(iter(baseline_modes)) if len(baseline_modes) == 1 else ("mixed" if baseline_modes else ""),
+            "scheduled": s.id not in report.unscheduled,
         }
 
     students_dict = {}

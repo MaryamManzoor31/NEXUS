@@ -5,6 +5,7 @@ import tempfile
 import unittest
 
 from nexus_core.input_validator import load_csv, save_csv
+from nexus_core.excel_parser import parse_allocation_workbook
 from nexus_core.importer import (
     import_folder, load_timetable_csv, set_assignment_modes, suggest_mapping, build_dataset_from_mapped_tables,
 )
@@ -20,6 +21,20 @@ TEMPLATES = os.path.join(ROOT, "data", "templates")
 
 
 class ImporterTests(unittest.TestCase):
+    def test_section_session_pattern_round_trips_csv(self):
+        ds = tiny()
+        ds.sections["A1"] = Section(
+            "A1", "A", 20, sessions=(SessionSpec(2, LAB),)
+        )
+        folder = tempfile.mkdtemp()
+        try:
+            save_csv(ds, folder)
+            restored, issues = load_csv(folder)
+            self.assertIsNotNone(restored, msg=str(issues))
+            self.assertEqual(restored.section_sessions("A1"), (SessionSpec(2, LAB),))
+        finally:
+            shutil.rmtree(folder)
+
     def test_template_folder_loads_with_baseline(self):
         ds, issues = load_csv(TEMPLATES, name="template_demo")
         self.assertIsNotNone(ds, msg=str(issues))
@@ -43,6 +58,32 @@ class ImporterTests(unittest.TestCase):
         m = suggest_mapping(cols, "courses")
         self.assertEqual(m["course_id"], "Course Code")
         self.assertEqual(m["title"], "Course Title")
+
+    def test_university_workbook_lab_rooms_hold_80_students(self):
+        workbook = os.path.join(ROOT, "data", "Course - Faculty Allocation - Jan 2025 onwards (30-11-24)(1).xlsx")
+        ds, _ = parse_allocation_workbook(workbook, semester_filter="6")
+        lab_rooms = [room for room in ds.rooms.values() if room.type == LAB]
+        self.assertTrue(lab_rooms)
+        self.assertTrue(all(room.capacity == 80 for room in lab_rooms))
+
+    def test_university_workbook_keeps_lab_sessions_on_course_allocations(self):
+        workbook = os.path.join(ROOT, "data", "Course - Faculty Allocation - Jan 2025 onwards (30-11-24)(1).xlsx")
+        ds, _ = parse_allocation_workbook(workbook, semester_filter="6")
+        theory = "6CS 1013_AIML_A"
+        lab = "6CS 1013_AIML_A_LAB"
+
+        self.assertEqual(ds.section_sessions(theory)[0].room_type, CLASS)
+        self.assertEqual(ds.section_sessions(lab)[0].room_type, LAB)
+        self.assertEqual(ds.sections[theory].course_id, ds.sections[lab].course_id)
+
+    def test_multi_section_workbook_rows_join_each_class_cohort(self):
+        workbook = os.path.join(ROOT, "data", "Course - Faculty Allocation - Jan 2025 onwards (30-11-24)(1).xlsx")
+        ds, _ = parse_allocation_workbook(workbook, semester_filter="6")
+
+        for cohort in ("DA A", "DA B"):
+            students = [student for student in ds.students.values() if student.programme == cohort]
+            self.assertEqual(len(students), 2)
+            self.assertTrue(all("6CS 1295" in student.selections for student in students))
 
     def test_missing_required_mapping_reported(self):
         rows = [{"X": "1", "Y": "2"}]

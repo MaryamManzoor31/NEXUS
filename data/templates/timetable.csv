@@ -1,5 +1,0 @@
-Day,Period,Section,Course Code,Course Title,Category,Duration (Hrs),Room,Room Type,Faculty ID,Faculty Name,mode,session_index,school_id,stream
-Monday,Period 1,CS101_A,CS101,Programming Fundamentals,Major,1,LT_101,CLASS,F001,Dr. A Sharma,preferred,0,SOET,CSE
-Monday,Period 2,CS101_A,CS101,Programming Fundamentals,Major,1,LT_101,CLASS,F001,Dr. A Sharma,preferred,1,SOET,CSE
-Tuesday,Period 1,CS102_A,CS102,Data Structures Lab,Skill-Based,2,LAB_01,LAB,F001,Dr. A Sharma,fixed,0,SOET,CSE
-Wednesday,Period 3,HU201_A,HU201,Ethics and Values,Value-Added,1,LT_102,CLASS,F002,Prof. B Nair,flexible,0,SOET,Open

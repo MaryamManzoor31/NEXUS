@@ -26,6 +26,7 @@ DEFAULT_EXCEL_PATH = os.path.abspath(os.path.join(
 DEFAULT_BASELINE_CSV = os.path.abspath(os.path.join(
     os.path.dirname(__file__), "..", "experiments", "results", "timetable_univ_jan2025_sem_6.csv"
 ))
+EXCEL_STAGE_A_TIME_LIMIT = 60
 
 # Current in-memory state
 STATE = {
@@ -52,6 +53,34 @@ def _qualify_faculty(ds: Dataset, sid: str, fid: str) -> None:
         department_id=f.department_id,
         designation=f.designation,
     )
+
+
+def _schedule_excel_dataset(
+    ds: Dataset,
+    limit_b: int = 10,
+    limit_a: int = EXCEL_STAGE_A_TIME_LIMIT,
+) -> Schedule:
+    """Schedule every imported workbook section with enough time for the full model."""
+    return cpsat(
+        ds,
+        limit_a=max(EXCEL_STAGE_A_TIME_LIMIT, limit_a),
+        limit_b=limit_b,
+        seed=329,
+        allow_unscheduled=False,
+    )
+
+
+def _excel_solver_failure(sch: Schedule):
+    if sch.status in ("OPTIMAL", "FEASIBLE"):
+        return None
+    return jsonify({
+        "success": False,
+        "error": (
+            "CP-SAT did not find a complete timetable. "
+            f"Stage A ended with {sch.status}; try again or review the imported constraints."
+        ),
+        "solver_status": sch.status,
+    }), 503
 
 
 def _attach_default_baseline(ds: Dataset, semester: str = "6") -> list[str]:
@@ -96,7 +125,7 @@ def _ensure_default_dataset():
                     if fid in ds.faculty and sid in ds.sections:
                         _qualify_faculty(ds, sid, fid)
                 notes = _attach_default_baseline(ds, "6")
-                sch = cpsat(ds, limit_a=15, limit_b=10, seed=329)
+                sch = _schedule_excel_dataset(ds)
                 _store_run(ds, sch, meta=meta, alloc_res=alloc, issues=notes)
                 return
             except Exception as e:
@@ -187,7 +216,10 @@ def api_load_excel():
                     _qualify_faculty(ds, sid, fid)
 
         notes = _attach_default_baseline(ds, semester)
-        sch = cpsat(ds, limit_a=limit_a, limit_b=limit_b, seed=329)
+        sch = _schedule_excel_dataset(ds, limit_b=limit_b, limit_a=limit_a)
+        failure = _excel_solver_failure(sch)
+        if failure:
+            return failure
         _store_run(ds, sch, meta=meta, alloc_res=alloc_res, issues=notes)
 
         report = validate(ds, sch)
@@ -252,7 +284,10 @@ def api_upload_excel():
         else:
             notes.extend(_attach_default_baseline(ds, semester))
 
-        sch = cpsat(ds, limit_a=limit_a, limit_b=limit_b, seed=329)
+        sch = _schedule_excel_dataset(ds, limit_b=limit_b, limit_a=limit_a)
+        failure = _excel_solver_failure(sch)
+        if failure:
+            return failure
         _store_run(ds, sch, meta=meta, alloc_res=alloc_res, issues=notes)
 
         report = validate(ds, sch)
@@ -295,7 +330,14 @@ def api_allocate_members():
             if fid in ds.faculty and sid in ds.sections:
                 _qualify_faculty(ds, sid, fid)
 
-        sch = cpsat(ds, limit_a=15, limit_b=10, seed=329)
+        sch = (
+            _schedule_excel_dataset(ds)
+            if ds.meta.get("source_file")
+            else cpsat(ds, limit_a=15, limit_b=10, seed=329)
+        )
+        failure = _excel_solver_failure(sch) if ds.meta.get("source_file") else None
+        if failure:
+            return failure
         _store_run(ds, sch, meta=meta, alloc_res=alloc_res, issues=STATE.get("import_issues", []))
 
         report = validate(ds, sch)
@@ -516,7 +558,15 @@ def api_baseline_modes():
         set_assignment_modes(STATE["dataset"], mode, section_ids)
         payload = {"success": True, "mode": mode, "baseline_count": len(STATE["dataset"].baseline)}
         if reoptimize:
-            sch = cpsat(STATE["dataset"], limit_a=limit_a, limit_b=limit_b, seed=329)
+            ds = STATE["dataset"]
+            sch = (
+                _schedule_excel_dataset(ds, limit_b=limit_b)
+                if ds.meta.get("source_file")
+                else cpsat(ds, limit_a=limit_a, limit_b=limit_b, seed=329)
+            )
+            failure = _excel_solver_failure(sch) if ds.meta.get("source_file") else None
+            if failure:
+                return failure
             _store_run(STATE["dataset"], sch, meta=STATE.get("meta"), alloc_res=STATE.get("alloc_result"))
             report = validate(STATE["dataset"], sch)
             metrics = compute(STATE["dataset"], sch)

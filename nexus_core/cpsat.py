@@ -39,7 +39,7 @@ def _baseline_hint_schedule(ds: Dataset, hint: Schedule | None) -> Schedule | No
 
 def stage_a(ds: Dataset, limit=30, seed=329, workers=None, allow_unscheduled=True, top_pairs=100000,
             blocked_rooms=frozenset(), blocked_faculty=frozenset(), blocked_slots=frozenset(), prev=None,
-            w_move=None, w_room=None, w_fac=None, hint=None):
+            w_move=None, w_room=None, w_fac=None, hint=None, priority_pairs=()):
     """Returns (status, Schedule-without-enrolment, extra info).
 
     Fixed baseline assignments (Dataset.baseline mode=fixed) are hard-constrained (H10).
@@ -149,7 +149,7 @@ def stage_a(ds: Dataset, limit=30, seed=329, workers=None, allow_unscheduled=Tru
     sh = shared_counts(ds)
     # Cap pair explosion for real multi-section institutional datasets
     max_p = min(top_pairs, 50) if len(sec_ids) > 60 else top_pairs
-    pairs = sorted(sh.items(), key=lambda kv: -kv[1])[:max_p]
+    pairs = list(priority_pairs) + sorted(sh.items(), key=lambda kv: -kv[1])[:max_p]
     conf = []
     MAX_CONF_TERMS = 500 if len(sec_ids) > 60 else 100000
     for (c1, c2), w in pairs:
@@ -284,6 +284,26 @@ def stage_b(ds: Dataset, sched: Schedule, limit=30, seed=329, workers=None):
     return name, time.time() - t0
 
 
+def _unplaced_choices(ds: Dataset, sched: Schedule):
+    return [
+        (stid, course_id)
+        for stid, student in ds.students.items()
+        for course_id in student.selections
+        if course_id not in sched.enrolment.get(stid, {})
+    ]
+
+
+def _priority_course_pairs(ds: Dataset, unplaced):
+    weights = defaultdict(int)
+    for stid, course_id in unplaced:
+        student = ds.students[stid]
+        for other_course in student.selections:
+            if other_course != course_id:
+                pair = tuple(sorted((course_id, other_course)))
+                weights[pair] += 1000
+    return list(weights.items())
+
+
 def cpsat(ds: Dataset, limit_a=30, limit_b=30, seed=329, workers=None, **kw) -> Schedule:
     t0 = time.time()
     name, sched, info = stage_a(ds, limit=limit_a, seed=seed, workers=workers, **kw)
@@ -293,6 +313,51 @@ def cpsat(ds: Dataset, limit_a=30, limit_b=30, seed=329, workers=None, **kw) -> 
         sched.info["status_b"] = nb
         if nb not in ("OPTIMAL", "FEASIBLE"):
             sched.info["status_b_reason"] = f"Stage B ended with {nb}; student selections may remain unassigned."
+        else:
+            sched.info["student_conflict_refinements"] = 0
+            best_sched = sched
+            best_unplaced = _unplaced_choices(ds, sched)
+            working_sched = sched
+            previous_unplaced = best_unplaced
+            seen_placements = {tuple(sorted(sched.placement.items()))}
+            refinement_limit_a = min(max(limit_a // 3, 5), 20)
+            refinement_limit_b = max(limit_b, 15)
+            attempts = 0
+            for _ in range(3):
+                if not previous_unplaced:
+                    break
+                refined_name, refined, refined_info = stage_a(
+                    ds,
+                    limit=refinement_limit_a,
+                    seed=seed,
+                    workers=workers,
+                    hint=working_sched,
+                    priority_pairs=_priority_course_pairs(ds, previous_unplaced),
+                    **kw,
+                )
+                if refined_name not in ("OPTIMAL", "FEASIBLE"):
+                    break
+                refined.info.update(refined_info)
+                attempts += 1
+                refined_b, _ = stage_b(
+                    ds, refined, limit=refinement_limit_b, seed=seed, workers=workers
+                )
+                refined.info["status_b"] = refined_b
+                if refined_b not in ("OPTIMAL", "FEASIBLE"):
+                    break
+                current_unplaced = _unplaced_choices(ds, refined)
+                placement_signature = tuple(sorted(refined.placement.items()))
+                if placement_signature in seen_placements:
+                    break
+                seen_placements.add(placement_signature)
+                if len(current_unplaced) < len(best_unplaced):
+                    best_sched = refined
+                    best_unplaced = current_unplaced
+                working_sched = refined
+                previous_unplaced = current_unplaced
+            sched = best_sched
+            sched.info["student_conflict_refinements"] = attempts
+            sched.info["refinement_unplaced_choices"] = len(best_unplaced)
     else:
         sched.info["status_b"] = "NOT_RUN"
         sched.info["status_b_reason"] = f"Stage A ended with {name}; no student allocation was attempted."

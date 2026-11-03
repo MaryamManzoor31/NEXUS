@@ -6,6 +6,7 @@ DDL = """
 CREATE TABLE IF NOT EXISTS courses(id TEXT PRIMARY KEY, title TEXT, category TEXT, credits INT);
 CREATE TABLE IF NOT EXISTS course_sessions(course_id TEXT REFERENCES courses(id), k INT, duration INT, room_type TEXT, PRIMARY KEY(course_id,k));
 CREATE TABLE IF NOT EXISTS sections(id TEXT PRIMARY KEY, course_id TEXT REFERENCES courses(id), capacity INT);
+CREATE TABLE IF NOT EXISTS section_sessions(section_id TEXT REFERENCES sections(id), k INT, duration INT, room_type TEXT, PRIMARY KEY(section_id,k));
 CREATE TABLE IF NOT EXISTS faculty(id TEXT PRIMARY KEY, name TEXT, max_hours INT);
 CREATE TABLE IF NOT EXISTS faculty_qualifications(faculty_id TEXT REFERENCES faculty(id), course_id TEXT REFERENCES courses(id), PRIMARY KEY(faculty_id,course_id));
 CREATE TABLE IF NOT EXISTS faculty_availability(faculty_id TEXT REFERENCES faculty(id), slot INT, PRIMARY KEY(faculty_id,slot)); -- rows = UNAVAILABLE slots
@@ -32,6 +33,9 @@ def save_dataset(con, ds: Dataset):
     q("INSERT INTO courses VALUES(?,?,?,?)", [(c.id, c.title, c.category, c.credits) for c in ds.courses.values()])
     q("INSERT INTO course_sessions VALUES(?,?,?,?)", [(c.id, k, x.duration, x.room_type) for c in ds.courses.values() for k, x in enumerate(c.sessions)])
     q("INSERT INTO sections VALUES(?,?,?)", [(s.id, s.course_id, s.capacity) for s in ds.sections.values()])
+    q("INSERT INTO section_sessions VALUES(?,?,?,?)",
+      [(s.id, k, x.duration, x.room_type) for s in ds.sections.values() if s.sessions is not None
+       for k, x in enumerate(s.sessions)])
     q("INSERT INTO faculty VALUES(?,?,?)", [(f.id, f.name, f.max_hours) for f in ds.faculty.values()])
     q("INSERT INTO faculty_qualifications VALUES(?,?)", [(f.id, c) for f in ds.faculty.values() for c in f.qualified])
     q("INSERT INTO faculty_availability VALUES(?,?)", [(f.id, t) for f in ds.faculty.values() for t in f.unavailable])
@@ -49,7 +53,13 @@ def load_dataset(con, name="db") -> Dataset:
     for cid, k, d, rt in g("SELECT * FROM course_sessions ORDER BY course_id,k"):
         sess.setdefault(cid, []).append(SessionSpec(d, rt))
     courses = {i: Course(i, t, c, cr, tuple(sess.get(i, []))) for i, t, c, cr in g("SELECT * FROM courses")}
-    sections = {i: Section(i, c, cap) for i, c, cap in g("SELECT * FROM sections")}
+    section_sess = {}
+    for sid, k, d, rt in g("SELECT * FROM section_sessions ORDER BY section_id,k"):
+        section_sess.setdefault(sid, []).append(SessionSpec(d, rt))
+    sections = {
+        i: Section(i, c, cap, sessions=tuple(section_sess[i]) if i in section_sess else None)
+        for i, c, cap in g("SELECT * FROM sections")
+    }
     q, u = {}, {}
     for f, c in g("SELECT * FROM faculty_qualifications"): q.setdefault(f, set()).add(c)
     for f, t in g("SELECT * FROM faculty_availability"): u.setdefault(f, set()).add(t)

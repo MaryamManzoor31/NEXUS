@@ -12,6 +12,10 @@ NEXUS accepts **real university data** as the primary optimization input. Synthe
 
 CSV upload remains fully supported.
 
+The packaged allocation-workbook importer models each discovered lab room with
+capacity for 80 students. For mapped CSV/Excel imports, room capacities are read
+from the supplied room table.
+
 ## Canonical CSV files
 
 Templates live in `data/templates/`:
@@ -36,6 +40,12 @@ Templates live in `data/templates/`:
 `school_id`, `department_id`, `programme_id`, `stream`, `semester`, `academic_year`, `course_type`, `batch`, `designation`, `building`
 
 These enrich reporting and NEP multidisciplinary context. They are **not invented** when absent.
+Sections may also provide an optional `session_pattern` such as `2:LAB` to preserve a
+course allocation's session type when it differs from the course's default pattern.
+In the section timetable view, course allocations with the same semester and class
+section name are shown together; a trailing `Lab` or `Practical` suffix does not make
+a separate displayed class section. A comma-separated class label shares that course
+allocation with each named section in the section timetable.
 
 ### Baseline timetable columns
 
@@ -68,9 +78,11 @@ python main.py excel data/your_allocation.xlsx --baseline path/to/timetable.csv 
 
 1. Open NEXUS (`python main.py web`)
 2. Upload Excel and/or CSV files (optional timetable baseline)
-3. Choose fixed / preferred / flexible mode for CSV baseline rows
-4. CP-SAT optimizes; original timetable is preserved for comparison
-5. Export optimized timetable as CSV
+3. Generate a timetable, then choose the semester and university class section (for example AIML A, Gen C, DA A, IT Gen, or IT CCIT)
+4. View all of that class section's course allocations in the weekly calendar or tabular layout
+5. Apply a fixed / preferred / flexible baseline policy to the selected class section's course allocations, or temporarily block a room/faculty member and repair the schedule
+6. CP-SAT keeps core hard constraints enabled; the original timetable is preserved for comparison
+7. Export optimized timetable as CSV
 
 ## Rules
 

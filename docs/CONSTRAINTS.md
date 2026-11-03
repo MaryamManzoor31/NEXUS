@@ -22,7 +22,7 @@ Source column: PS = signed problem statement 329; TD = team design decision; Pla
 | ID | Soft objective | Status |
 |---|---|---|
 | S1 | Maximise placed student selections | Stage B CP-SAT objective |
-| S2 | Avoid overlap of courses sharing many students | Stage A CP-SAT penalty weighted by shared-student count |
+| S2 | Avoid overlap of courses sharing many students | Stage A CP-SAT penalty weighted by shared-student count; if Stage B leaves choices unplaced, bounded Stage A refinements prioritize those students' course pairs and retain only improvements |
 | S3 | Balance faculty workload | Stage A: minimise maximum load |
 | S4-S7 | utilization, gaps, preferences, fairness | not implemented |
 | S8 | Minimal change from original timetable (preferred baseline) | Stage A soft weights `w_move` / `w_room` / `w_fac` (defaults 5/2/3 when baseline present) |
