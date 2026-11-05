@@ -1,0 +1,3714 @@
+{
+  "dataset": "univ_jan2025_sem_6",
+  "source": "packaged Jan 2025 University Allocation workbook and baseline CSV",
+  "synthetic": false,
+  "semester": "6",
+  "semester_session": "morning",
+  "metrics": {
+    "method": "cpsat",
+    "validator_status": "VALID_INCOMPLETE",
+    "solver_status": "FEASIBLE",
+    "stage_a_status": "FEASIBLE",
+    "stage_a_objective": 13157004.0,
+    "stage_a_best_bound": 6.0,
+    "stage_a_branches": 5018,
+    "stage_a_conflicts": 406,
+    "stage_b_status": "OPTIMAL",
+    "stage_b_status_reason": null,
+    "stage_b_objective": 38252934.0,
+    "stage_b_best_bound": 38252934.0,
+    "stage_b_branches": 572323,
+    "stage_b_conflicts": 240,
+    "complete_allocation_status": "INFEASIBLE",
+    "complete_allocation_reason": "The best feasible partial allocation leaves 50 required selections unplaced under the hard session, workload, lunch, overlap, waiting-time, and capacity constraints.",
+    "hard_violations": 0,
+    "violations_by_rule": {},
+    "scheduled_sections": "296/318",
+    "placed_selections": 324,
+    "total_selections": 374,
+    "unplaced_selections": "50/374",
+    "fully_scheduled_students_pct": 16.7,
+    "room_utilization_pct": 23.1,
+    "faculty_load_range_h": [
+      0,
+      6
+    ],
+    "faculty_load_std_h": 1.33,
+    "runtime_s": 21.17
+  },
+  "stage_a_status": "FEASIBLE",
+  "stage_b_status": "OPTIMAL",
+  "validation": {
+    "status": "VALID_INCOMPLETE",
+    "hard_violations": 0,
+    "violations_by_rule": {},
+    "violations": [],
+    "unscheduled_sections": [
+      "6CS 1207_AIML_E_LAb",
+      "5IT 1259_IT_CCIT_Lab",
+      "6HS 1505_Gen_B",
+      "6HS 1505_Gen_C",
+      "6HS 1505_AIML_A",
+      "6HS 1505_AIML_B",
+      "6HS 1505_AIML_C",
+      "6HS 1505_AIML_D",
+      "6HS 1505_AIML_E",
+      "6HS 1505_AIML_F",
+      "6HS 1505_AIML_G",
+      "6HS 1505_AIML_H",
+      "6HS 1505_CC",
+      "6HS 1505_DA_A",
+      "6HS 1505_CS_A",
+      "6HS 1505_CS_B",
+      "6HS 1505_IT_Gen",
+      "6IT 1023_IT_Gen",
+      "5CS 1014_DA_B_lab",
+      "6CS 1216_AIML_F_lab",
+      "6CS 1216_AIML_G_lab",
+      "6CS 1035_CS_B_lab"
+    ],
+    "unassigned_selections": [
+      {
+        "student": "STU_001_6_CS B",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_002_6_CS B",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_003_6_CS A",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_004_6_CS A",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_005_6_DA A",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_006_6_DA A",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_007_6_CC",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_008_6_CC",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_009_6_DA B",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_009_6_DA B",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_010_6_DA B",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_010_6_DA B",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_011_6_IT CCIT",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_012_6_IT CCIT",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_015_6_Gen B",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_016_6_Gen B",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_017_6_Gen C",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_018_6_Gen C",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_019_6_AIML A",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_020_6_AIML A",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_021_6_AIML B",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_022_6_AIML B",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_023_6_AIML C",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_024_6_AIML C",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_025_6_AIML D",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_026_6_AIML D",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_027_6_AIML E",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_027_6_AIML E",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_028_6_AIML E",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_028_6_AIML E",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_029_6_AIML F",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_029_6_AIML F",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_030_6_AIML F",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_030_6_AIML F",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_031_6_AIML G",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_032_6_AIML G",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_033_6_AIML H",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_034_6_AIML H",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_035_6_IT Gen",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_035_6_IT Gen",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_036_6_IT Gen",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_036_6_IT Gen",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_039_6_CSE Gen A",
+        "course": "6CS 1015"
+      },
+      {
+        "student": "STU_040_6_CSE Gen A",
+        "course": "6CS 1015"
+      },
+      {
+        "student": "STU_043_6_CSE Gen C",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_044_6_CSE Gen C",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_047_6_IT CC",
+        "course": "6IT 1042"
+      },
+      {
+        "student": "STU_047_6_IT CC",
+        "course": "6IT 1043"
+      },
+      {
+        "student": "STU_048_6_IT CC",
+        "course": "6IT 1042"
+      },
+      {
+        "student": "STU_048_6_IT CC",
+        "course": "6IT 1043"
+      }
+    ],
+    "missing_info": [
+      "Baseline timetable present but no assignments marked fixed."
+    ]
+  },
+  "baseline_validation": {
+    "status": "INVALID",
+    "hard_violations": 123,
+    "violations_by_rule": {
+      "H5": 123
+    },
+    "violations": [
+      {
+        "rule": "H5",
+        "message": "6CS 1033_CS_A_lab#0 needs LAB, got CLASS LT_105"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1033_CS_B_lab#0 needs LAB, got CLASS LT_102"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1232_CS_A_Lab#0 needs LAB, got CLASS LT_102"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1232_CS_B_Lab#0 needs LAB, got CLASS LT_105"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1225_CC_Lab#0 needs LAB, got CLASS LT_101"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1039_DA_B_Lab#0 needs LAB, got CLASS LT_216"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1039_DA_A_Lab#0 needs LAB, got CLASS LT_215"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1039_IT_CCIT_lab#0 needs LAB, got CLASS LT_301"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1207_Gen_A_LAB#0 needs LAB, got CLASS LT_305"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1207_Gen_B_LAb#0 needs LAB, got CLASS LT_306"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1207_Gen_C_LAB#0 needs LAB, got CLASS LT_307"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1207_AIML_A_lab#0 needs LAB, got CLASS LT_212"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1207_AIML_B_LAB#0 needs LAB, got CLASS LT_213"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1207_AIML_C_lab#0 needs LAB, got CLASS LT_215"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1207_AIML_D_lab#0 needs LAB, got CLASS LT_216"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1207_AIML_E_LAb#0 needs LAB, got CLASS LT_301"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1207_AIML_F_lab#0 needs LAB, got CLASS LT_302"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1207_AIML_G_lab#0 needs LAB, got CLASS LT_303"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1207_AIML_H_lab#0 needs LAB, got CLASS LT_304"
+      },
+      {
+        "rule": "H5",
+        "message": "5CS 1222_IT_CCIT_Lab#0 needs LAB, got CLASS LT_210"
+      },
+      {
+        "rule": "H5",
+        "message": "6IT 1213_IT_CCIT_lab#0 needs LAB, got CLASS LT_103"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1029_CC_lab#0 needs LAB, got CLASS LT_101"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1013_AIML_E_lab#0 needs LAB, got CLASS LT_207"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1013_Gen_C_LAB#0 needs LAB, got CLASS LT_213"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1013_AIML_G_lab#0 needs LAB, got CLASS LT_209"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1013_AIML_C_Lab#0 needs LAB, got CLASS LT_205"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1013_AIML_D_Lab#0 needs LAB, got CLASS LT_206"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1013_AIML_F_lab#0 needs LAB, got CLASS LT_208"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1013_AIML_A_LAB#0 needs LAB, got CLASS LT_203"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1013_AIML_B_Lab#0 needs LAB, got CLASS LT_204"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1013_Gen_A_LAB#0 needs LAB, got CLASS LT_210"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1013_AIML_H_lab#0 needs LAB, got CLASS LT_210"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1013_CC_Lab#0 needs LAB, got CLASS LT_212"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1013_DA_A_Lab#0 needs LAB, got CLASS LT_208"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1013_DA_B_Lab#0 needs LAB, got CLASS LT_209"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1013_CS_A_Lab#0 needs LAB, got CLASS LT_207"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1013_CS_B_Lab#0 needs LAB, got CLASS LT_213"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1013_Gen_B_LAb#0 needs LAB, got CLASS LT_212"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1028_CC_lab#0 needs LAB, got CLASS LT_102"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1015_Gen_A_LAB#0 needs LAB, got CLASS LT_301"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1015_Gen_B_LAb#0 needs LAB, got CLASS LT_108"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1015_Gen_C_LAB#0 needs LAB, got CLASS LT_201"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1036_CS_B_Lab#0 needs LAB, got CLASS LT_105"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1036_CS_A_lab#0 needs LAB, got CLASS LT_104"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1233_CS_A_Lab#0 needs LAB, got CLASS LT_202"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1233_CS_B_Lab#0 needs LAB, got CLASS LT_203"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1022_IT_Gen_lab#0 needs LAB, got CLASS LT_106"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1022_IT_CCIT_lab#0 needs LAB, got CLASS LT_105"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1022_AIML_A_Lab#0 needs LAB, got CLASS LT_107"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1022_AIML_B_Lab#0 needs LAB, got CLASS LT_105"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1022_AIML_C_Lab#0 needs LAB, got CLASS LT_108"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1022_AIML_D_Lab#0 needs LAB, got CLASS LT_103"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1022_AIML_E_Lab#0 needs LAB, got CLASS LT_104"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1022_AIML_F_Lab#0 needs LAB, got CLASS LT_201"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1022_AIML_G_Lab#0 needs LAB, got CLASS LT_202"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1022_AIML_H_Lab#0 needs LAB, got CLASS LT_203"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1022_DA_A_Lab#0 needs LAB, got CLASS LT_204"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1022_DA_B_Lab#0 needs LAB, got CLASS LT_205"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1215_AIML_A_lab#0 needs LAB, got CLASS LT_301"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1215_AIML_B_LAB#0 needs LAB, got CLASS LT_302"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1215_AIML_C_Lab#0 needs LAB, got CLASS LT_208"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1215_AIML_D_lab#0 needs LAB, got CLASS LT_209"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1215_AIML_E_LAb#0 needs LAB, got CLASS LT_210"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1215_AIML_F_lab#0 needs LAB, got CLASS LT_303"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1215_AIML_G_lab#0 needs LAB, got CLASS LT_304"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1215_AIML_H_lab#0 needs LAB, got CLASS LT_305"
+      },
+      {
+        "rule": "H5",
+        "message": "5IT 1259_IT_Gen_Lab#0 needs LAB, got CLASS LT_106"
+      },
+      {
+        "rule": "H5",
+        "message": "5IT 1259_IT_CCIT_Lab#0 needs LAB, got CLASS LT_105"
+      },
+      {
+        "rule": "H5",
+        "message": "6IT 1042_IT_CCIT_lab#0 needs LAB, got CLASS LT_206"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1231_CS_A_Lab#0 needs LAB, got CLASS LT_308"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1231_CS_B_Lab#0 needs LAB, got CLASS LT_401"
+      },
+      {
+        "rule": "H5",
+        "message": "6IT 1021_IT_Gen_lab#0 needs LAB, got CLASS LT_205"
+      },
+      {
+        "rule": "H5",
+        "message": "6IT 1023_IT_Gen_lab#0 needs LAB, got CLASS CS_Room"
+      },
+      {
+        "rule": "H5",
+        "message": "5CS 1012_CC_Lab#0 needs LAB, got CLASS LT_108"
+      },
+      {
+        "rule": "H5",
+        "message": "5CS 1012_IT_Gen_Lab#0 needs LAB, got CLASS LT_201"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1295_DA_B_Lab#0 needs LAB, got CLASS LT_207"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1296_DA_A_Lab#0 needs LAB, got CLASS LT_402"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1296_DA_B_Lab#0 needs LAB, got CLASS LT_403"
+      },
+      {
+        "rule": "H5",
+        "message": "6IT 1207_IT_Gen_lab#0 needs LAB, got CLASS LT_102"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1297_DA_A_Lab#0 needs LAB, got CLASS LT_204"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1297_DA_B_Lab#0 needs LAB, got CLASS LT_205"
+      },
+      {
+        "rule": "H5",
+        "message": "5CS 1014_Gen_B_LAB#0 needs LAB, got CLASS LT_205"
+      },
+      {
+        "rule": "H5",
+        "message": "5CS 1014_Gen_A_LAB#0 needs LAB, got CLASS LT_204"
+      },
+      {
+        "rule": "H5",
+        "message": "5CS 1014_Gen_C_LAB#0 needs LAB, got CLASS LT_206"
+      },
+      {
+        "rule": "H5",
+        "message": "5CS 1014_DA_A_lab#0 needs LAB, got CLASS LT_202"
+      },
+      {
+        "rule": "H5",
+        "message": "5CS 1014_DA_B_lab#0 needs LAB, got CLASS LT_203"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1209_Gen_A_Lab#0 needs LAB, got CLASS LT_107"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1209_Gen_B_Lab#0 needs LAB, got CLASS LT_108"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1209_Gen_C_Lab#0 needs LAB, got CLASS LT_201"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1216_CC_Lab#0 needs LAB, got CLASS LT_213"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1216_AIML_A_lab#0 needs LAB, got CLASS LT_204"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1216_AIML_B_LAB#0 needs LAB, got CLASS LT_205"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1216_AIML_C_Lab#0 needs LAB, got CLASS LT_206"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1216_AIML_D_lab#0 needs LAB, got CLASS LT_207"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1216_AIML_E_LAb#0 needs LAB, got CLASS LT_208"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1216_AIML_F_lab#0 needs LAB, got CLASS LT_209"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1216_AIML_G_lab#0 needs LAB, got CLASS LT_210"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1216_AIML_H_lab#0 needs LAB, got CLASS LT_212"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1035_CS_A_lab#0 needs LAB, got CLASS LT_107"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1035_CS_B_lab#0 needs LAB, got CLASS LT_108"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1034_CS_A_lab#0 needs LAB, got CLASS LT_202"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1034_CS_B_lab#0 needs LAB, got CLASS LT_203"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1016_Gen_A_lab#0 needs LAB, got CLASS LT_210"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1016_AIML_D_lab#0 needs LAB, got CLASS LT_204"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1016_AIML_E_LAb#0 needs LAB, got CLASS LT_205"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1016_AIML_F_lab#0 needs LAB, got CLASS LT_209"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1016_AIML_G_lab#0 needs LAB, got CLASS LT_202"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1016_AIML_H_lab#0 needs LAB, got CLASS LT_203"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1016_CC_A_lab#0 needs LAB, got CLASS LT_204"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1016_DA_A_Lab#0 needs LAB, got CLASS LT_205"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1016_DA_B_lab#0 needs LAB, got CLASS LT_206"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1016_AIML_A_lab#0 needs LAB, got CLASS LT_201"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1016_AIML_B_LAB#0 needs LAB, got CLASS LT_202"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1016_AIML_C_lab#0 needs LAB, got CLASS LT_203"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1016_Gen_B_Lab#0 needs LAB, got CLASS LT_212"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1016_Gen_C_lab#0 needs LAB, got CLASS LT_213"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1208_IT_CCIT_lab#0 needs LAB, got CLASS LT_204"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1208_Gen_A_LAB#0 needs LAB, got CLASS LT_201"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1208_Gen_B_LAb#0 needs LAB, got CLASS LT_202"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1208_Gen_C_LAb#0 needs LAB, got CLASS LT_203"
+      },
+      {
+        "rule": "H5",
+        "message": "6CS 1208_CC_Lab#0 needs LAB, got CLASS LT_101"
+      },
+      {
+        "rule": "H5",
+        "message": "6IT 1024_IT_Gen_lab#0 needs LAB, got CLASS LT_102"
+      },
+      {
+        "rule": "H5",
+        "message": "6IT 1206_IT_Gen_lab#0 needs LAB, got CLASS LT_404"
+      }
+    ],
+    "unscheduled_sections": [
+      "6IT 1043_IT_CCIT",
+      "6CS 1018_AIML_D",
+      "6CS 1018_AIML_A",
+      "6CS 1018_AIML_B",
+      "6CS 1018_AIML_C",
+      "6CS 1018_AIML_F",
+      "6CS 1018_AIML_G",
+      "6CS 1018_AIML_E",
+      "6CS 1018_AIML_H",
+      "6IT 1043_IT_CC"
+    ],
+    "unassigned_selections": [
+      {
+        "student": "STU_001_6_CS B",
+        "course": "6CS 1033"
+      },
+      {
+        "student": "STU_001_6_CS B",
+        "course": "6CS 1232"
+      },
+      {
+        "student": "STU_001_6_CS B",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_001_6_CS B",
+        "course": "6CS 1036"
+      },
+      {
+        "student": "STU_001_6_CS B",
+        "course": "6CS 1233"
+      },
+      {
+        "student": "STU_001_6_CS B",
+        "course": "6CS 1231"
+      },
+      {
+        "student": "STU_001_6_CS B",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_001_6_CS B",
+        "course": "6CS 1035"
+      },
+      {
+        "student": "STU_001_6_CS B",
+        "course": "6CS 1034"
+      },
+      {
+        "student": "STU_002_6_CS B",
+        "course": "6CS 1033"
+      },
+      {
+        "student": "STU_002_6_CS B",
+        "course": "6CS 1232"
+      },
+      {
+        "student": "STU_002_6_CS B",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_002_6_CS B",
+        "course": "6CS 1036"
+      },
+      {
+        "student": "STU_002_6_CS B",
+        "course": "6CS 1233"
+      },
+      {
+        "student": "STU_002_6_CS B",
+        "course": "6CS 1231"
+      },
+      {
+        "student": "STU_002_6_CS B",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_002_6_CS B",
+        "course": "6CS 1035"
+      },
+      {
+        "student": "STU_002_6_CS B",
+        "course": "6CS 1034"
+      },
+      {
+        "student": "STU_003_6_CS A",
+        "course": "6CS 1033"
+      },
+      {
+        "student": "STU_003_6_CS A",
+        "course": "6CS 1232"
+      },
+      {
+        "student": "STU_003_6_CS A",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_003_6_CS A",
+        "course": "6CS 1036"
+      },
+      {
+        "student": "STU_003_6_CS A",
+        "course": "6CS 1233"
+      },
+      {
+        "student": "STU_003_6_CS A",
+        "course": "6CS 1231"
+      },
+      {
+        "student": "STU_003_6_CS A",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_003_6_CS A",
+        "course": "6CS 1035"
+      },
+      {
+        "student": "STU_003_6_CS A",
+        "course": "6CS 1034"
+      },
+      {
+        "student": "STU_004_6_CS A",
+        "course": "6CS 1033"
+      },
+      {
+        "student": "STU_004_6_CS A",
+        "course": "6CS 1232"
+      },
+      {
+        "student": "STU_004_6_CS A",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_004_6_CS A",
+        "course": "6CS 1036"
+      },
+      {
+        "student": "STU_004_6_CS A",
+        "course": "6CS 1233"
+      },
+      {
+        "student": "STU_004_6_CS A",
+        "course": "6CS 1231"
+      },
+      {
+        "student": "STU_004_6_CS A",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_004_6_CS A",
+        "course": "6CS 1035"
+      },
+      {
+        "student": "STU_004_6_CS A",
+        "course": "6CS 1034"
+      },
+      {
+        "student": "STU_005_6_DA A",
+        "course": "6CS 1039"
+      },
+      {
+        "student": "STU_005_6_DA A",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_005_6_DA A",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_005_6_DA A",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_005_6_DA A",
+        "course": "6CS 1295"
+      },
+      {
+        "student": "STU_005_6_DA A",
+        "course": "6CS 1296"
+      },
+      {
+        "student": "STU_005_6_DA A",
+        "course": "6CS 1297"
+      },
+      {
+        "student": "STU_005_6_DA A",
+        "course": "5CS 1014"
+      },
+      {
+        "student": "STU_005_6_DA A",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_005_6_DA A",
+        "course": "6CS 1014"
+      },
+      {
+        "student": "STU_006_6_DA A",
+        "course": "6CS 1039"
+      },
+      {
+        "student": "STU_006_6_DA A",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_006_6_DA A",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_006_6_DA A",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_006_6_DA A",
+        "course": "6CS 1295"
+      },
+      {
+        "student": "STU_006_6_DA A",
+        "course": "6CS 1296"
+      },
+      {
+        "student": "STU_006_6_DA A",
+        "course": "6CS 1297"
+      },
+      {
+        "student": "STU_006_6_DA A",
+        "course": "5CS 1014"
+      },
+      {
+        "student": "STU_006_6_DA A",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_006_6_DA A",
+        "course": "6CS 1014"
+      },
+      {
+        "student": "STU_007_6_CC",
+        "course": "6CS 1225"
+      },
+      {
+        "student": "STU_007_6_CC",
+        "course": "6CS 1029"
+      },
+      {
+        "student": "STU_007_6_CC",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_007_6_CC",
+        "course": "6CS 1028"
+      },
+      {
+        "student": "STU_007_6_CC",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_007_6_CC",
+        "course": "5CS 1012"
+      },
+      {
+        "student": "STU_007_6_CC",
+        "course": "6CS 1216"
+      },
+      {
+        "student": "STU_007_6_CC",
+        "course": "6CS 1208"
+      },
+      {
+        "student": "STU_008_6_CC",
+        "course": "6CS 1225"
+      },
+      {
+        "student": "STU_008_6_CC",
+        "course": "6CS 1029"
+      },
+      {
+        "student": "STU_008_6_CC",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_008_6_CC",
+        "course": "6CS 1028"
+      },
+      {
+        "student": "STU_008_6_CC",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_008_6_CC",
+        "course": "5CS 1012"
+      },
+      {
+        "student": "STU_008_6_CC",
+        "course": "6CS 1216"
+      },
+      {
+        "student": "STU_008_6_CC",
+        "course": "6CS 1208"
+      },
+      {
+        "student": "STU_009_6_DA B",
+        "course": "6CS 1039"
+      },
+      {
+        "student": "STU_009_6_DA B",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_009_6_DA B",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_009_6_DA B",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_009_6_DA B",
+        "course": "6CS 1295"
+      },
+      {
+        "student": "STU_009_6_DA B",
+        "course": "6CS 1296"
+      },
+      {
+        "student": "STU_009_6_DA B",
+        "course": "6CS 1297"
+      },
+      {
+        "student": "STU_009_6_DA B",
+        "course": "5CS 1014"
+      },
+      {
+        "student": "STU_009_6_DA B",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_009_6_DA B",
+        "course": "6CS 1014"
+      },
+      {
+        "student": "STU_010_6_DA B",
+        "course": "6CS 1039"
+      },
+      {
+        "student": "STU_010_6_DA B",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_010_6_DA B",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_010_6_DA B",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_010_6_DA B",
+        "course": "6CS 1295"
+      },
+      {
+        "student": "STU_010_6_DA B",
+        "course": "6CS 1296"
+      },
+      {
+        "student": "STU_010_6_DA B",
+        "course": "6CS 1297"
+      },
+      {
+        "student": "STU_010_6_DA B",
+        "course": "5CS 1014"
+      },
+      {
+        "student": "STU_010_6_DA B",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_010_6_DA B",
+        "course": "6CS 1014"
+      },
+      {
+        "student": "STU_011_6_IT CCIT",
+        "course": "6CS 1039"
+      },
+      {
+        "student": "STU_011_6_IT CCIT",
+        "course": "5CS 1222"
+      },
+      {
+        "student": "STU_011_6_IT CCIT",
+        "course": "6IT 1213"
+      },
+      {
+        "student": "STU_011_6_IT CCIT",
+        "course": "6IT 1043"
+      },
+      {
+        "student": "STU_011_6_IT CCIT",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_011_6_IT CCIT",
+        "course": "5IT 1259"
+      },
+      {
+        "student": "STU_011_6_IT CCIT",
+        "course": "6IT 1042"
+      },
+      {
+        "student": "STU_011_6_IT CCIT",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_011_6_IT CCIT",
+        "course": "6CS 1208"
+      },
+      {
+        "student": "STU_012_6_IT CCIT",
+        "course": "6CS 1039"
+      },
+      {
+        "student": "STU_012_6_IT CCIT",
+        "course": "5CS 1222"
+      },
+      {
+        "student": "STU_012_6_IT CCIT",
+        "course": "6IT 1213"
+      },
+      {
+        "student": "STU_012_6_IT CCIT",
+        "course": "6IT 1043"
+      },
+      {
+        "student": "STU_012_6_IT CCIT",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_012_6_IT CCIT",
+        "course": "5IT 1259"
+      },
+      {
+        "student": "STU_012_6_IT CCIT",
+        "course": "6IT 1042"
+      },
+      {
+        "student": "STU_012_6_IT CCIT",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_012_6_IT CCIT",
+        "course": "6CS 1208"
+      },
+      {
+        "student": "STU_013_6_Gen A",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_013_6_Gen A",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_013_6_Gen A",
+        "course": "6CS 1015"
+      },
+      {
+        "student": "STU_013_6_Gen A",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_013_6_Gen A",
+        "course": "5CS 1014"
+      },
+      {
+        "student": "STU_013_6_Gen A",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_013_6_Gen A",
+        "course": "6CS 1209"
+      },
+      {
+        "student": "STU_013_6_Gen A",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_013_6_Gen A",
+        "course": "6CS 1208"
+      },
+      {
+        "student": "STU_014_6_Gen A",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_014_6_Gen A",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_014_6_Gen A",
+        "course": "6CS 1015"
+      },
+      {
+        "student": "STU_014_6_Gen A",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_014_6_Gen A",
+        "course": "5CS 1014"
+      },
+      {
+        "student": "STU_014_6_Gen A",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_014_6_Gen A",
+        "course": "6CS 1209"
+      },
+      {
+        "student": "STU_014_6_Gen A",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_014_6_Gen A",
+        "course": "6CS 1208"
+      },
+      {
+        "student": "STU_015_6_Gen B",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_015_6_Gen B",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_015_6_Gen B",
+        "course": "6CS 1015"
+      },
+      {
+        "student": "STU_015_6_Gen B",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_015_6_Gen B",
+        "course": "5CS 1014"
+      },
+      {
+        "student": "STU_015_6_Gen B",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_015_6_Gen B",
+        "course": "6CS 1209"
+      },
+      {
+        "student": "STU_015_6_Gen B",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_015_6_Gen B",
+        "course": "6CS 1208"
+      },
+      {
+        "student": "STU_016_6_Gen B",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_016_6_Gen B",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_016_6_Gen B",
+        "course": "6CS 1015"
+      },
+      {
+        "student": "STU_016_6_Gen B",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_016_6_Gen B",
+        "course": "5CS 1014"
+      },
+      {
+        "student": "STU_016_6_Gen B",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_016_6_Gen B",
+        "course": "6CS 1209"
+      },
+      {
+        "student": "STU_016_6_Gen B",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_016_6_Gen B",
+        "course": "6CS 1208"
+      },
+      {
+        "student": "STU_017_6_Gen C",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_017_6_Gen C",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_017_6_Gen C",
+        "course": "6CS 1015"
+      },
+      {
+        "student": "STU_017_6_Gen C",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_017_6_Gen C",
+        "course": "5CS 1014"
+      },
+      {
+        "student": "STU_017_6_Gen C",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_017_6_Gen C",
+        "course": "6CS 1209"
+      },
+      {
+        "student": "STU_017_6_Gen C",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_017_6_Gen C",
+        "course": "6CS 1208"
+      },
+      {
+        "student": "STU_018_6_Gen C",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_018_6_Gen C",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_018_6_Gen C",
+        "course": "6CS 1015"
+      },
+      {
+        "student": "STU_018_6_Gen C",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_018_6_Gen C",
+        "course": "5CS 1014"
+      },
+      {
+        "student": "STU_018_6_Gen C",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_018_6_Gen C",
+        "course": "6CS 1209"
+      },
+      {
+        "student": "STU_018_6_Gen C",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_018_6_Gen C",
+        "course": "6CS 1208"
+      },
+      {
+        "student": "STU_019_6_AIML A",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_019_6_AIML A",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_019_6_AIML A",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_019_6_AIML A",
+        "course": "6CS 1215"
+      },
+      {
+        "student": "STU_019_6_AIML A",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_019_6_AIML A",
+        "course": "6CS 1018"
+      },
+      {
+        "student": "STU_019_6_AIML A",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_019_6_AIML A",
+        "course": "6CS 1216"
+      },
+      {
+        "student": "STU_019_6_AIML A",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_020_6_AIML A",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_020_6_AIML A",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_020_6_AIML A",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_020_6_AIML A",
+        "course": "6CS 1215"
+      },
+      {
+        "student": "STU_020_6_AIML A",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_020_6_AIML A",
+        "course": "6CS 1018"
+      },
+      {
+        "student": "STU_020_6_AIML A",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_020_6_AIML A",
+        "course": "6CS 1216"
+      },
+      {
+        "student": "STU_020_6_AIML A",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_021_6_AIML B",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_021_6_AIML B",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_021_6_AIML B",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_021_6_AIML B",
+        "course": "6CS 1215"
+      },
+      {
+        "student": "STU_021_6_AIML B",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_021_6_AIML B",
+        "course": "6CS 1018"
+      },
+      {
+        "student": "STU_021_6_AIML B",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_021_6_AIML B",
+        "course": "6CS 1216"
+      },
+      {
+        "student": "STU_021_6_AIML B",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_022_6_AIML B",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_022_6_AIML B",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_022_6_AIML B",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_022_6_AIML B",
+        "course": "6CS 1215"
+      },
+      {
+        "student": "STU_022_6_AIML B",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_022_6_AIML B",
+        "course": "6CS 1018"
+      },
+      {
+        "student": "STU_022_6_AIML B",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_022_6_AIML B",
+        "course": "6CS 1216"
+      },
+      {
+        "student": "STU_022_6_AIML B",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_023_6_AIML C",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_023_6_AIML C",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_023_6_AIML C",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_023_6_AIML C",
+        "course": "6CS 1215"
+      },
+      {
+        "student": "STU_023_6_AIML C",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_023_6_AIML C",
+        "course": "6CS 1018"
+      },
+      {
+        "student": "STU_023_6_AIML C",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_023_6_AIML C",
+        "course": "6CS 1216"
+      },
+      {
+        "student": "STU_023_6_AIML C",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_024_6_AIML C",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_024_6_AIML C",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_024_6_AIML C",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_024_6_AIML C",
+        "course": "6CS 1215"
+      },
+      {
+        "student": "STU_024_6_AIML C",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_024_6_AIML C",
+        "course": "6CS 1018"
+      },
+      {
+        "student": "STU_024_6_AIML C",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_024_6_AIML C",
+        "course": "6CS 1216"
+      },
+      {
+        "student": "STU_024_6_AIML C",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_025_6_AIML D",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_025_6_AIML D",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_025_6_AIML D",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_025_6_AIML D",
+        "course": "6CS 1215"
+      },
+      {
+        "student": "STU_025_6_AIML D",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_025_6_AIML D",
+        "course": "6CS 1018"
+      },
+      {
+        "student": "STU_025_6_AIML D",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_025_6_AIML D",
+        "course": "6CS 1216"
+      },
+      {
+        "student": "STU_025_6_AIML D",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_026_6_AIML D",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_026_6_AIML D",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_026_6_AIML D",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_026_6_AIML D",
+        "course": "6CS 1215"
+      },
+      {
+        "student": "STU_026_6_AIML D",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_026_6_AIML D",
+        "course": "6CS 1018"
+      },
+      {
+        "student": "STU_026_6_AIML D",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_026_6_AIML D",
+        "course": "6CS 1216"
+      },
+      {
+        "student": "STU_026_6_AIML D",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_027_6_AIML E",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_027_6_AIML E",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_027_6_AIML E",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_027_6_AIML E",
+        "course": "6CS 1215"
+      },
+      {
+        "student": "STU_027_6_AIML E",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_027_6_AIML E",
+        "course": "6CS 1018"
+      },
+      {
+        "student": "STU_027_6_AIML E",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_027_6_AIML E",
+        "course": "6CS 1216"
+      },
+      {
+        "student": "STU_027_6_AIML E",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_028_6_AIML E",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_028_6_AIML E",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_028_6_AIML E",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_028_6_AIML E",
+        "course": "6CS 1215"
+      },
+      {
+        "student": "STU_028_6_AIML E",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_028_6_AIML E",
+        "course": "6CS 1018"
+      },
+      {
+        "student": "STU_028_6_AIML E",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_028_6_AIML E",
+        "course": "6CS 1216"
+      },
+      {
+        "student": "STU_028_6_AIML E",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_029_6_AIML F",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_029_6_AIML F",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_029_6_AIML F",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_029_6_AIML F",
+        "course": "6CS 1215"
+      },
+      {
+        "student": "STU_029_6_AIML F",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_029_6_AIML F",
+        "course": "6CS 1018"
+      },
+      {
+        "student": "STU_029_6_AIML F",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_029_6_AIML F",
+        "course": "6CS 1216"
+      },
+      {
+        "student": "STU_029_6_AIML F",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_030_6_AIML F",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_030_6_AIML F",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_030_6_AIML F",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_030_6_AIML F",
+        "course": "6CS 1215"
+      },
+      {
+        "student": "STU_030_6_AIML F",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_030_6_AIML F",
+        "course": "6CS 1018"
+      },
+      {
+        "student": "STU_030_6_AIML F",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_030_6_AIML F",
+        "course": "6CS 1216"
+      },
+      {
+        "student": "STU_030_6_AIML F",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_031_6_AIML G",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_031_6_AIML G",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_031_6_AIML G",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_031_6_AIML G",
+        "course": "6CS 1215"
+      },
+      {
+        "student": "STU_031_6_AIML G",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_031_6_AIML G",
+        "course": "6CS 1018"
+      },
+      {
+        "student": "STU_031_6_AIML G",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_031_6_AIML G",
+        "course": "6CS 1216"
+      },
+      {
+        "student": "STU_031_6_AIML G",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_032_6_AIML G",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_032_6_AIML G",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_032_6_AIML G",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_032_6_AIML G",
+        "course": "6CS 1215"
+      },
+      {
+        "student": "STU_032_6_AIML G",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_032_6_AIML G",
+        "course": "6CS 1018"
+      },
+      {
+        "student": "STU_032_6_AIML G",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_032_6_AIML G",
+        "course": "6CS 1216"
+      },
+      {
+        "student": "STU_032_6_AIML G",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_033_6_AIML H",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_033_6_AIML H",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_033_6_AIML H",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_033_6_AIML H",
+        "course": "6CS 1215"
+      },
+      {
+        "student": "STU_033_6_AIML H",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_033_6_AIML H",
+        "course": "6CS 1018"
+      },
+      {
+        "student": "STU_033_6_AIML H",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_033_6_AIML H",
+        "course": "6CS 1216"
+      },
+      {
+        "student": "STU_033_6_AIML H",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_034_6_AIML H",
+        "course": "6CS 1207"
+      },
+      {
+        "student": "STU_034_6_AIML H",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_034_6_AIML H",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_034_6_AIML H",
+        "course": "6CS 1215"
+      },
+      {
+        "student": "STU_034_6_AIML H",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_034_6_AIML H",
+        "course": "6CS 1018"
+      },
+      {
+        "student": "STU_034_6_AIML H",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_034_6_AIML H",
+        "course": "6CS 1216"
+      },
+      {
+        "student": "STU_034_6_AIML H",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_035_6_IT Gen",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_035_6_IT Gen",
+        "course": "5IT 1259"
+      },
+      {
+        "student": "STU_035_6_IT Gen",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_035_6_IT Gen",
+        "course": "6IT 1021"
+      },
+      {
+        "student": "STU_035_6_IT Gen",
+        "course": "6IT 1023"
+      },
+      {
+        "student": "STU_035_6_IT Gen",
+        "course": "5CS 1012"
+      },
+      {
+        "student": "STU_035_6_IT Gen",
+        "course": "6IT 1207"
+      },
+      {
+        "student": "STU_035_6_IT Gen",
+        "course": "6IT 1024"
+      },
+      {
+        "student": "STU_035_6_IT Gen",
+        "course": "6IT 1206"
+      },
+      {
+        "student": "STU_036_6_IT Gen",
+        "course": "6CS 1022"
+      },
+      {
+        "student": "STU_036_6_IT Gen",
+        "course": "5IT 1259"
+      },
+      {
+        "student": "STU_036_6_IT Gen",
+        "course": "6HS 1505"
+      },
+      {
+        "student": "STU_036_6_IT Gen",
+        "course": "6IT 1021"
+      },
+      {
+        "student": "STU_036_6_IT Gen",
+        "course": "6IT 1023"
+      },
+      {
+        "student": "STU_036_6_IT Gen",
+        "course": "5CS 1012"
+      },
+      {
+        "student": "STU_036_6_IT Gen",
+        "course": "6IT 1207"
+      },
+      {
+        "student": "STU_036_6_IT Gen",
+        "course": "6IT 1024"
+      },
+      {
+        "student": "STU_036_6_IT Gen",
+        "course": "6IT 1206"
+      },
+      {
+        "student": "STU_037_6_CC A",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_037_6_CC A",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_037_6_CC A",
+        "course": "6CS 1028"
+      },
+      {
+        "student": "STU_037_6_CC A",
+        "course": "6CS 1029"
+      },
+      {
+        "student": "STU_038_6_CC A",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_038_6_CC A",
+        "course": "6CS 1013"
+      },
+      {
+        "student": "STU_038_6_CC A",
+        "course": "6CS 1028"
+      },
+      {
+        "student": "STU_038_6_CC A",
+        "course": "6CS 1029"
+      },
+      {
+        "student": "STU_039_6_CSE Gen A",
+        "course": "6CS 1014"
+      },
+      {
+        "student": "STU_039_6_CSE Gen A",
+        "course": "6CS 1015"
+      },
+      {
+        "student": "STU_039_6_CSE Gen A",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_039_6_CSE Gen A",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_040_6_CSE Gen A",
+        "course": "6CS 1014"
+      },
+      {
+        "student": "STU_040_6_CSE Gen A",
+        "course": "6CS 1015"
+      },
+      {
+        "student": "STU_040_6_CSE Gen A",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_040_6_CSE Gen A",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_041_6_CSE Gen B",
+        "course": "6CS 1014"
+      },
+      {
+        "student": "STU_041_6_CSE Gen B",
+        "course": "6CS 1015"
+      },
+      {
+        "student": "STU_041_6_CSE Gen B",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_041_6_CSE Gen B",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_042_6_CSE Gen B",
+        "course": "6CS 1014"
+      },
+      {
+        "student": "STU_042_6_CSE Gen B",
+        "course": "6CS 1015"
+      },
+      {
+        "student": "STU_042_6_CSE Gen B",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_042_6_CSE Gen B",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_043_6_CSE Gen C",
+        "course": "6CS 1014"
+      },
+      {
+        "student": "STU_043_6_CSE Gen C",
+        "course": "6CS 1015"
+      },
+      {
+        "student": "STU_043_6_CSE Gen C",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_043_6_CSE Gen C",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_044_6_CSE Gen C",
+        "course": "6CS 1014"
+      },
+      {
+        "student": "STU_044_6_CSE Gen C",
+        "course": "6CS 1015"
+      },
+      {
+        "student": "STU_044_6_CSE Gen C",
+        "course": "6CS 1016"
+      },
+      {
+        "student": "STU_044_6_CSE Gen C",
+        "course": "6CS 1017"
+      },
+      {
+        "student": "STU_045_6_IT Gen A",
+        "course": "6IT 1022"
+      },
+      {
+        "student": "STU_045_6_IT Gen A",
+        "course": "6IT 1021"
+      },
+      {
+        "student": "STU_045_6_IT Gen A",
+        "course": "6IT 1023"
+      },
+      {
+        "student": "STU_045_6_IT Gen A",
+        "course": "6IT 1024"
+      },
+      {
+        "student": "STU_046_6_IT Gen A",
+        "course": "6IT 1022"
+      },
+      {
+        "student": "STU_046_6_IT Gen A",
+        "course": "6IT 1021"
+      },
+      {
+        "student": "STU_046_6_IT Gen A",
+        "course": "6IT 1023"
+      },
+      {
+        "student": "STU_046_6_IT Gen A",
+        "course": "6IT 1024"
+      },
+      {
+        "student": "STU_047_6_IT CC",
+        "course": "6IT 1039"
+      },
+      {
+        "student": "STU_047_6_IT CC",
+        "course": "6IT 1042"
+      },
+      {
+        "student": "STU_047_6_IT CC",
+        "course": "6IT 1043"
+      },
+      {
+        "student": "STU_047_6_IT CC",
+        "course": "6CS 1208"
+      },
+      {
+        "student": "STU_048_6_IT CC",
+        "course": "6IT 1039"
+      },
+      {
+        "student": "STU_048_6_IT CC",
+        "course": "6IT 1042"
+      },
+      {
+        "student": "STU_048_6_IT CC",
+        "course": "6IT 1043"
+      },
+      {
+        "student": "STU_048_6_IT CC",
+        "course": "6CS 1208"
+      }
+    ],
+    "missing_info": [
+      "Baseline timetable present but no assignments marked fixed."
+    ]
+  },
+  "comparison": {
+    "original_status": "BASELINE",
+    "optimized_status": "FEASIBLE",
+    "original_validator": "INVALID",
+    "optimized_validator": "VALID_INCOMPLETE",
+    "moved_classes": [
+      {
+        "section_id": "5CS 1014_Gen_A",
+        "session": 0,
+        "from": {
+          "slot": 13,
+          "day": "Tuesday",
+          "period": 4
+        },
+        "to": {
+          "slot": 10,
+          "day": "Tuesday",
+          "period": 1
+        }
+      },
+      {
+        "section_id": "6CS 1013_AIML_A_LAB",
+        "session": 0,
+        "from": {
+          "slot": 26,
+          "day": "Wednesday",
+          "period": 7
+        },
+        "to": {
+          "slot": 15,
+          "day": "Tuesday",
+          "period": 6
+        }
+      },
+      {
+        "section_id": "6CS 1013_AIML_D",
+        "session": 0,
+        "from": {
+          "slot": 41,
+          "day": "Friday",
+          "period": 2
+        },
+        "to": {
+          "slot": 40,
+          "day": "Friday",
+          "period": 1
+        }
+      },
+      {
+        "section_id": "6CS 1013_AIML_G",
+        "session": 0,
+        "from": {
+          "slot": 41,
+          "day": "Friday",
+          "period": 2
+        },
+        "to": {
+          "slot": 40,
+          "day": "Friday",
+          "period": 1
+        }
+      },
+      {
+        "section_id": "6CS 1013_AIML_G_lab",
+        "session": 0,
+        "from": {
+          "slot": 26,
+          "day": "Wednesday",
+          "period": 7
+        },
+        "to": {
+          "slot": 30,
+          "day": "Thursday",
+          "period": 1
+        }
+      },
+      {
+        "section_id": "6CS 1013_DA_A",
+        "session": 0,
+        "from": {
+          "slot": 41,
+          "day": "Friday",
+          "period": 2
+        },
+        "to": {
+          "slot": 40,
+          "day": "Friday",
+          "period": 1
+        }
+      },
+      {
+        "section_id": "6CS 1013_Gen_C",
+        "session": 0,
+        "from": {
+          "slot": 26,
+          "day": "Wednesday",
+          "period": 7
+        },
+        "to": {
+          "slot": 23,
+          "day": "Wednesday",
+          "period": 4
+        }
+      },
+      {
+        "section_id": "6CS 1017_AIML_C",
+        "session": 0,
+        "from": {
+          "slot": 31,
+          "day": "Thursday",
+          "period": 2
+        },
+        "to": {
+          "slot": 30,
+          "day": "Thursday",
+          "period": 1
+        }
+      },
+      {
+        "section_id": "6CS 1017_CSE_Gen_B",
+        "session": 0,
+        "from": {
+          "slot": 31,
+          "day": "Thursday",
+          "period": 2
+        },
+        "to": {
+          "slot": 10,
+          "day": "Tuesday",
+          "period": 1
+        }
+      },
+      {
+        "section_id": "6CS 1017_Gen_B",
+        "session": 0,
+        "from": {
+          "slot": 31,
+          "day": "Thursday",
+          "period": 2
+        },
+        "to": {
+          "slot": 30,
+          "day": "Thursday",
+          "period": 1
+        }
+      },
+      {
+        "section_id": "6CS 1018_AIML_C_lab",
+        "session": 0,
+        "from": {
+          "slot": 11,
+          "day": "Tuesday",
+          "period": 2
+        },
+        "to": {
+          "slot": 20,
+          "day": "Wednesday",
+          "period": 1
+        }
+      },
+      {
+        "section_id": "6CS 1018_AIML_G_lab",
+        "session": 0,
+        "from": {
+          "slot": 11,
+          "day": "Tuesday",
+          "period": 2
+        },
+        "to": {
+          "slot": 15,
+          "day": "Tuesday",
+          "period": 6
+        }
+      },
+      {
+        "section_id": "6CS 1018_AIML_H_lab",
+        "session": 0,
+        "from": {
+          "slot": 13,
+          "day": "Tuesday",
+          "period": 4
+        },
+        "to": {
+          "slot": 15,
+          "day": "Tuesday",
+          "period": 6
+        }
+      },
+      {
+        "section_id": "6CS 1022_AIML_G_Lab",
+        "session": 0,
+        "from": {
+          "slot": 43,
+          "day": "Friday",
+          "period": 4
+        },
+        "to": {
+          "slot": 40,
+          "day": "Friday",
+          "period": 1
+        }
+      },
+      {
+        "section_id": "6CS 1022_DA_A",
+        "session": 0,
+        "from": {
+          "slot": 46,
+          "day": "Friday",
+          "period": 7
+        },
+        "to": {
+          "slot": 3,
+          "day": "Monday",
+          "period": 4
+        }
+      },
+      {
+        "section_id": "6CS 1022_IT_Gen_lab",
+        "session": 0,
+        "from": {
+          "slot": 26,
+          "day": "Wednesday",
+          "period": 7
+        },
+        "to": {
+          "slot": 3,
+          "day": "Monday",
+          "period": 4
+        }
+      },
+      {
+        "section_id": "6CS 1033_CS_B_lab",
+        "session": 0,
+        "from": {
+          "slot": 36,
+          "day": "Thursday",
+          "period": 7
+        },
+        "to": {
+          "slot": 35,
+          "day": "Thursday",
+          "period": 6
+        }
+      },
+      {
+        "section_id": "6CS 1039_DA_B",
+        "session": 0,
+        "from": {
+          "slot": 31,
+          "day": "Thursday",
+          "period": 2
+        },
+        "to": {
+          "slot": 30,
+          "day": "Thursday",
+          "period": 1
+        }
+      },
+      {
+        "section_id": "6CS 1207_AIML_A_lab",
+        "session": 0,
+        "from": {
+          "slot": 1,
+          "day": "Monday",
+          "period": 2
+        },
+        "to": {
+          "slot": 21,
+          "day": "Wednesday",
+          "period": 2
+        }
+      },
+      {
+        "section_id": "6CS 1207_AIML_C_lab",
+        "session": 0,
+        "from": {
+          "slot": 1,
+          "day": "Monday",
+          "period": 2
+        },
+        "to": {
+          "slot": 43,
+          "day": "Friday",
+          "period": 4
+        }
+      },
+      {
+        "section_id": "6CS 1207_AIML_D_lab",
+        "session": 0,
+        "from": {
+          "slot": 1,
+          "day": "Monday",
+          "period": 2
+        },
+        "to": {
+          "slot": 3,
+          "day": "Monday",
+          "period": 4
+        }
+      },
+      {
+        "section_id": "6CS 1207_Gen_C_LAB",
+        "session": 0,
+        "from": {
+          "slot": 1,
+          "day": "Monday",
+          "period": 2
+        },
+        "to": {
+          "slot": 10,
+          "day": "Tuesday",
+          "period": 1
+        }
+      },
+      {
+        "section_id": "6CS 1208_CC_Lab",
+        "session": 0,
+        "from": {
+          "slot": 26,
+          "day": "Wednesday",
+          "period": 7
+        },
+        "to": {
+          "slot": 40,
+          "day": "Friday",
+          "period": 1
+        }
+      },
+      {
+        "section_id": "6CS 1208_Gen_A",
+        "session": 0,
+        "from": {
+          "slot": 11,
+          "day": "Tuesday",
+          "period": 2
+        },
+        "to": {
+          "slot": 30,
+          "day": "Thursday",
+          "period": 1
+        }
+      },
+      {
+        "section_id": "6CS 1208_Gen_C",
+        "session": 0,
+        "from": {
+          "slot": 11,
+          "day": "Tuesday",
+          "period": 2
+        },
+        "to": {
+          "slot": 10,
+          "day": "Tuesday",
+          "period": 1
+        }
+      },
+      {
+        "section_id": "6CS 1209_Gen_A",
+        "session": 0,
+        "from": {
+          "slot": 3,
+          "day": "Monday",
+          "period": 4
+        },
+        "to": {
+          "slot": 20,
+          "day": "Wednesday",
+          "period": 1
+        }
+      },
+      {
+        "section_id": "6CS 1215_AIML_C",
+        "session": 0,
+        "from": {
+          "slot": 3,
+          "day": "Monday",
+          "period": 4
+        },
+        "to": {
+          "slot": 10,
+          "day": "Tuesday",
+          "period": 1
+        }
+      },
+      {
+        "section_id": "6CS 1216_AIML_A_lab",
+        "session": 0,
+        "from": {
+          "slot": 33,
+          "day": "Thursday",
+          "period": 4
+        },
+        "to": {
+          "slot": 43,
+          "day": "Friday",
+          "period": 4
+        }
+      },
+      {
+        "section_id": "6CS 1231_CS_A",
+        "session": 0,
+        "from": {
+          "slot": 1,
+          "day": "Monday",
+          "period": 2
+        },
+        "to": {
+          "slot": 0,
+          "day": "Monday",
+          "period": 1
+        }
+      },
+      {
+        "section_id": "6HS 1505_DA_B",
+        "session": 0,
+        "from": {
+          "slot": 16,
+          "day": "Tuesday",
+          "period": 7
+        },
+        "to": {
+          "slot": 12,
+          "day": "Tuesday",
+          "period": 3
+        }
+      },
+      {
+        "section_id": "6HS 1505_Gen_A",
+        "session": 0,
+        "from": {
+          "slot": 16,
+          "day": "Tuesday",
+          "period": 7
+        },
+        "to": {
+          "slot": 12,
+          "day": "Tuesday",
+          "period": 3
+        }
+      },
+      {
+        "section_id": "6HS 1505_IT_CCIT",
+        "session": 0,
+        "from": {
+          "slot": 16,
+          "day": "Tuesday",
+          "period": 7
+        },
+        "to": {
+          "slot": 12,
+          "day": "Tuesday",
+          "period": 3
+        }
+      },
+      {
+        "section_id": "6IT 1022_IT_Gen_A",
+        "session": 0,
+        "from": {
+          "slot": 1,
+          "day": "Monday",
+          "period": 2
+        },
+        "to": {
+          "slot": 0,
+          "day": "Monday",
+          "period": 1
+        }
+      },
+      {
+        "section_id": "6IT 1024_IT_Gen_A",
+        "session": 0,
+        "from": {
+          "slot": 26,
+          "day": "Wednesday",
+          "period": 7
+        },
+        "to": {
+          "slot": 20,
+          "day": "Wednesday",
+          "period": 1
+        }
+      },
+      {
+        "section_id": "6IT 1206_IT_Gen",
+        "session": 0,
+        "from": {
+          "slot": 1,
+          "day": "Monday",
+          "period": 2
+        },
+        "to": {
+          "slot": 10,
+          "day": "Tuesday",
+          "period": 1
+        }
+      }
+    ],
+    "faculty_changes": [
+      {
+        "section_id": "6CS 1039_DA_A_Lab",
+        "from": "FAC_015",
+        "to": "FAC_117"
+      },
+      {
+        "section_id": "6CS 1215_AIML_E",
+        "from": "FAC_078",
+        "to": "FAC_039"
+      },
+      {
+        "section_id": "6CS 1216_AIML_B_LAB",
+        "from": "FAC_102",
+        "to": "FAC_104"
+      },
+      {
+        "section_id": "6CS 1216_AIML_C",
+        "from": "FAC_136",
+        "to": "FAC_102"
+      },
+      {
+        "section_id": "6CS 1216_AIML_D_lab",
+        "from": "FAC_104",
+        "to": "FAC_105"
+      },
+      {
+        "section_id": "6CS 1216_AIML_E_LAb",
+        "from": "FAC_105",
+        "to": "FAC_101"
+      },
+      {
+        "section_id": "6CS 1216_AIML_G",
+        "from": "FAC_096",
+        "to": "FAC_107"
+      },
+      {
+        "section_id": "6HS 1505_DA_B",
+        "from": "FAC_019",
+        "to": "FAC_001"
+      },
+      {
+        "section_id": "6IT 1206_IT_Gen_lab",
+        "from": "FAC_093",
+        "to": "FAC_071"
+      }
+    ],
+    "room_changes": [
+      {
+        "section_id": "5CS 1012_CC_Lab",
+        "session": 0,
+        "from": "LT_108",
+        "to": "CS_Lab_12"
+      },
+      {
+        "section_id": "5CS 1012_IT_Gen_Lab",
+        "session": 0,
+        "from": "LT_201",
+        "to": "CS_Lab_11"
+      },
+      {
+        "section_id": "5CS 1014_DA_A_lab",
+        "session": 0,
+        "from": "LT_202",
+        "to": "CS_Lab_12"
+      },
+      {
+        "section_id": "5CS 1014_Gen_A_LAB",
+        "session": 0,
+        "from": "LT_204",
+        "to": "CS_Lab_10"
+      },
+      {
+        "section_id": "5CS 1014_Gen_B_LAB",
+        "session": 0,
+        "from": "LT_205",
+        "to": "CS_Lab_09"
+      },
+      {
+        "section_id": "5CS 1014_Gen_C_LAB",
+        "session": 0,
+        "from": "LT_206",
+        "to": "CS_Lab_08"
+      },
+      {
+        "section_id": "5CS 1222_IT_CCIT_Lab",
+        "session": 0,
+        "from": "LT_210",
+        "to": "CS_Lab_11"
+      },
+      {
+        "section_id": "5IT 1259_IT_Gen_Lab",
+        "session": 0,
+        "from": "LT_106",
+        "to": "CS_Lab_11"
+      },
+      {
+        "section_id": "6CS 1013_AIML_A_LAB",
+        "session": 0,
+        "from": "LT_203",
+        "to": "CS_Lab_12"
+      },
+      {
+        "section_id": "6CS 1013_AIML_B_Lab",
+        "session": 0,
+        "from": "LT_204",
+        "to": "CS_Lab_12"
+      },
+      {
+        "section_id": "6CS 1013_AIML_C_Lab",
+        "session": 0,
+        "from": "LT_205",
+        "to": "CS_Lab_02"
+      },
+      {
+        "section_id": "6CS 1013_AIML_D_Lab",
+        "session": 0,
+        "from": "LT_206",
+        "to": "CS_Lab_10"
+      },
+      {
+        "section_id": "6CS 1013_AIML_E_lab",
+        "session": 0,
+        "from": "LT_207",
+        "to": "CS_Lab_09"
+      },
+      {
+        "section_id": "6CS 1013_AIML_F_lab",
+        "session": 0,
+        "from": "LT_208",
+        "to": "CS_Lab_08"
+      },
+      {
+        "section_id": "6CS 1013_AIML_G_lab",
+        "session": 0,
+        "from": "LT_209",
+        "to": "CS_Lab_06"
+      },
+      {
+        "section_id": "6CS 1013_AIML_H_lab",
+        "session": 0,
+        "from": "LT_210",
+        "to": "CS_Lab_07"
+      },
+      {
+        "section_id": "6CS 1013_CC_Lab",
+        "session": 0,
+        "from": "LT_212",
+        "to": "CS_Lab_05"
+      },
+      {
+        "section_id": "6CS 1013_CS_A_Lab",
+        "session": 0,
+        "from": "LT_207",
+        "to": "CS_Lab_03"
+      },
+      {
+        "section_id": "6CS 1013_CS_B_Lab",
+        "session": 0,
+        "from": "LT_213",
+        "to": "CS_Lab_04"
+      },
+      {
+        "section_id": "6CS 1013_DA_A_Lab",
+        "session": 0,
+        "from": "LT_208",
+        "to": "CS_Lab_06"
+      },
+      {
+        "section_id": "6CS 1013_DA_B_Lab",
+        "session": 0,
+        "from": "LT_209",
+        "to": "CS_Lab_05"
+      },
+      {
+        "section_id": "6CS 1013_Gen_A_LAB",
+        "session": 0,
+        "from": "LT_210",
+        "to": "CS_Lab_04"
+      },
+      {
+        "section_id": "6CS 1013_Gen_B_LAb",
+        "session": 0,
+        "from": "LT_212",
+        "to": "CS_Lab_01"
+      },
+      {
+        "section_id": "6CS 1013_Gen_C_LAB",
+        "session": 0,
+        "from": "LT_213",
+        "to": "CS_Lab_02"
+      },
+      {
+        "section_id": "6CS 1015_Gen_A_LAB",
+        "session": 0,
+        "from": "LT_301",
+        "to": "CS_Lab_10"
+      },
+      {
+        "section_id": "6CS 1015_Gen_B_LAb",
+        "session": 0,
+        "from": "LT_108",
+        "to": "CS_Lab_04"
+      },
+      {
+        "section_id": "6CS 1015_Gen_C_LAB",
+        "session": 0,
+        "from": "LT_201",
+        "to": "CS_Lab_01"
+      },
+      {
+        "section_id": "6CS 1016_AIML_A_lab",
+        "session": 0,
+        "from": "LT_201",
+        "to": "CS_Lab_01"
+      },
+      {
+        "section_id": "6CS 1016_AIML_B_LAB",
+        "session": 0,
+        "from": "LT_202",
+        "to": "CS_Lab_11"
+      },
+      {
+        "section_id": "6CS 1016_AIML_C_lab",
+        "session": 0,
+        "from": "LT_203",
+        "to": "CS_Lab_10"
+      },
+      {
+        "section_id": "6CS 1016_AIML_D",
+        "session": 0,
+        "from": "LT_201",
+        "to": "CS_Room"
+      },
+      {
+        "section_id": "6CS 1016_AIML_D_lab",
+        "session": 0,
+        "from": "LT_204",
+        "to": "CS_Lab_09"
+      },
+      {
+        "section_id": "6CS 1016_AIML_E_LAb",
+        "session": 0,
+        "from": "LT_205",
+        "to": "CS_Lab_08"
+      },
+      {
+        "section_id": "6CS 1016_AIML_F_lab",
+        "session": 0,
+        "from": "LT_209",
+        "to": "CS_Lab_01"
+      },
+      {
+        "section_id": "6CS 1016_AIML_G_lab",
+        "session": 0,
+        "from": "LT_202",
+        "to": "CS_Lab_10"
+      },
+      {
+        "section_id": "6CS 1016_AIML_H_lab",
+        "session": 0,
+        "from": "LT_203",
+        "to": "CS_Lab_09"
+      },
+      {
+        "section_id": "6CS 1016_CC_A_lab",
+        "session": 0,
+        "from": "LT_204",
+        "to": "CS_Lab_08"
+      },
+      {
+        "section_id": "6CS 1016_DA_A_Lab",
+        "session": 0,
+        "from": "LT_205",
+        "to": "CS_Lab_03"
+      },
+      {
+        "section_id": "6CS 1016_DA_B_lab",
+        "session": 0,
+        "from": "LT_206",
+        "to": "CS_Lab_06"
+      },
+      {
+        "section_id": "6CS 1016_Gen_A_lab",
+        "session": 0,
+        "from": "LT_210",
+        "to": "CS_Lab_02"
+      },
+      {
+        "section_id": "6CS 1016_Gen_B_Lab",
+        "session": 0,
+        "from": "LT_212",
+        "to": "CS_Lab_10"
+      },
+      {
+        "section_id": "6CS 1016_Gen_C_lab",
+        "session": 0,
+        "from": "LT_213",
+        "to": "CS_Lab_09"
+      },
+      {
+        "section_id": "6CS 1022_AIML_A_Lab",
+        "session": 0,
+        "from": "LT_107",
+        "to": "CS_Lab_12"
+      },
+      {
+        "section_id": "6CS 1022_AIML_B_Lab",
+        "session": 0,
+        "from": "LT_105",
+        "to": "CS_Lab_12"
+      },
+      {
+        "section_id": "6CS 1022_AIML_C_Lab",
+        "session": 0,
+        "from": "LT_108",
+        "to": "CS_Lab_11"
+      },
+      {
+        "section_id": "6CS 1022_AIML_D_Lab",
+        "session": 0,
+        "from": "LT_103",
+        "to": "CS_Lab_03"
+      },
+      {
+        "section_id": "6CS 1022_AIML_E_Lab",
+        "session": 0,
+        "from": "LT_104",
+        "to": "CS_Lab_01"
+      },
+      {
+        "section_id": "6CS 1022_AIML_F_Lab",
+        "session": 0,
+        "from": "LT_201",
+        "to": "CS_Lab_10"
+      },
+      {
+        "section_id": "6CS 1022_AIML_G_Lab",
+        "session": 0,
+        "from": "LT_202",
+        "to": "CS_Lab_09"
+      },
+      {
+        "section_id": "6CS 1022_AIML_H_Lab",
+        "session": 0,
+        "from": "LT_203",
+        "to": "CS_Lab_08"
+      },
+      {
+        "section_id": "6CS 1022_DA_A_Lab",
+        "session": 0,
+        "from": "LT_204",
+        "to": "CS_Lab_05"
+      },
+      {
+        "section_id": "6CS 1022_DA_B_Lab",
+        "session": 0,
+        "from": "LT_205",
+        "to": "CS_Lab_06"
+      },
+      {
+        "section_id": "6CS 1022_IT_CCIT_lab",
+        "session": 0,
+        "from": "LT_105",
+        "to": "CS_Lab_06"
+      },
+      {
+        "section_id": "6CS 1022_IT_Gen_lab",
+        "session": 0,
+        "from": "LT_106",
+        "to": "CS_Lab_12"
+      },
+      {
+        "section_id": "6CS 1028_CC_lab",
+        "session": 0,
+        "from": "LT_102",
+        "to": "CS_Lab_08"
+      },
+      {
+        "section_id": "6CS 1029_CC_lab",
+        "session": 0,
+        "from": "LT_101",
+        "to": "CS_Lab_02"
+      },
+      {
+        "section_id": "6CS 1033_CS_A_lab",
+        "session": 0,
+        "from": "LT_105",
+        "to": "CS_Lab_01"
+      },
+      {
+        "section_id": "6CS 1033_CS_B_lab",
+        "session": 0,
+        "from": "LT_102",
+        "to": "CS_Lab_07"
+      },
+      {
+        "section_id": "6CS 1034_CS_A_lab",
+        "session": 0,
+        "from": "LT_202",
+        "to": "CS_Lab_12"
+      },
+      {
+        "section_id": "6CS 1034_CS_B_lab",
+        "session": 0,
+        "from": "LT_203",
+        "to": "CS_Lab_07"
+      },
+      {
+        "section_id": "6CS 1035_CS_A_lab",
+        "session": 0,
+        "from": "LT_107",
+        "to": "CS_Lab_11"
+      },
+      {
+        "section_id": "6CS 1036_CS_A_lab",
+        "session": 0,
+        "from": "LT_104",
+        "to": "CS_Lab_11"
+      },
+      {
+        "section_id": "6CS 1036_CS_B_Lab",
+        "session": 0,
+        "from": "LT_105",
+        "to": "CS_Lab_07"
+      },
+      {
+        "section_id": "6CS 1039_DA_A_Lab",
+        "session": 0,
+        "from": "LT_215",
+        "to": "CS_Lab_01"
+      },
+      {
+        "section_id": "6CS 1039_DA_B_Lab",
+        "session": 0,
+        "from": "LT_216",
+        "to": "CS_Lab_05"
+      },
+      {
+        "section_id": "6CS 1039_IT_CCIT_lab",
+        "session": 0,
+        "from": "LT_301",
+        "to": "CS_Lab_10"
+      },
+      {
+        "section_id": "6CS 1207_AIML_A_lab",
+        "session": 0,
+        "from": "LT_212",
+        "to": "CS_Lab_07"
+      },
+      {
+        "section_id": "6CS 1207_AIML_B_LAB",
+        "session": 0,
+        "from": "LT_213",
+        "to": "CS_Lab_09"
+      },
+      {
+        "section_id": "6CS 1207_AIML_C_lab",
+        "session": 0,
+        "from": "LT_215",
+        "to": "CS_Lab_07"
+      },
+      {
+        "section_id": "6CS 1207_AIML_D_lab",
+        "session": 0,
+        "from": "LT_216",
+        "to": "CS_Lab_10"
+      },
+      {
+        "section_id": "6CS 1207_AIML_F",
+        "session": 0,
+        "from": "LT_106",
+        "to": "LT_210"
+      },
+      {
+        "section_id": "6CS 1207_AIML_F_lab",
+        "session": 0,
+        "from": "LT_302",
+        "to": "CS_Lab_06"
+      },
+      {
+        "section_id": "6CS 1207_AIML_G_lab",
+        "session": 0,
+        "from": "LT_303",
+        "to": "CS_Lab_05"
+      },
+      {
+        "section_id": "6CS 1207_AIML_H_lab",
+        "session": 0,
+        "from": "LT_304",
+        "to": "CS_Lab_04"
+      },
+      {
+        "section_id": "6CS 1207_Gen_A_LAB",
+        "session": 0,
+        "from": "LT_305",
+        "to": "CS_Lab_03"
+      },
+      {
+        "section_id": "6CS 1207_Gen_B_LAb",
+        "session": 0,
+        "from": "LT_306",
+        "to": "CS_Lab_02"
+      },
+      {
+        "section_id": "6CS 1207_Gen_C_LAB",
+        "session": 0,
+        "from": "LT_307",
+        "to": "CS_Lab_10"
+      },
+      {
+        "section_id": "6CS 1208_CC_Lab",
+        "session": 0,
+        "from": "LT_101",
+        "to": "CS_Lab_11"
+      },
+      {
+        "section_id": "6CS 1208_Gen_A_LAB",
+        "session": 0,
+        "from": "LT_201",
+        "to": "CS_Lab_09"
+      },
+      {
+        "section_id": "6CS 1208_Gen_B_LAb",
+        "session": 0,
+        "from": "LT_202",
+        "to": "CS_Lab_08"
+      },
+      {
+        "section_id": "6CS 1208_Gen_C_LAb",
+        "session": 0,
+        "from": "LT_203",
+        "to": "CS_Lab_12"
+      },
+      {
+        "section_id": "6CS 1208_IT_CCIT_lab",
+        "session": 0,
+        "from": "LT_204",
+        "to": "CS_Lab_03"
+      },
+      {
+        "section_id": "6CS 1209_Gen_A_Lab",
+        "session": 0,
+        "from": "LT_107",
+        "to": "CS_Lab_09"
+      },
+      {
+        "section_id": "6CS 1209_Gen_B_Lab",
+        "session": 0,
+        "from": "LT_108",
+        "to": "CS_Lab_07"
+      },
+      {
+        "section_id": "6CS 1209_Gen_C_Lab",
+        "session": 0,
+        "from": "LT_201",
+        "to": "CS_Lab_06"
+      },
+      {
+        "section_id": "6CS 1215_AIML_A_lab",
+        "session": 0,
+        "from": "LT_301",
+        "to": "CS_Lab_08"
+      },
+      {
+        "section_id": "6CS 1215_AIML_B_LAB",
+        "session": 0,
+        "from": "LT_302",
+        "to": "CS_Lab_05"
+      },
+      {
+        "section_id": "6CS 1215_AIML_C_Lab",
+        "session": 0,
+        "from": "LT_208",
+        "to": "CS_Lab_05"
+      },
+      {
+        "section_id": "6CS 1215_AIML_D_lab",
+        "session": 0,
+        "from": "LT_209",
+        "to": "CS_Lab_07"
+      },
+      {
+        "section_id": "6CS 1215_AIML_E_LAb",
+        "session": 0,
+        "from": "LT_210",
+        "to": "CS_Lab_04"
+      },
+      {
+        "section_id": "6CS 1215_AIML_F_lab",
+        "session": 0,
+        "from": "LT_303",
+        "to": "CS_Lab_04"
+      },
+      {
+        "section_id": "6CS 1215_AIML_G_lab",
+        "session": 0,
+        "from": "LT_304",
+        "to": "CS_Lab_03"
+      },
+      {
+        "section_id": "6CS 1215_AIML_H_lab",
+        "session": 0,
+        "from": "LT_305",
+        "to": "CS_Lab_02"
+      },
+      {
+        "section_id": "6CS 1216_AIML_A_lab",
+        "session": 0,
+        "from": "LT_204",
+        "to": "CS_Lab_09"
+      },
+      {
+        "section_id": "6CS 1216_AIML_B_LAB",
+        "session": 0,
+        "from": "LT_205",
+        "to": "CS_Lab_08"
+      },
+      {
+        "section_id": "6CS 1216_AIML_C_Lab",
+        "session": 0,
+        "from": "LT_206",
+        "to": "CS_Lab_06"
+      },
+      {
+        "section_id": "6CS 1216_AIML_D_lab",
+        "session": 0,
+        "from": "LT_207",
+        "to": "CS_Lab_03"
+      },
+      {
+        "section_id": "6CS 1216_AIML_E_LAb",
+        "session": 0,
+        "from": "LT_208",
+        "to": "CS_Lab_04"
+      },
+      {
+        "section_id": "6CS 1216_AIML_H_lab",
+        "session": 0,
+        "from": "LT_212",
+        "to": "CS_Lab_02"
+      },
+      {
+        "section_id": "6CS 1216_CC_Lab",
+        "session": 0,
+        "from": "LT_213",
+        "to": "CS_Lab_09"
+      },
+      {
+        "section_id": "6CS 1225_CC",
+        "session": 0,
+        "from": "CS_Room",
+        "to": "LT_205"
+      },
+      {
+        "section_id": "6CS 1225_CC_Lab",
+        "session": 0,
+        "from": "LT_101",
+        "to": "CS_Lab_11"
+      },
+      {
+        "section_id": "6CS 1231_CS_A_Lab",
+        "session": 0,
+        "from": "LT_308",
+        "to": "CS_Lab_01"
+      },
+      {
+        "section_id": "6CS 1231_CS_B_Lab",
+        "session": 0,
+        "from": "LT_401",
+        "to": "CS_Lab_10"
+      },
+      {
+        "section_id": "6CS 1232_CS_A_Lab",
+        "session": 0,
+        "from": "LT_102",
+        "to": "CS_Lab_11"
+      },
+      {
+        "section_id": "6CS 1232_CS_B_Lab",
+        "session": 0,
+        "from": "LT_105",
+        "to": "CS_Lab_07"
+      },
+      {
+        "section_id": "6CS 1233_CS_A_Lab",
+        "session": 0,
+        "from": "LT_202",
+        "to": "CS_Lab_03"
+      },
+      {
+        "section_id": "6CS 1233_CS_B_Lab",
+        "session": 0,
+        "from": "LT_203",
+        "to": "CS_Lab_02"
+      },
+      {
+        "section_id": "6CS 1295_DA_B_Lab",
+        "session": 0,
+        "from": "LT_207",
+        "to": "CS_Lab_01"
+      },
+      {
+        "section_id": "6CS 1296_DA_A_Lab",
+        "session": 0,
+        "from": "LT_402",
+        "to": "CS_Lab_07"
+      },
+      {
+        "section_id": "6CS 1296_DA_B_Lab",
+        "session": 0,
+        "from": "LT_403",
+        "to": "CS_Lab_08"
+      },
+      {
+        "section_id": "6CS 1297_DA_A_Lab",
+        "session": 0,
+        "from": "LT_204",
+        "to": "CS_Lab_01"
+      },
+      {
+        "section_id": "6CS 1297_DA_B_Lab",
+        "session": 0,
+        "from": "LT_205",
+        "to": "CS_Lab_08"
+      },
+      {
+        "section_id": "6HS 1505_DA_B",
+        "session": 0,
+        "from": "LT_201",
+        "to": "LT_107"
+      },
+      {
+        "section_id": "6IT 1021_IT_Gen_lab",
+        "session": 0,
+        "from": "LT_205",
+        "to": "CS_Lab_07"
+      },
+      {
+        "section_id": "6IT 1023_IT_Gen_lab",
+        "session": 0,
+        "from": "CS_Room",
+        "to": "CS_Lab_11"
+      },
+      {
+        "section_id": "6IT 1024_IT_Gen_A",
+        "session": 0,
+        "from": "CS_Room",
+        "to": "LT_201"
+      },
+      {
+        "section_id": "6IT 1024_IT_Gen_lab",
+        "session": 0,
+        "from": "LT_102",
+        "to": "CS_Lab_12"
+      },
+      {
+        "section_id": "6IT 1039_IT_CC",
+        "session": 0,
+        "from": "LT_407",
+        "to": "LT_106"
+      },
+      {
+        "section_id": "6IT 1042_IT_CCIT_lab",
+        "session": 0,
+        "from": "LT_206",
+        "to": "CS_Lab_06"
+      },
+      {
+        "section_id": "6IT 1043_IT_CCIT_lab",
+        "session": 0,
+        "from": "CS_Lab_01",
+        "to": "CS_Lab_11"
+      },
+      {
+        "section_id": "6IT 1206_IT_Gen",
+        "session": 0,
+        "from": "LT_209",
+        "to": "LT_403"
+      },
+      {
+        "section_id": "6IT 1206_IT_Gen_lab",
+        "session": 0,
+        "from": "LT_404",
+        "to": "CS_Lab_12"
+      },
+      {
+        "section_id": "6IT 1207_IT_Gen_lab",
+        "session": 0,
+        "from": "LT_102",
+        "to": "CS_Lab_07"
+      },
+      {
+        "section_id": "6IT 1213_IT_CCIT",
+        "session": 0,
+        "from": "LT_102",
+        "to": "LT_305"
+      },
+      {
+        "section_id": "6IT 1213_IT_CCIT_lab",
+        "session": 0,
+        "from": "LT_103",
+        "to": "CS_Lab_11"
+      }
+    ],
+    "unscheduled_original": [
+      "6IT 1043_IT_CCIT",
+      "6CS 1018_AIML_D",
+      "6CS 1018_AIML_A",
+      "6CS 1018_AIML_B",
+      "6CS 1018_AIML_C",
+      "6CS 1018_AIML_F",
+      "6CS 1018_AIML_G",
+      "6CS 1018_AIML_E",
+      "6CS 1018_AIML_H",
+      "6IT 1043_IT_CC"
+    ],
+    "unscheduled_optimized": [
+      "6CS 1207_AIML_E_LAb",
+      "5IT 1259_IT_CCIT_Lab",
+      "6HS 1505_Gen_B",
+      "6HS 1505_Gen_C",
+      "6HS 1505_AIML_A",
+      "6HS 1505_AIML_B",
+      "6HS 1505_AIML_C",
+      "6HS 1505_AIML_D",
+      "6HS 1505_AIML_E",
+      "6HS 1505_AIML_F",
+      "6HS 1505_AIML_G",
+      "6HS 1505_AIML_H",
+      "6HS 1505_CC",
+      "6HS 1505_DA_A",
+      "6HS 1505_CS_A",
+      "6HS 1505_CS_B",
+      "6HS 1505_IT_Gen",
+      "6IT 1023_IT_Gen",
+      "5CS 1014_DA_B_lab",
+      "6CS 1216_AIML_F_lab",
+      "6CS 1216_AIML_G_lab",
+      "6CS 1035_CS_B_lab"
+    ],
+    "conflict_delta": {
+      "original_hard_violations": 123,
+      "optimized_hard_violations": 0,
+      "original_by_rule": {
+        "H5": 123
+      },
+      "optimized_by_rule": {},
+      "original_unplaced_selections": 374,
+      "optimized_unplaced_selections": 50
+    },
+    "metrics_original": {
+      "method": "baseline",
+      "validator_status": "INVALID",
+      "solver_status": "BASELINE",
+      "stage_a_status": "BASELINE",
+      "stage_a_objective": null,
+      "stage_a_best_bound": null,
+      "stage_a_branches": null,
+      "stage_a_conflicts": null,
+      "stage_b_status": "NOT_RUN",
+      "stage_b_status_reason": null,
+      "stage_b_objective": null,
+      "stage_b_best_bound": null,
+      "stage_b_branches": null,
+      "stage_b_conflicts": null,
+      "complete_allocation_status": null,
+      "complete_allocation_reason": null,
+      "hard_violations": 123,
+      "violations_by_rule": {
+        "H5": 123
+      },
+      "scheduled_sections": "308/318",
+      "placed_selections": 0,
+      "total_selections": 374,
+      "unplaced_selections": "374/374",
+      "fully_scheduled_students_pct": 0.0,
+      "room_utilization_pct": 23.5,
+      "faculty_load_range_h": [
+        0,
+        6
+      ],
+      "faculty_load_std_h": 1.12,
+      "runtime_s": 0.0
+    },
+    "metrics_optimized": {
+      "method": "cpsat",
+      "validator_status": "VALID_INCOMPLETE",
+      "solver_status": "FEASIBLE",
+      "stage_a_status": "FEASIBLE",
+      "stage_a_objective": 13157004.0,
+      "stage_a_best_bound": 6.0,
+      "stage_a_branches": 5018,
+      "stage_a_conflicts": 406,
+      "stage_b_status": "OPTIMAL",
+      "stage_b_status_reason": null,
+      "stage_b_objective": 38252934.0,
+      "stage_b_best_bound": 38252934.0,
+      "stage_b_branches": 572323,
+      "stage_b_conflicts": 240,
+      "complete_allocation_status": "INFEASIBLE",
+      "complete_allocation_reason": "The best feasible partial allocation leaves 50 required selections unplaced under the hard session, workload, lunch, overlap, waiting-time, and capacity constraints.",
+      "hard_violations": 0,
+      "violations_by_rule": {},
+      "scheduled_sections": "296/318",
+      "placed_selections": 324,
+      "total_selections": 374,
+      "unplaced_selections": "50/374",
+      "fully_scheduled_students_pct": 16.7,
+      "room_utilization_pct": 23.1,
+      "faculty_load_range_h": [
+        0,
+        6
+      ],
+      "faculty_load_std_h": 1.33,
+      "runtime_s": 21.17
+    },
+    "notes": [
+      "Optimized timetable has fewer hard-constraint violations than the original.",
+      "Fewer sections are scheduled after optimization."
+    ],
+    "counts": {
+      "moved_classes": 35,
+      "faculty_changes": 9,
+      "room_changes": 126
+    }
+  }
+}

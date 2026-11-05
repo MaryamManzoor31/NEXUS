@@ -1,0 +1,3 @@
+faculty_id,name,qualified,max_hours,unavailable,school_id,department_id,designation
+F101,Faculty One,CS101;MA101,16,,SOET,CSE,Assistant Professor
+F102,Faculty Two,CS102,16,,SOET,CSE,Assistant Professor

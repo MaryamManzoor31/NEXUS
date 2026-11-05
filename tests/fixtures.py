@@ -19,7 +19,7 @@ def tiny_valid():
     """A fully valid schedule for tiny()."""
     # This known-good schedule is the baseline for validator mutation tests.
     s = Schedule(method="hand")
-    s.placement = {("A1", 0): (0, "R1"), ("B1", 0): (1, "R1"), ("B2", 0): (2, "R2"), ("L1", 0): (6, "L1")}
+    s.placement = {("A1", 0): (0, "R1"), ("B1", 0): (1, "R1"), ("B2", 0): (2, "R2"), ("L1", 0): (2, "L1")}
     s.faculty = {"A1": "F1", "B1": "F2", "B2": "F2", "L1": "F1"}
     s.enrolment = {"S1": {"A": "A1", "B": "B1"}, "S2": {"A": "A1", "L": "L1"}, "S3": {"B": "B2"}}
     return s

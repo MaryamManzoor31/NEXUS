@@ -1,0 +1,4 @@
+course_id,title,category,credits,pattern,school_id,department_id,programme_id,stream,semester,academic_year,course_type
+CS101,Programming Fundamentals,Major,3,1:CLASS,SOET,CSE,CSE,CSE,1,2026-27,major
+CS102,Data Structures,Major,3,1:CLASS,SOET,CSE,CSE,CSE,1,2026-27,major
+MA101,Discrete Mathematics,Ability-Enhancement,2,1:CLASS,SOET,MAT,CSE,CSE,1,2026-27,ability

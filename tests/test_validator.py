@@ -60,7 +60,7 @@ class ValidatorTests(unittest.TestCase):
         self.assertIn("H7", self.rules(s)[1])
 
     def test_m_day_boundary_H8(self):
-        s = mutate(self.ok, placement={("L1", 0): (5, "L1")})        # 2h session at slot 5 crosses day 0 -> day 1
+        s = mutate(self.ok, placement={("L1", 0): (9, "L1")})        # 2h session at slot 9 crosses day 0 -> day 1
         self.assertIn("H8", self.rules(s)[1])
 
     def test_m_missing_session_H9(self):

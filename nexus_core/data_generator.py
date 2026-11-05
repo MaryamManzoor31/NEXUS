@@ -96,7 +96,7 @@ def generate(n_students=500, scenario="S3", seed=329, n_faculty=30, n_class=20, 
     faculty = {}
     for f in fids:
         off_day = rng.randrange(DAYS)
-        un = frozenset(range(off_day * PERIODS + 3, off_day * PERIODS + PERIODS))   # one afternoon off
+        un = frozenset(range(off_day * PERIODS + 5, off_day * PERIODS + PERIODS))   # one afternoon off
         faculty[f] = Faculty(f, f"Faculty {f}", frozenset(quals[f]), 18, un)
     return Dataset(name or f"synthetic_{scenario}_{n_students}_seed{seed}", courses, sections, faculty, rooms,
                    students, True, {"scenario": scenario, "seed": seed, "n_students": n_students})

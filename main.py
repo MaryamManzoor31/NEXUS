@@ -1,24 +1,15 @@
 """NEXUS command line.  Use `python main.py optimize|export-csv|validate-csv|import|excel|web`."""
 import argparse, json, os, sys
+from datetime import datetime, timezone
 from nexus_core.data_generator import generate
 from nexus_core.cpsat import cpsat
 from nexus_core.metrics import compute
 from nexus_core.validator import validate
-from nexus_core.input_validator import load_csv, save_csv, check_dataset
+from nexus_core.input_validator import load_csv, save_csv
 from nexus_core.importer import import_folder, load_timetable_csv
 from nexus_core.compare import compare_schedules
-from nexus_core.models import Faculty, PREFERRED, FIXED, FLEXIBLE
+from nexus_core.models import PREFERRED, FIXED, FLEXIBLE
 from nexus_core import db
-
-
-def _qualify(ds, sid, fid):
-    f = ds.faculty[fid]
-    ds.faculty[fid] = Faculty(
-        id=f.id, name=f.name,
-        qualified=f.qualified | {ds.sections[sid].course_id},
-        max_hours=f.max_hours, unavailable=f.unavailable,
-        school_id=f.school_id, department_id=f.department_id, designation=f.designation,
-    )
 
 
 def main():
@@ -43,33 +34,25 @@ def main():
     imp.add_argument("--out", default="experiments/results")
     imp.add_argument("--no-optimize", action="store_true", help="validate/import only; do not run CP-SAT")
     w = sub.add_parser("web", help="start the interactive web timetable dashboard")
-    w.add_argument("--port", type=int, default=5000); w.add_argument("--host", default="127.0.0.1")
-    x = sub.add_parser("excel", help="load a university allocation Excel file, allocate members, and generate timetable")
+    w.add_argument("--port", type=int, default=5001); w.add_argument("--host", default="127.0.0.1")
+    x = sub.add_parser("excel", help="load a university allocation Excel file and optimize with CP-SAT")
     x.add_argument("file", help="path to the .xlsx workbook")
     x.add_argument("--sem", default="6", help="semester filter: 2, 4, 6, 8, or all (default: 6)")
-    x.add_argument("--allocate-members", action="store_true", default=True, help="allocate unassigned faculty members")
     x.add_argument("--baseline", default=None, help="optional existing timetable CSV used as optimization baseline")
     x.add_argument("--mode", default=PREFERRED, choices=[FIXED, PREFERRED, FLEXIBLE])
     x.add_argument("--out", default="experiments/results", help="output directory for results")
     a = ap.parse_args()
+    run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     if a.cmd == "web":
         from web.server import app
         print(f"\nNEXUS Web App running at http://{a.host}:{a.port}\n")
         app.run(host=a.host, port=a.port, debug=False)
     elif a.cmd == "excel":
         from nexus_core.excel_parser import parse_allocation_workbook
-        from nexus_core.member_allocator import allocate_faculty_members
         print(f"\n[EXCEL INGESTION] Reading: {a.file} (Semester: {a.sem})")
         ds, meta = parse_allocation_workbook(a.file, semester_filter=a.sem)
         print(f"Loaded: {len(ds.courses)} courses, {len(ds.sections)} sections, {len(ds.faculty)} faculty, {len(ds.rooms)} rooms")
         print(f"Pre-assigned sections: {meta['total_pre_assigned']} | Unassigned: {meta['total_unassigned']}")
-
-        if a.allocate_members:
-            alloc = allocate_faculty_members(ds, meta["pre_assigned_faculty"], meta["raw_faculty_info"])
-            print(f"[FACULTY ALLOCATION] Active faculty: {alloc.stats['active_faculty_count']} | Workload utilization: {alloc.stats['overall_utilization_pct']}%")
-            for sid, fid in alloc.faculty_assignments.items():
-                if fid in ds.faculty and sid in ds.sections:
-                    _qualify(ds, sid, fid)
 
         if a.baseline:
             result = load_timetable_csv(
@@ -83,7 +66,10 @@ def main():
             print(f"[BASELINE] Attached {result.summary.get('baseline_assignments', 0)} assignments (mode={a.mode})")
 
         print("[TIMETABLE SOLVER] Running CP-SAT...")
-        sch = cpsat(ds, limit_a=30, limit_b=20, seed=329)
+        sch = cpsat(ds, limit_a=15, limit_b=12, seed=329, total_limit=30.0)
+        if sch.status not in ("OPTIMAL", "FEASIBLE"):
+            print(f"CP-SAT produced no section timetable: {sch.info.get('stage_a_status', sch.status)}")
+            sys.exit(2)
         rep = validate(ds, sch)
         met = compute(ds, sch)
         print(f"Solver Status: {sch.status} | Validator: {rep.status}")
@@ -96,7 +82,7 @@ def main():
                 print(" ", note)
 
         os.makedirs(a.out, exist_ok=True)
-        base = os.path.join(a.out, f"timetable_{ds.name}")
+        base = os.path.join(a.out, f"timetable_{ds.name}_{run_id}")
         from web.serializer import generate_timetable_csv
         with open(base + ".csv", "w", newline="", encoding="utf-8") as f:
             f.write(generate_timetable_csv(ds, sch))
@@ -114,11 +100,14 @@ def main():
             sys.exit(0)
         print("[TIMETABLE SOLVER] Running CP-SAT on imported real dataset...")
         sch = cpsat(ds, a.limit_a, a.limit_b, seed=329)
+        if sch.status not in ("OPTIMAL", "FEASIBLE"):
+            print(f"CP-SAT produced no section timetable: {sch.info.get('stage_a_status', sch.status)}")
+            sys.exit(2)
         rep = validate(ds, sch)
         met = compute(ds, sch)
         print(json.dumps(met, indent=2))
         os.makedirs(a.out, exist_ok=True)
-        base = os.path.join(a.out, f"timetable_{ds.name}")
+        base = os.path.join(a.out, f"timetable_{ds.name}_{run_id}")
         from web.serializer import generate_timetable_csv
         with open(base + ".csv", "w", newline="", encoding="utf-8") as f:
             f.write(generate_timetable_csv(ds, sch))
@@ -151,9 +140,19 @@ def main():
         db.save_run(con, ds, sch, validate(ds, sch))
         rows = [metrics]
         print(json.dumps(metrics))
-        base = os.path.join(a.out, f"{ds.name}")
-        json.dump({"dataset": ds.name, "synthetic": True, "ortools": __import__("ortools").__version__, "results": rows}, open(base + ".json", "w"), indent=1, default=list)
-        print("saved", base + ".json")
+        base = os.path.join(a.out, f"{ds.name}_{run_id}")
+        result_path = base + ".json"
+        with open(result_path, "w", encoding="utf-8") as result_file:
+            json.dump({
+                "run_id": run_id,
+                "dataset": ds.name,
+                "synthetic": True,
+                "ortools": __import__("ortools").__version__,
+                "solver_status": sch.status,
+                "validation_status": validate(ds, sch).status,
+                "results": rows,
+            }, result_file, indent=2, default=list)
+        print("saved", result_path)
 
 
 if __name__ == "__main__":

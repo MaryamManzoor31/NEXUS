@@ -4,6 +4,14 @@ from __future__ import annotations
 from collections import defaultdict
 from dataclasses import dataclass, field
 from .models import *
+from .common import (
+    EXTENDED_SESSIONS,
+    LUNCH_SLOTS,
+    allowed_student_day_sessions,
+    semester_session_starts,
+    starts_for,
+    student_section_options,
+)
 
 
 @dataclass
@@ -71,6 +79,16 @@ def validate(ds: Dataset, sched: Schedule) -> Report:
         scheduled.add(sid)
         for k, spec in enumerate(specs):
             start, rid = sched.placement[(sid, k)]
+            semester_mode = ds.meta.get("semester_sessions", {}).get(str(sec.semester).strip())
+            if semester_mode:
+                allowed_starts = semester_session_starts(
+                    sec.semester, semester_mode, starts_for(spec.duration), spec.duration
+                )
+                if start not in allowed_starts:
+                    add(
+                        "H16",
+                        f"{sid}#{k} starts at slot {start}, outside semester {sec.semester} {semester_mode} window",
+                    )
             if rid not in ds.rooms:
                 add("MALFORMED", f"{sid}#{k} unknown room {rid}"); continue
             if not (0 <= start and start + spec.duration <= N_SLOTS) or start // PERIODS != (start + spec.duration - 1) // PERIODS:
@@ -111,6 +129,8 @@ def validate(ds: Dataset, sched: Schedule) -> Report:
     unplaced = []
     for stid, st in ds.students.items():
         enr = sched.enrolment.get(stid, {})
+        student_day_sessions = defaultdict(list)
+        student_day_intervals = defaultdict(list)
         for c in enr:
             if c not in st.selections:
                 add("H11", f"{stid} enrolled in {c} which was not selected")
@@ -121,15 +141,137 @@ def validate(ds: Dataset, sched: Schedule) -> Report:
                 unplaced.append((stid, c)); continue
             if sid not in ds.sections or ds.sections[sid].course_id != c:
                 add("H11", f"{stid}: section {sid} is not a section of {c}"); continue
+            if sid not in student_section_options(ds, st, c, [section.id for section in ds.sections_of(c)]):
+                add("H17", f"{stid}: section {sid} is not offered to the student's cohort")
+            if (
+                ds.meta.get("semester_sessions", {}).get(str(st.semester).strip())
+                and str(ds.sections[sid].semester).strip() != str(st.semester).strip()
+            ):
+                add("H16", f"{stid}: section {sid} is outside the student's semester {st.semester}")
             if sid not in scheduled:
                 add("H11", f"{stid} enrolled in unscheduled section {sid}"); continue
             count[sid] += 1
             chosen.append(sid)
+            for k, spec in enumerate(ds.section_sessions(sid)):
+                start = sched.placement[(sid, k)][0]
+                day = start // PERIODS
+                student_day_sessions[day].append(tuple(range(start, start + spec.duration)))
+                start_period = start % PERIODS
+                end_period = (start + spec.duration - 1) % PERIODS
+                start_text = SESSION_TIMES[start_period][0]
+                end_text = SESSION_TIMES[end_period][1]
+                start_minute = int(start_text[:2]) * 60 + int(start_text[3:])
+                end_minute = int(end_text[:2]) * 60 + int(end_text[3:])
+                student_day_intervals[day].append((start_minute, end_minute))
         for i, a in enumerate(chosen):
             for b in chosen[i + 1:]:
                 ov = occupied[a] & occupied[b]
                 if ov:
                     add("H3", f"student {stid}: {a} and {b} overlap in slots {sorted(ov)}")
+        for day, sessions in student_day_sessions.items():
+            allowed_modes = allowed_student_day_sessions(sessions)
+            mode = sched.student_categories.get(stid, {}).get(day)
+            semester_mode = ds.meta.get("semester_sessions", {}).get(str(st.semester).strip())
+            expected_modes = {
+                MORNING_SESSION: {MORNING_SESSION, EXTENDED_EARLY_SESSION},
+                AFTERNOON_SESSION: {AFTERNOON_SESSION, EXTENDED_LATE_SESSION},
+            }.get(semester_mode)
+            if expected_modes and mode not in expected_modes:
+                add("H16", f"student {stid} day {day}: category {mode!r} does not match semester {st.semester} {semester_mode}")
+            if mode is None:
+                mode = next(iter(allowed_modes), None)
+            # The daily category follows actual required/assigned class hours, not
+            # the number of course selections. A partial >5h day cannot pass as half-day.
+            required_hours = sum(
+                spec.duration
+                for sid in chosen
+                for k, spec in enumerate(ds.section_sessions(sid))
+                if sched.placement[(sid, k)][0] // PERIODS == day
+            )
+            required_midday_slots = {
+                slot % PERIODS
+                for sid in chosen
+                for k, spec in enumerate(ds.section_sessions(sid))
+                if sched.placement[(sid, k)][0] // PERIODS == day
+                for slot in range(
+                    sched.placement[(sid, k)][0],
+                    sched.placement[(sid, k)][0] + spec.duration,
+                )
+                if slot % PERIODS in LUNCH_SLOTS
+            }
+            # If an unplaced selection has only scheduled eligible offerings on
+            # this day, it still contributes to the student's required daily load.
+            # Keep incomplete schedules explicit rather than validating the student
+            # as half-day simply because that selection was left unassigned.
+            for course_id in st.selections:
+                if course_id in enr:
+                    continue
+                candidate_ids = student_section_options(
+                    ds, st, course_id, [section.id for section in ds.sections_of(course_id)]
+                )
+                candidate_daily_hours = []
+                for candidate_id in candidate_ids:
+                    candidate_sessions = ds.section_sessions(candidate_id)
+                    candidate_placements = [
+                        sched.placement.get((candidate_id, k))
+                        for k in range(len(candidate_sessions))
+                    ]
+                    if all(placement is not None for placement in candidate_placements):
+                        candidate_daily_hours.append(sum(
+                            spec.duration
+                            for k, spec in enumerate(candidate_sessions)
+                            if candidate_placements[k][0] // PERIODS == day
+                        ))
+                candidate_midday_slots = []
+                for candidate_id in candidate_ids:
+                    candidate_sessions = ds.section_sessions(candidate_id)
+                    candidate_placements = [
+                        sched.placement.get((candidate_id, k))
+                        for k in range(len(candidate_sessions))
+                    ]
+                    if all(placement is not None for placement in candidate_placements):
+                        candidate_midday_slots.append({
+                            slot % PERIODS
+                            for k, spec in enumerate(candidate_sessions)
+                            if candidate_placements[k][0] // PERIODS == day
+                            for slot in range(
+                                candidate_placements[k][0],
+                                candidate_placements[k][0] + spec.duration,
+                            )
+                            if slot % PERIODS in LUNCH_SLOTS
+                        })
+                if (
+                    len(candidate_daily_hours) == len(candidate_ids)
+                    and candidate_daily_hours
+                    and len(set(candidate_daily_hours)) == 1
+                ):
+                    required_hours += candidate_daily_hours[0]
+                if (
+                    len(candidate_midday_slots) == len(candidate_ids)
+                    and candidate_midday_slots
+                    and all(slots == candidate_midday_slots[0] for slots in candidate_midday_slots)
+                ):
+                    required_midday_slots.update(candidate_midday_slots[0])
+            if mode not in allowed_modes:
+                add("H15", f"student {stid} day {day}: sessions do not fit category {mode!r}")
+                continue
+            if mode not in EXTENDED_SESSIONS and required_hours > 5:
+                add("H15", f"student {stid} day {day}: required class hours exceed the half-day limit")
+            elif mode in EXTENDED_SESSIONS and required_hours <= 5:
+                add("H15", f"student {stid} day {day}: extended session requires more than 5 required class hours")
+            if mode in EXTENDED_SESSIONS:
+                if len(required_midday_slots) > len(LUNCH_SLOTS) - 1:
+                    add("H15", f"student {stid} day {day}: extended session lacks a continuous one-hour lunch break")
+            intervals = sorted(student_day_intervals[day])
+            for (_, previous_end), (next_start, _) in zip(intervals, intervals[1:]):
+                if next_start - previous_end <= 120:
+                    continue
+                protected_lunch = (
+                    mode in EXTENDED_SESSIONS
+                    and min(next_start, 14 * 60) - max(previous_end, 12 * 60) >= 60
+                )
+                if not protected_lunch:
+                    add("H18", f"student {stid} day {day}: waiting gap of {next_start - previous_end} minutes exceeds 120 minutes")
     for sid, n in count.items():
         if n > ds.sections[sid].capacity:
             add("H12", f"{sid} has {n} students > capacity {ds.sections[sid].capacity}")
@@ -164,3 +306,5 @@ def validate(ds: Dataset, sched: Schedule) -> Report:
     else:
         status = "VALID_COMPLETE"
     return Report(status, V, uns, unplaced, missing_info)
+
+

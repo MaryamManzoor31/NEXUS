@@ -1,0 +1,4 @@
+room_id,type,capacity,unavailable,school_id,building
+R101,CLASS,40,,SOET,A
+R102,CLASS,40,,SOET,A
+R103,CLASS,40,,SOET,B

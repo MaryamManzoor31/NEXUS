@@ -14,11 +14,12 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Any
 
+from .common import normalized_course_category, split_course_ids
 from .input_validator import Issue, check_dataset, parse_pattern, _slots
 from .models import (
     ASSIGNMENT_MODES, BaselineAssignment, CLASS, Course, Dataset, Faculty,
-    FIXED, FLEXIBLE, LAB, PREFERRED, Room, Schedule, Section, SessionSpec,
-    Student, day_period_to_slot,
+    FIXED, FLEXIBLE, LAB, MAX_SESSION_DURATION, PREFERRED, Room, Schedule, Section, SessionSpec,
+    Student, SESSION_START_MINUTES, day_period_to_slot,
 )
 
 
@@ -75,8 +76,11 @@ ENTITY_FIELDS: dict[str, dict[str, dict]] = {
         "student_id": {"required": True, "aliases": ["student_id", "student", "roll", "roll_no", "reg_no"]},
         "programme": {"required": False, "aliases": ["programme", "program", "programme_id"]},
         "selections": {"required": False, "aliases": ["selections", "courses", "selected_courses", "course_ids"]},
+        "minor_electives": {"required": False, "aliases": ["minor_electives", "minor electives", "minor selections", "minor subjects", "minor courses"]},
+        "elective_selections": {"required": False, "aliases": ["elective_selections", "elective selections", "selected electives", "electives"]},
         "school_id": {"required": False, "aliases": ["school_id", "school"]},
         "stream": {"required": False, "aliases": ["stream"]},
+        "department_id": {"required": False, "aliases": ["department_id", "department", "dept", "dept_id"]},
         "semester": {"required": False, "aliases": ["semester", "sem"]},
         "batch": {"required": False, "aliases": ["batch", "section", "cohort"]},
     },
@@ -87,6 +91,7 @@ ENTITY_FIELDS: dict[str, dict[str, dict]] = {
         "category": {"required": False, "aliases": ["category"]},
         "day": {"required": True, "aliases": ["day", "weekday"]},
         "period": {"required": True, "aliases": ["period", "slot", "period_no"]},
+        "time_range": {"required": False, "aliases": ["time range", "period time", "time slot"]},
         "duration": {"required": False, "aliases": ["duration", "duration (hrs)", "hours", "duration_hrs"]},
         "room_id": {"required": True, "aliases": ["room_id", "room", "classroom"]},
         "room_type": {"required": False, "aliases": ["room_type", "room type"]},
@@ -273,6 +278,19 @@ def _parse_period(raw: str) -> int:
     return int(m.group(1))
 
 
+def _parse_start_slot(day: str, period_raw: str, time_range: str = "") -> int:
+    time_match = re.search(r"(\d{1,2}):(\d{2})", time_range or "")
+    if time_match:
+        hour, minute = map(int, time_match.groups())
+        start_minute = hour * 60 + minute
+        period = min(
+            range(len(SESSION_START_MINUTES)),
+            key=lambda index: abs(SESSION_START_MINUTES[index] - start_minute),
+        )
+        return day_period_to_slot(day, period + 1)
+    return day_period_to_slot(day, _parse_period(period_raw))
+
+
 def _parse_mode(raw: str, default: str = PREFERRED) -> str:
     v = (raw or default).strip().lower()
     if v in ("1", "true", "yes", "fixed"):
@@ -318,15 +336,16 @@ def build_dataset_from_mapped_tables(
                         rtype = LAB
                     else:
                         rtype = CLASS
-                    sessions = (SessionSpec(max(1, min(dur, 6)), rtype),)
+                    sessions = (SessionSpec(max(1, min(dur, MAX_SESSION_DURATION)), rtype),)
                 credits = int(_get(row, mapping, "credits", "3") or "3")
             except (ValueError, TypeError) as e:
                 issues.append(Issue("ERROR", f"courses line {i}", f"malformed record ({e})"))
                 continue
+            course_type = _get(row, mapping, "course_type")
             courses[cid] = Course(
                 id=cid,
                 title=title,
-                category=_get(row, mapping, "category", "Core") or "Core",
+                category=normalized_course_category(_get(row, mapping, "category"), course_type),
                 credits=credits,
                 sessions=sessions,
                 school_id=_get(row, mapping, "school_id"),
@@ -335,7 +354,7 @@ def build_dataset_from_mapped_tables(
                 stream=_get(row, mapping, "stream"),
                 semester=_get(row, mapping, "semester"),
                 academic_year=_get(row, mapping, "academic_year"),
-                course_type=_get(row, mapping, "course_type"),
+                course_type=course_type,
             )
 
     # ---- rooms ----
@@ -430,7 +449,11 @@ def build_dataset_from_mapped_tables(
             if stid in students:
                 issues.append(Issue("ERROR", f"students line {i}", f"duplicate id {stid}"))
                 continue
-            sels = tuple(x for x in _get(row, mapping, "selections").split(";") if x)
+            sels = split_course_ids(
+                _get(row, mapping, "selections"),
+                _get(row, mapping, "minor_electives"),
+                _get(row, mapping, "elective_selections"),
+            )
             students[stid] = Student(
                 id=stid,
                 programme=_get(row, mapping, "programme", "Unknown") or "Unknown",
@@ -439,6 +462,7 @@ def build_dataset_from_mapped_tables(
                 stream=_get(row, mapping, "stream"),
                 semester=_get(row, mapping, "semester"),
                 batch=_get(row, mapping, "batch"),
+                department_id=_get(row, mapping, "department_id"),
             )
     elif require_students:
         issues.append(Issue("ERROR", "students", "student records are required for this import"))
@@ -460,8 +484,7 @@ def build_dataset_from_mapped_tables(
                 ))
                 continue
             try:
-                period = _parse_period(period_raw)
-                start = day_period_to_slot(day, period)
+                start = _parse_start_slot(day, period_raw, _get(row, mapping, "time_range"))
                 dur = int(_get(row, mapping, "duration", "1") or "1")
                 mode = _parse_mode(_get(row, mapping, "mode"), default_assignment_mode)
                 k_raw = _get(row, mapping, "session_index")
@@ -482,7 +505,7 @@ def build_dataset_from_mapped_tables(
                     title=title,
                     category=_get(row, mapping, "category", "Core") or "Core",
                     credits=3,
-                    sessions=(SessionSpec(max(1, min(dur, 6)), rtype),),
+                    sessions=(SessionSpec(max(1, min(dur, MAX_SESSION_DURATION)), rtype),),
                     school_id=_get(row, mapping, "school_id"),
                     stream=_get(row, mapping, "stream"),
                 )
@@ -540,7 +563,7 @@ def build_dataset_from_mapped_tables(
                 c = courses[cid]
                 extra = list(c.sessions)
                 while len(extra) <= k:
-                    extra.append(SessionSpec(max(1, min(dur, 6)), rtype))
+                    extra.append(SessionSpec(max(1, min(dur, MAX_SESSION_DURATION)), rtype))
                 courses[cid] = Course(
                     id=c.id, title=c.title, category=c.category, credits=c.credits,
                     sessions=tuple(extra), school_id=c.school_id, department_id=c.department_id,
@@ -728,7 +751,7 @@ def load_timetable_csv(
                 school_id=f.school_id, department_id=f.department_id, designation=f.designation,
             )
         try:
-            start = day_period_to_slot(day, _parse_period(period_raw))
+            start = _parse_start_slot(day, period_raw, _get(row, mapping, "time_range"))
             mode = _parse_mode(_get(row, mapping, "mode"), default_mode)
             k_raw = _get(row, mapping, "session_index")
             k = int(k_raw) if k_raw else 0

@@ -4,6 +4,7 @@ import csv
 import os
 from dataclasses import dataclass
 from .models import *
+from .common import is_minor_or_elective, normalized_course_category, split_course_ids
 
 
 @dataclass
@@ -40,8 +41,8 @@ def check_dataset(ds: Dataset):
         if not c.sessions:
             iss.append(Issue("ERROR", f"course {c.id}", "no sessions defined"))
         for x in c.sessions:
-            if not 1 <= x.duration <= PERIODS:
-                iss.append(Issue("ERROR", f"course {c.id}", f"session duration {x.duration} outside 1..{PERIODS}"))
+            if not 1 <= x.duration <= MAX_SESSION_DURATION:
+                iss.append(Issue("ERROR", f"course {c.id}", f"session duration {x.duration} outside 1..{MAX_SESSION_DURATION}"))
             if x.room_type not in (CLASS, LAB):
                 iss.append(Issue("ERROR", f"course {c.id}", f"unknown room type {x.room_type}"))
     for s in ds.sections.values():
@@ -106,8 +107,11 @@ def save_csv(ds: Dataset, folder):
       [[r.id, r.type, r.capacity, ";".join(map(str, sorted(r.unavailable))), r.school_id, r.building]
        for r in ds.rooms.values()])
     w("students.csv",
-      ["student_id", "programme", "selections", "school_id", "stream", "semester", "batch"],
-      [[s.id, s.programme, ";".join(s.selections), s.school_id, s.stream, s.semester, s.batch]
+      ["student_id", "programme", "selections", "minor_electives", "school_id", "department_id", "stream", "semester", "batch"],
+      [[s.id, s.programme, ";".join(s.selections),
+        ";".join(course_id for course_id in s.selections
+                 if course_id in ds.courses and is_minor_or_elective(ds.courses[course_id])),
+        s.school_id, s.department_id, s.stream, s.semester, s.batch]
        for s in ds.students.values()])
     if ds.baseline:
         from .models import slot_to_day_period
@@ -142,7 +146,7 @@ def load_csv(folder, name="csv_import", default_assignment_mode="preferred"):
             "sections.csv": ["section_id", "course_id", "capacity"],
             "faculty.csv": ["faculty_id", "name", "qualified", "max_hours", "unavailable"],
             "rooms.csv": ["room_id", "type", "capacity", "unavailable"],
-            "students.csv": ["student_id", "programme", "selections"]}
+            "students.csv": ["student_id", "programme"]}
     for fn, cols in spec.items():
         path = os.path.join(folder, fn)
         if not os.path.exists(path):
@@ -151,6 +155,14 @@ def load_csv(folder, name="csv_import", default_assignment_mode="preferred"):
             rd = csv.DictReader(fh)
             if rd.fieldnames is None or any(c not in rd.fieldnames for c in cols):
                 issues.append(Issue("ERROR", fn, f"expected columns {cols}, found {rd.fieldnames}")); continue
+            if fn == "students.csv" and not set(rd.fieldnames) & {
+                "selections", "minor_electives", "minor_selections", "minor_subjects",
+                "minor_courses", "elective_selections", "selected_electives", "electives",
+            }:
+                issues.append(Issue(
+                    "ERROR", fn,
+                    "expected at least one course-choice column: selections, minor_electives, or elective_selections",
+                )); continue
             tables[fn] = list(rd)
     if issues:
         return None, issues
@@ -169,7 +181,9 @@ def load_csv(folder, name="csv_import", default_assignment_mode="preferred"):
                 issues.append(Issue("ERROR", where, f"duplicate id {row[idcol]}")); continue
             objs[key][row[idcol]] = o
     build("courses.csv", "courses", "course_id", lambda r: Course(
-        r["course_id"], r["title"], r["category"], int(r["credits"]), parse_pattern(r["pattern"]),
+        r["course_id"], r["title"],
+        normalized_course_category(r["category"], g(r, "course_type")),
+        int(r["credits"]), parse_pattern(r["pattern"]),
         school_id=g(r, "school_id"), department_id=g(r, "department_id"), programme_id=g(r, "programme_id"),
         stream=g(r, "stream"), semester=g(r, "semester"), academic_year=g(r, "academic_year"),
         course_type=g(r, "course_type")))
@@ -186,8 +200,13 @@ def load_csv(folder, name="csv_import", default_assignment_mode="preferred"):
         r["room_id"], r["type"].upper(), int(r["capacity"]), _slots(r["unavailable"]),
         school_id=g(r, "school_id"), building=g(r, "building")))
     build("students.csv", "students", "student_id", lambda r: Student(
-        r["student_id"], r["programme"], tuple(x for x in r["selections"].split(";") if x),
-        school_id=g(r, "school_id"), stream=g(r, "stream"), semester=g(r, "semester"), batch=g(r, "batch")))
+        r["student_id"], r["programme"], split_course_ids(
+            r.get("selections"), r.get("minor_electives"), r.get("minor_selections"),
+            r.get("minor_subjects"), r.get("minor_courses"), r.get("elective_selections"),
+            r.get("selected_electives"), r.get("electives"),
+        ),
+        school_id=g(r, "school_id"), department_id=g(r, "department_id"),
+        stream=g(r, "stream"), semester=g(r, "semester"), batch=g(r, "batch")))
     ds = Dataset(name, objs["courses"], objs["sections"], objs["faculty"], objs["rooms"], objs["students"], synthetic=False)
     issues += check_dataset(ds)
     if any(i.severity == "ERROR" for i in issues):

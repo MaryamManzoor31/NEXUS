@@ -4,82 +4,134 @@ import os
 import json
 import tempfile
 import shutil
-from flask import Flask, request, jsonify, render_template, send_from_directory, Response
+import threading
+from flask import Flask, request, jsonify, render_template, Response, g
 
-from nexus_core.models import Dataset, Schedule, Faculty, PREFERRED
+from nexus_core.models import Dataset, Schedule, PREFERRED, MORNING_SESSION, AFTERNOON_SESSION
 from nexus_core.data_generator import generate
 from nexus_core.cpsat import cpsat, stage_a, stage_b
 from nexus_core.validator import validate
 from nexus_core.metrics import compute
-from nexus_core.input_validator import load_csv, check_dataset
+from nexus_core.input_validator import load_csv
 from nexus_core.excel_parser import parse_allocation_workbook
-from nexus_core.member_allocator import allocate_faculty_members
 from nexus_core.importer import import_folder, load_timetable_csv, set_assignment_modes, preview_folder
 from nexus_core.compare import compare_schedules
 from web.serializer import serialize_schedule, generate_timetable_csv
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 
-DEFAULT_EXCEL_PATH = os.path.abspath(os.path.join(
-    os.path.dirname(__file__), "..", "data", "Course - Faculty Allocation - Jan 2025 onwards (30-11-24)(1).xlsx"
-))
-DEFAULT_BASELINE_CSV = os.path.abspath(os.path.join(
-    os.path.dirname(__file__), "..", "experiments", "results", "timetable_univ_jan2025_sem_6.csv"
-))
-EXCEL_STAGE_A_TIME_LIMIT = 60
+
+@app.before_request
+def _lock_api_state():
+    if request.path.startswith("/api/"):
+        STATE_LOCK.acquire()
+        g.nexus_state_lock_acquired = True
+
+
+@app.teardown_request
+def _unlock_api_state(_error=None):
+    if getattr(g, "nexus_state_lock_acquired", False):
+        g.nexus_state_lock_acquired = False
+        STATE_LOCK.release()
+
+
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DEFAULT_EXCEL_PATH = os.path.join(
+    PROJECT_ROOT, "data", "Course - Faculty Allocation - Jan 2025 onwards (30-11-24)(1).xlsx"
+)
+DEFAULT_BASELINE_CSV = os.path.join(
+    PROJECT_ROOT, "experiments", "results", "timetable_univ_jan2025_sem_6.csv"
+)
+# Give CP-SAT useful time for section scheduling and student allocation.
+EXCEL_STAGE_A_TIME_LIMIT = 50.0
+EXCEL_TOTAL_TIME_LIMIT = 90.0
 
 # Current in-memory state
+# The web application keeps one active run in process memory. Serialize API
+# requests so an upload/optimization cannot interleave its multi-field updates
+# with another API read or write. This is process-local; multi-worker deployment
+# requires shared persistence and coordination.
+STATE_LOCK = threading.RLock()
+
 STATE = {
     "dataset": None,
     "schedule": None,
     "original_schedule": None,
     "active_method": "cpsat",
     "meta": {},
-    "alloc_result": None,
     "comparison": None,
     "import_issues": [],
 }
 
 
-def _qualify_faculty(ds: Dataset, sid: str, fid: str) -> None:
-    f = ds.faculty[fid]
-    ds.faculty[fid] = Faculty(
-        id=f.id,
-        name=f.name,
-        qualified=f.qualified | {ds.sections[sid].course_id},
-        max_hours=f.max_hours,
-        unavailable=f.unavailable,
-        school_id=f.school_id,
-        department_id=f.department_id,
-        designation=f.designation,
-    )
-
-
 def _schedule_excel_dataset(
     ds: Dataset,
-    limit_b: int = 10,
+    limit_b: int = 35,
     limit_a: int = EXCEL_STAGE_A_TIME_LIMIT,
 ) -> Schedule:
-    """Schedule every imported workbook section with enough time for the full model."""
+    """Run both optimization stages with a useful budget for real Excel data."""
     return cpsat(
         ds,
-        limit_a=max(EXCEL_STAGE_A_TIME_LIMIT, limit_a),
-        limit_b=limit_b,
+        limit_a=min(max(0.1, float(limit_a)), EXCEL_STAGE_A_TIME_LIMIT),
+        limit_b=min(max(0.1, float(limit_b)), 35.0),
+        total_limit=EXCEL_TOTAL_TIME_LIMIT,
         seed=329,
-        allow_unscheduled=False,
+        workers=4,
+        allow_unscheduled=True,
     )
+
+
+def _apply_semester_sessions(ds: Dataset, semester_scope: str, supplied_sessions) -> None:
+    if not isinstance(supplied_sessions, dict):
+        raise ValueError("Choose a morning or afternoon session, or automatic per-student assignment, for each semester.")
+    normalized_sessions = {
+        str(semester).strip(): mode
+        for semester, mode in supplied_sessions.items()
+    }
+    included = {
+        str(section.semester).strip()
+        for section in ds.sections.values()
+        if str(section.semester).strip()
+    }
+    if semester_scope != "all":
+        included &= {semester_scope}
+    if not included:
+        raise ValueError(f"No sections were found for semester scope {semester_scope!r}.")
+    invalid = {
+        str(semester): mode
+        for semester, mode in normalized_sessions.items()
+        if semester in included and mode not in ("auto", MORNING_SESSION, AFTERNOON_SESSION)
+    }
+    if invalid:
+        raise ValueError("Session values must be 'auto', 'morning', or 'afternoon'.")
+    missing = sorted(included - normalized_sessions.keys())
+    if missing:
+        raise ValueError(
+            "Choose a morning or afternoon session, or automatic per-student assignment, for every included semester: "
+            + ", ".join(missing)
+        )
+    ds.meta["semester_sessions"] = {
+        semester: normalized_sessions[semester]
+        for semester in included
+    }
 
 
 def _excel_solver_failure(sch: Schedule):
     if sch.status in ("OPTIMAL", "FEASIBLE"):
         return None
+    stage_a_status = sch.info.get("stage_a_status", sch.status)
+    if stage_a_status == "UNKNOWN":
+        detail = "CP-SAT reached its time limit before finding a section timetable."
+    else:
+        detail = "CP-SAT could not build a feasible section timetable."
     return jsonify({
         "success": False,
         "error": (
-            "CP-SAT did not find a complete timetable. "
-            f"Stage A ended with {sch.status}; try again or review the imported constraints."
+            f"{detail} Stage A ended with {stage_a_status}; review semester session windows, "
+            "fixed assignments, resource capacity, and the available time limit."
         ),
-        "solver_status": sch.status,
+        "solver_status": stage_a_status,
+        "scheduled_sections": len({sid for sid, _ in sch.placement}),
     }), 503
 
 
@@ -100,7 +152,7 @@ def _attach_default_baseline(ds: Dataset, semester: str = "6") -> list[str]:
     return notes
 
 
-def _store_run(ds, sch, meta=None, alloc_res=None, issues=None):
+def _store_run(ds, sch, meta=None, issues=None):
     original = ds.baseline_schedule() if ds.baseline else None
     comparison = None
     if original is not None and sch.status in ("OPTIMAL", "FEASIBLE"):
@@ -110,41 +162,61 @@ def _store_run(ds, sch, meta=None, alloc_res=None, issues=None):
     STATE["original_schedule"] = original
     STATE["comparison"] = comparison
     STATE["meta"] = meta or ds.meta
-    STATE["alloc_result"] = alloc_res
     STATE["active_method"] = "cpsat"
+    STATE["import_issues"] = issues or []
+
+
+def _store_loaded_baseline(ds, meta=None, issues=None):
+    """Store parsed input for display without invoking either CP-SAT stage."""
+    original = ds.baseline_schedule() if ds.baseline else Schedule(
+        method="baseline", status="NO_BASELINE", unscheduled=list(ds.sections)
+    )
+    STATE["dataset"] = ds
+    STATE["schedule"] = original
+    STATE["original_schedule"] = original if ds.baseline else None
+    STATE["comparison"] = None
+    STATE["meta"] = meta or ds.meta
+    STATE["active_method"] = "baseline"
     STATE["import_issues"] = issues or []
 
 
 def _ensure_default_dataset():
     if STATE["dataset"] is None:
-        if os.path.isfile(DEFAULT_EXCEL_PATH):
-            try:
-                ds, meta = parse_allocation_workbook(DEFAULT_EXCEL_PATH, semester_filter="6")
-                alloc = allocate_faculty_members(ds, meta["pre_assigned_faculty"], meta["raw_faculty_info"])
-                for sid, fid in alloc.faculty_assignments.items():
-                    if fid in ds.faculty and sid in ds.sections:
-                        _qualify_faculty(ds, sid, fid)
-                notes = _attach_default_baseline(ds, "6")
-                sch = _schedule_excel_dataset(ds)
-                _store_run(ds, sch, meta=meta, alloc_res=alloc, issues=notes)
-                return
-            except Exception as e:
-                print(f"[NEXUS] Default Excel load notice: {e}, falling back to synthetic S1")
-        # Fallback: generate demo dataset S1
-        ds = generate(20, "S1", 329)
-        sch = cpsat(ds, limit_a=15, limit_b=10, seed=329)
-        _store_run(ds, sch)
+        if not os.path.isfile(DEFAULT_EXCEL_PATH):
+            raise RuntimeError(f"University workbook not found: {DEFAULT_EXCEL_PATH}")
+        try:
+            ds, meta = parse_allocation_workbook(DEFAULT_EXCEL_PATH, semester_filter="6")
+            notes = _attach_default_baseline(ds, "6")
+            if not ds.baseline:
+                raise RuntimeError("No original baseline timetable could be loaded.")
+            original = ds.baseline_schedule()
+            original_report = validate(ds, original)
+            ds.meta["baseline_validation_note"] = (
+                f"The packaged baseline contains {len(ds.baseline)} assignments and "
+                f"{len(original.unscheduled)} sections without an entry. Independent validation found "
+                f"{original_report.count('H5')} lab-to-classroom room-type mismatches; the source data "
+                "does not establish whether these are room mapping errors or actual assignments."
+            )
+            _store_loaded_baseline(ds, meta=meta, issues=notes)
+        except Exception as e:
+            raise RuntimeError(
+                f"Could not load the original Jan 2025 University Allocation: {e}"
+            ) from e
 
 
 @app.route("/")
 def index():
-    _ensure_default_dataset()
+    # Serve the UI immediately. Dataset parsing and CP-SAT initialization happen
+    # in /api/current so a slow first optimization does not delay the HTML page.
     return render_template("index.html")
 
 
 @app.route("/api/current")
 def get_current():
-    _ensure_default_dataset()
+    try:
+        _ensure_default_dataset()
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 503
     ds = STATE["dataset"]
     sch = STATE["schedule"]
     report = validate(ds, sch)
@@ -153,12 +225,29 @@ def get_current():
     return jsonify({
         "success": True,
         "data": data,
-        "active_method": STATE.get("active_method", "cpsat"),
+        "active_method": STATE.get("active_method", "baseline"),
         "is_excel": bool(ds.meta.get("source_file")),
         "baseline_count": len(ds.baseline),
         "comparison": STATE.get("comparison"),
         "import_issues": STATE.get("import_issues", []),
     })
+
+
+@app.route("/api/original")
+def get_original_timetable():
+    """Return the immutable original baseline without running the optimizer."""
+    try:
+        _ensure_default_dataset()
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 503
+    ds = STATE["dataset"]
+    original = STATE.get("original_schedule")
+    if original is None:
+        return jsonify({"success": False, "error": "No original baseline timetable is attached."}), 404
+    report = validate(ds, original)
+    metrics = compute(ds, original)
+    data = serialize_schedule(ds, original, report, metrics)
+    return jsonify({"success": True, "data": data})
 
 
 @app.route("/api/generate", methods=["POST"])
@@ -176,6 +265,12 @@ def api_generate():
     try:
         ds = generate(students, scenario, seed)
         sch = cpsat(ds, limit_a=limit_a, limit_b=limit_b, seed=seed)
+        if sch.status not in ("OPTIMAL", "FEASIBLE"):
+            return jsonify({
+                "success": False,
+                "error": f"CP-SAT did not produce a section timetable (Stage A: {sch.info.get('stage_a_status', sch.status)}).",
+                "solver_status": sch.info.get("stage_a_status", sch.status),
+            }), 503
         _store_run(ds, sch)
 
         report = validate(ds, sch)
@@ -191,15 +286,62 @@ def api_generate():
         return jsonify({"success": False, "error": str(e)}), 500
 
 
+@app.route("/api/optimize-active", methods=["POST"])
+def api_optimize_active():
+    """Run CP-SAT on the dataset most recently loaded through an explicit import."""
+    if STATE.get("dataset") is None:
+        return jsonify({"success": False, "error": "Load a dataset before optimizing."}), 400
+    body = request.get_json(force=True, silent=True) or {}
+    if body.get("algorithm", "cpsat") != "cpsat":
+        return jsonify({"success": False, "error": "Only CP-SAT timetable generation is supported."}), 400
+    ds = STATE["dataset"]
+    try:
+        if ds.meta.get("source_file"):
+            sch = _schedule_excel_dataset(
+                ds,
+                limit_a=body.get("limit_a", EXCEL_STAGE_A_TIME_LIMIT),
+                limit_b=body.get("limit_b", 35),
+            )
+            failure = _excel_solver_failure(sch)
+            if failure:
+                return failure
+        else:
+            sch = cpsat(
+                ds,
+                limit_a=int(body.get("limit_a", 15)),
+                limit_b=int(body.get("limit_b", 10)),
+                seed=int(body.get("seed", 329)),
+            )
+            if sch.status not in ("OPTIMAL", "FEASIBLE"):
+                return jsonify({
+                    "success": False,
+                    "error": f"CP-SAT did not produce a section timetable (Stage A: {sch.info.get('stage_a_status', sch.status)}).",
+                    "solver_status": sch.info.get("stage_a_status", sch.status),
+                }), 503
+        _store_run(ds, sch, meta=STATE.get("meta"), issues=STATE.get("import_issues", []))
+        report = validate(ds, sch)
+        metrics = compute(ds, sch)
+        data = serialize_schedule(ds, sch, report, metrics)
+        return jsonify({
+            "success": True,
+            "data": data,
+            "active_method": "cpsat",
+            "baseline_count": len(ds.baseline),
+            "comparison": STATE.get("comparison"),
+        })
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
 @app.route("/api/load-excel", methods=["POST"])
 def api_load_excel():
     """Load real university allocation Excel spreadsheet with chosen semester filter."""
     body = request.get_json(force=True, silent=True) or {}
     semester = str(body.get("semester", "6"))
+    semester_sessions = body.get("semester_sessions")
     algorithm = body.get("algorithm", "cpsat")
-    limit_a = int(body.get("limit_a", 15))
-    limit_b = int(body.get("limit_b", 10))
-    allocate_members = body.get("allocate_members", True)
+    limit_a = int(body.get("limit_a", EXCEL_STAGE_A_TIME_LIMIT))
+    limit_b = int(body.get("limit_b", 35))
     if algorithm != "cpsat":
         return jsonify({"success": False, "error": "Only CP-SAT timetable generation is supported."}), 400
 
@@ -208,19 +350,13 @@ def api_load_excel():
 
     try:
         ds, meta = parse_allocation_workbook(DEFAULT_EXCEL_PATH, semester_filter=semester)
-        alloc_res = None
-        if allocate_members:
-            alloc_res = allocate_faculty_members(ds, meta["pre_assigned_faculty"], meta["raw_faculty_info"])
-            for sid, fid in alloc_res.faculty_assignments.items():
-                if fid in ds.faculty and sid in ds.sections:
-                    _qualify_faculty(ds, sid, fid)
-
+        _apply_semester_sessions(ds, semester, semester_sessions)
         notes = _attach_default_baseline(ds, semester)
         sch = _schedule_excel_dataset(ds, limit_b=limit_b, limit_a=limit_a)
         failure = _excel_solver_failure(sch)
         if failure:
             return failure
-        _store_run(ds, sch, meta=meta, alloc_res=alloc_res, issues=notes)
+        _store_run(ds, sch, meta=meta, issues=notes)
 
         report = validate(ds, sch)
         metrics = compute(ds, sch)
@@ -230,11 +366,13 @@ def api_load_excel():
             "success": True,
             "data": data,
             "active_method": "cpsat",
-            "allocation_stats": alloc_res.stats if alloc_res else None,
+            "allocation_stats": data.get("allocation_stats"),
             "baseline_count": len(ds.baseline),
             "comparison": STATE.get("comparison"),
             "import_issues": notes,
         })
+    except ValueError as e:
+        return jsonify({"success": False, "error": str(e)}), 400
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
@@ -247,6 +385,10 @@ def api_upload_excel():
         return jsonify({"success": False, "error": "No Excel file provided"}), 400
 
     semester = request.form.get("semester", "6")
+    try:
+        semester_sessions = json.loads(request.form.get("semester_sessions", "{}"))
+    except json.JSONDecodeError:
+        return jsonify({"success": False, "error": "Invalid semester session settings."}), 400
     algorithm = request.form.get("algorithm", "cpsat")
     limit_a = int(request.form.get("limit_a", 15))
     limit_b = int(request.form.get("limit_b", 10))
@@ -260,10 +402,9 @@ def api_upload_excel():
             temp_path = upload.name
         excel_file.save(temp_path)
         ds, meta = parse_allocation_workbook(temp_path, semester_filter=semester)
-        alloc_res = allocate_faculty_members(ds, meta["pre_assigned_faculty"], meta["raw_faculty_info"])
-        for sid, fid in alloc_res.faculty_assignments.items():
-            if fid in ds.faculty and sid in ds.sections:
-                _qualify_faculty(ds, sid, fid)
+        _apply_semester_sessions(ds, semester, semester_sessions)
+        ds.meta["upload_source_name"] = os.path.basename(excel_file.filename)
+        ds.meta["student_data_mode"] = ds.meta.get("student_data_mode", "representative")
 
         notes = []
         baseline_file = request.files.get("timetable_file") or request.files.get("baseline_file")
@@ -284,24 +425,21 @@ def api_upload_excel():
         else:
             notes.extend(_attach_default_baseline(ds, semester))
 
-        sch = _schedule_excel_dataset(ds, limit_b=limit_b, limit_a=limit_a)
-        failure = _excel_solver_failure(sch)
-        if failure:
-            return failure
-        _store_run(ds, sch, meta=meta, alloc_res=alloc_res, issues=notes)
-
-        report = validate(ds, sch)
-        metrics = compute(ds, sch)
-        data = serialize_schedule(ds, sch, report, metrics)
+        _store_loaded_baseline(ds, meta=meta, issues=notes)
+        report = validate(ds, STATE["schedule"])
+        metrics = compute(ds, STATE["schedule"])
+        data = serialize_schedule(ds, STATE["schedule"], report, metrics)
 
         return jsonify({
             "success": True,
             "data": data,
-            "allocation_stats": alloc_res.stats,
+            "active_method": "baseline",
+            "message": "Dataset loaded. Click Optimize timetable to run CP-SAT.",
             "baseline_count": len(ds.baseline),
-            "comparison": STATE.get("comparison"),
             "import_issues": notes,
         })
+    except ValueError as e:
+        return jsonify({"success": False, "error": str(e)}), 400
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
     finally:
@@ -315,43 +453,10 @@ def api_upload_excel():
 
 @app.route("/api/allocate-members", methods=["POST"])
 def api_allocate_members():
-    """Trigger the faculty member allocation engine on active dataset."""
+    """Compatibility endpoint: faculty assignments are made by CP-SAT optimization."""
     if STATE["dataset"] is None:
         return jsonify({"success": False, "error": "No active dataset loaded"}), 400
-    ds = STATE["dataset"]
-    meta = STATE.get("meta", {})
-    try:
-        alloc_res = allocate_faculty_members(
-            ds,
-            meta.get("pre_assigned_faculty", {}),
-            meta.get("raw_faculty_info", {})
-        )
-        for sid, fid in alloc_res.faculty_assignments.items():
-            if fid in ds.faculty and sid in ds.sections:
-                _qualify_faculty(ds, sid, fid)
-
-        sch = (
-            _schedule_excel_dataset(ds)
-            if ds.meta.get("source_file")
-            else cpsat(ds, limit_a=15, limit_b=10, seed=329)
-        )
-        failure = _excel_solver_failure(sch) if ds.meta.get("source_file") else None
-        if failure:
-            return failure
-        _store_run(ds, sch, meta=meta, alloc_res=alloc_res, issues=STATE.get("import_issues", []))
-
-        report = validate(ds, sch)
-        metrics = compute(ds, sch)
-        data = serialize_schedule(ds, sch, report, metrics)
-        return jsonify({
-            "success": True,
-            "data": data,
-            "allocation_stats": alloc_res.stats,
-            "faculty_summary": alloc_res.faculty_summary,
-            "comparison": STATE.get("comparison"),
-        })
-    except Exception as e:
-        return jsonify({"success": False, "error": str(e)}), 500
+    return api_optimize_active()
 
 
 @app.route("/api/load-sample", methods=["POST"])
@@ -369,15 +474,16 @@ def load_sample():
             "issues": [str(i) for i in issues]
         }), 400
 
-    sch = cpsat(ds, limit_a=15, limit_b=10, seed=329)
-    _store_run(ds, sch, issues=[str(i) for i in issues])
-
-    report = validate(ds, sch)
-    metrics = compute(ds, sch)
-    data = serialize_schedule(ds, sch, report, metrics)
+    ds.meta["student_data_mode"] = "synthetic"
+    _store_loaded_baseline(ds, issues=[str(i) for i in issues])
+    report = validate(ds, STATE["schedule"])
+    metrics = compute(ds, STATE["schedule"])
+    data = serialize_schedule(ds, STATE["schedule"], report, metrics)
     return jsonify({
         "success": True,
         "data": data,
+        "active_method": "baseline",
+        "message": "Sample dataset loaded. Click Optimize timetable to run CP-SAT.",
         "issues": [str(i) for i in issues]
     })
 
@@ -417,22 +523,18 @@ def upload_csv():
                 "issues": [str(i) for i in issues]
             }), 400
 
-        algorithm = request.form.get("algorithm", "cpsat")
-        limit_a = int(request.form.get("limit_a", 15))
-        limit_b = int(request.form.get("limit_b", 10))
-        if algorithm != "cpsat":
-            return jsonify({"success": False, "error": "Only CP-SAT timetable generation is supported."}), 400
-
-        sch = cpsat(ds, limit_a=limit_a, limit_b=limit_b, seed=329)
-        _store_run(ds, sch, issues=[str(i) for i in issues])
-
-        report = validate(ds, sch)
-        metrics = compute(ds, sch)
-        data = serialize_schedule(ds, sch, report, metrics)
+        ds.meta["upload_source_name"] = "CSV upload"
+        ds.meta["student_data_mode"] = "actual" if ds.students else "unavailable"
+        _store_loaded_baseline(ds, issues=[str(i) for i in issues])
+        report = validate(ds, STATE["schedule"])
+        metrics = compute(ds, STATE["schedule"])
+        data = serialize_schedule(ds, STATE["schedule"], report, metrics)
 
         return jsonify({
             "success": True,
             "data": data,
+            "active_method": "baseline",
+            "message": "Dataset loaded. Click Optimize timetable to run CP-SAT.",
             "issues": [str(i) for i in issues],
             "baseline_count": len(ds.baseline),
             "comparison": STATE.get("comparison"),
@@ -493,7 +595,7 @@ def api_import_mapped():
         body_mappings = request.form.get("mappings")
         mappings = json.loads(body_mappings) if body_mappings else None
         default_mode = request.form.get("assignment_mode", PREFERRED)
-        optimize = request.form.get("optimize", "true").lower() != "false"
+        optimize = request.form.get("optimize", "false").lower() == "true"
         limit_a = int(request.form.get("limit_a", 15))
         limit_b = int(request.form.get("limit_b", 10))
 
@@ -525,17 +627,24 @@ def api_import_mapped():
         }
         if optimize:
             sch = cpsat(ds, limit_a=limit_a, limit_b=limit_b, seed=329)
+            if sch.status not in ("OPTIMAL", "FEASIBLE"):
+                return jsonify({
+                    "success": False,
+                    "error": f"CP-SAT did not produce a section timetable (Stage A: {sch.info.get('stage_a_status', sch.status)}).",
+                    "solver_status": sch.info.get("stage_a_status", sch.status),
+                }), 503
             _store_run(ds, sch, issues=[str(i) for i in result.issues])
             report = validate(ds, sch)
             metrics = compute(ds, sch)
             payload["data"] = serialize_schedule(ds, sch, report, metrics)
             payload["comparison"] = STATE.get("comparison")
         else:
-            STATE["dataset"] = ds
-            STATE["schedule"] = None
-            STATE["original_schedule"] = ds.baseline_schedule() if ds.baseline else None
-            STATE["import_issues"] = [str(i) for i in result.issues]
-            payload["message"] = "Dataset imported; call generate/optimize to run CP-SAT."
+            _store_loaded_baseline(ds, issues=[str(i) for i in result.issues])
+            report = validate(ds, STATE["schedule"])
+            metrics = compute(ds, STATE["schedule"])
+            payload["data"] = serialize_schedule(ds, STATE["schedule"], report, metrics)
+            payload["active_method"] = "baseline"
+            payload["message"] = "Dataset imported; click Optimize timetable to run CP-SAT."
         return jsonify(payload)
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
@@ -552,25 +661,26 @@ def api_baseline_modes():
     mode = body.get("mode", PREFERRED)
     section_ids = body.get("section_ids")
     reoptimize = bool(body.get("reoptimize", True))
-    limit_a = int(body.get("limit_a", 15))
-    limit_b = int(body.get("limit_b", 10))
+    limit_a = int(body.get("limit_a", EXCEL_STAGE_A_TIME_LIMIT))
+    limit_b = int(body.get("limit_b", 35))
     try:
-        set_assignment_modes(STATE["dataset"], mode, section_ids)
-        payload = {"success": True, "mode": mode, "baseline_count": len(STATE["dataset"].baseline)}
+        ds = STATE["dataset"]
+        previous_baseline = ds.baseline.copy()
+        set_assignment_modes(ds, mode, section_ids)
+        payload = {"success": True, "mode": mode, "baseline_count": len(ds.baseline)}
         if reoptimize:
-            ds = STATE["dataset"]
             sch = (
                 _schedule_excel_dataset(ds, limit_b=limit_b)
                 if ds.meta.get("source_file")
                 else cpsat(ds, limit_a=limit_a, limit_b=limit_b, seed=329)
             )
-            failure = _excel_solver_failure(sch) if ds.meta.get("source_file") else None
-            if failure:
-                return failure
-            _store_run(STATE["dataset"], sch, meta=STATE.get("meta"), alloc_res=STATE.get("alloc_result"))
-            report = validate(STATE["dataset"], sch)
-            metrics = compute(STATE["dataset"], sch)
-            payload["data"] = serialize_schedule(STATE["dataset"], sch, report, metrics)
+            if sch.status not in ("OPTIMAL", "FEASIBLE"):
+                ds.baseline = previous_baseline
+                return _excel_solver_failure(sch)
+            _store_run(ds, sch, meta=STATE.get("meta"))
+            report = validate(ds, sch)
+            metrics = compute(ds, sch)
+            payload["data"] = serialize_schedule(ds, sch, report, metrics)
             payload["comparison"] = STATE.get("comparison")
         return jsonify(payload)
     except Exception as e:
@@ -608,12 +718,31 @@ def simulate_disruption():
             blocked_rooms=blocked_rooms,
             blocked_faculty=blocked_faculty
         )
-        if st_a in ("OPTIMAL", "FEASIBLE"):
-            st_b, _ = stage_b(ds, sch_a, limit=10, seed=329)
-            sch_a.info["status_b"] = st_b
-        else:
-            sch_a.info["status_b"] = "NOT_RUN"
-            sch_a.info["status_b_reason"] = f"Stage A ended with {st_a}; no student allocation was attempted."
+        if st_a not in ("OPTIMAL", "FEASIBLE"):
+            detail = (
+                "CP-SAT reached its time limit before finding a repair."
+                if st_a == "UNKNOWN"
+                else "CP-SAT could not find a feasible repair."
+            )
+            return jsonify({
+                "success": False,
+                "error": f"{detail} Stage A ended with {st_a}; the existing timetable was kept.",
+                "solver_status": st_a,
+            }), 503
+
+        st_b, _ = stage_b(ds, sch_a, limit=10, seed=329)
+        sch_a.info["status_b"] = st_b
+        if st_b not in ("OPTIMAL", "FEASIBLE"):
+            detail = (
+                "CP-SAT reached its time limit before finding a student allocation."
+                if st_b == "UNKNOWN"
+                else "CP-SAT could not find a feasible student allocation."
+            )
+            return jsonify({
+                "success": False,
+                "error": f"{detail} Stage B ended with {st_b}; the existing timetable was kept.",
+                "solver_status": st_b,
+            }), 503
         sch_b = sch_a
         STATE["schedule"] = sch_b
         STATE["active_method"] = "cpsat-repair"
@@ -664,4 +793,6 @@ def create_app():
 
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    app.run(host="127.0.0.1", port=5001, debug=False, use_reloader=False)
+
+

@@ -1,0 +1,4 @@
+Day,Period,Section,Course Code,Course Title,Duration (Hrs),Room,Faculty ID,mode,session_index
+Monday,Period 1,CS101_A,CS101,Programming Fundamentals,1,R101,F101,fixed,0
+Monday,Period 2,CS102_A,CS102,Data Structures,1,R102,F102,preferred,0
+Monday,Period 3,MA101_A,MA101,Discrete Mathematics,1,R103,F101,fixed,0

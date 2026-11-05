@@ -9,6 +9,7 @@ import re
 import zipfile
 import xml.etree.ElementTree as ET
 from collections import defaultdict
+from .common import normalized_course_category
 from .models import Dataset, Course, Section, Faculty, Room, Student, SessionSpec, CLASS, LAB
 
 
@@ -226,12 +227,12 @@ def parse_allocation_workbook(file_source: str | bytes | io.BytesIO, semester_fi
                 sessions = (SessionSpec(duration=2, room_type=LAB),)
             else:
                 # Lecture session: e.g. 2 periods in CLASS (or 1 period each)
-                # For timetabling in 6 periods/day, contacts are usually 1 or 2 periods
+                # Timetable contacts are usually one or two of the daily teaching sessions.
                 dur = max(1, min(L, 2)) if L > 0 else 1
                 sessions = (SessionSpec(duration=dur, room_type=CLASS),)
 
             if code not in courses_dict:
-                category = "Program Elective" if "elective" in ctype.lower() else "Core"
+                category = normalized_course_category("", ctype)
                 courses_dict[code] = Course(
                     id=code,
                     title=title,
@@ -294,8 +295,9 @@ def parse_allocation_workbook(file_source: str | bytes | io.BytesIO, semester_fi
     # 3. Create Canonical Faculty Objects
     final_faculty = {}
     for fid, f in faculty_dict.items():
-        # Ensure faculty is qualified for courses they are assigned to
-        qual = frozenset(f['qualified']) if f['qualified'] else frozenset(courses_dict.keys())
+        # Keep qualifications observed in the workbook only. An empty set means
+        # the source did not state a qualification; do not imply every course.
+        qual = frozenset(f['qualified'])
         final_faculty[fid] = Faculty(
             id=fid,
             name=f['name'],
@@ -352,7 +354,9 @@ def parse_allocation_workbook(file_source: str | bytes | io.BytesIO, semester_fi
             final_students[stid] = Student(
                 id=stid,
                 programme=cohort_name,
-                selections=unique_courses
+                selections=unique_courses,
+                semester=semester,
+                batch=cohort_name,
             )
             st_counter += 1
 
@@ -368,6 +372,10 @@ def parse_allocation_workbook(file_source: str | bytes | io.BytesIO, semester_fi
         meta={
             "source_file": "Course - Faculty Allocation - Jan 2025 onwards (30-11-24)(1).xlsx",
             "semester_filter": semester_filter,
+            "student_data_mode": "representative",
+            "student_data_note": "Two representative records per workbook cohort; these are not individual university enrolments.",
+            "capacity_basis": "Estimated from section type; authoritative room and section capacities were not supplied in the workbook.",
+            "availability_basis": "No faculty or room unavailability data was supplied; empty unavailable sets are assumptions, not confirmed availability.",
             "total_pre_assigned": len(pre_assigned_faculty),
             "total_unassigned": len(unassigned_sections)
         }

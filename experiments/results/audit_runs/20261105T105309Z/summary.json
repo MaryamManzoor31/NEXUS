@@ -1,0 +1,30 @@
+{
+  "run_id": "20261105T105309Z",
+  "ortools": "9.15.6755",
+  "runs": [
+    {
+      "type": "packaged_university",
+      "file": "university_semester6.json",
+      "csv": "university_semester6.csv",
+      "status": "FEASIBLE",
+      "validation_status": "INVALID",
+      "runtime_s": 21.172,
+      "scheduled_sections": "304/318",
+      "placed_selections": 308,
+      "total_selections": 374,
+      "hard_violations": 9
+    },
+    {
+      "type": "synthetic",
+      "file": "synthetic_s3_20.json",
+      "csv": "synthetic_s3_20.csv",
+      "status": "FEASIBLE",
+      "validation_status": "INVALID",
+      "runtime_s": 15.656,
+      "scheduled_sections": "43/43",
+      "placed_selections": 40,
+      "total_selections": 180,
+      "hard_violations": 33
+    }
+  ]
+}

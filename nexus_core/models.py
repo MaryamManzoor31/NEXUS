@@ -2,9 +2,36 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 
-DAYS, PERIODS = 5, 6                      # slot = day * PERIODS + period  (30 slots)
+DAYS, PERIODS = 5, 10                     # 10 teaching sessions per day
 N_SLOTS = DAYS * PERIODS
+SESSION_TIMES = (
+    ("08:00", "08:55"),
+    ("09:00", "09:55"),
+    ("10:00", "10:55"),
+    ("11:05", "12:00"),
+    ("12:05", "13:00"),
+    ("13:10", "14:05"),
+    ("14:10", "15:05"),
+    ("15:10", "16:00"),
+    ("16:15", "17:10"),
+    ("17:15", "18:00"),
+)
+SESSION_START_MINUTES = tuple(
+    int(start[:2]) * 60 + int(start[3:])
+    for start, _ in SESSION_TIMES
+)
+MAX_SESSION_DURATION = 5
 CLASS, LAB = "CLASS", "LAB"
+MORNING_SESSION = "morning"
+AFTERNOON_SESSION = "afternoon"
+EXTENDED_EARLY_SESSION = "extended_08_16"
+EXTENDED_LATE_SESSION = "extended_10_18"
+STUDENT_DAY_SESSIONS = (
+    MORNING_SESSION,
+    AFTERNOON_SESSION,
+    EXTENDED_EARLY_SESSION,
+    EXTENDED_LATE_SESSION,
+)
 
 DAY_NAMES = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
 
@@ -84,6 +111,7 @@ class Student:
     stream: str = ""
     semester: str = ""
     batch: str = ""
+    department_id: str = ""
 
 
 @dataclass(frozen=True)
@@ -140,6 +168,7 @@ class Schedule:
     placement: dict = field(default_factory=dict)
     faculty: dict = field(default_factory=dict)
     enrolment: dict = field(default_factory=dict)
+    student_categories: dict = field(default_factory=dict)  # student -> day index -> session mode
     unscheduled: list = field(default_factory=list)
     status: str = ""                      # solver status string
     runtime: float = 0.0

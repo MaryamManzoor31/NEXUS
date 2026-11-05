@@ -1,0 +1,305 @@
+Day,Period,Time Range,Section,Course Code,Course Title,Category,Duration (Hrs),Room,Room Type,Faculty ID,Faculty Name
+Monday,Session 1,08:00 - 08:55,5CS 1222_IT_CCIT_Lab,5CS 1222,Cloud Analytics,Program Elective,2,CS_Lab_11,LAB,FAC_072,Dr. Sumit Kumar Banshal
+Monday,Session 1,08:00 - 08:55,6CS 1014_CSE_Gen_B,6CS 1014,Neural Networks and Deep Learning,Core,2,LT_307,CLASS,FAC_035,Dr. D Sumathi
+Monday,Session 1,08:00 - 08:55,6CS 1018_AIML_C,6CS 1018,Generative AI,Core,2,LT_106,CLASS,FAC_054,Prakhar Consul
+Monday,Session 1,08:00 - 08:55,6CS 1018_AIML_E,6CS 1018,Generative AI,Core,2,LT_213,CLASS,FAC_042,Dr. Revathi T
+Monday,Session 1,08:00 - 08:55,6CS 1018_AIML_F,6CS 1018,Generative AI,Core,2,LT_216,CLASS,FAC_037,Dr.Pavithra K
+Monday,Session 1,08:00 - 08:55,6CS 1018_AIML_G,6CS 1018,Generative AI,Core,2,LT_215,CLASS,FAC_021,Dr. Tinka Singh
+Monday,Session 1,08:00 - 08:55,6CS 1018_AIML_H,6CS 1018,Generative AI,Core,2,LT_212,CLASS,FAC_018,Mr. Antony Kovilpillai J
+Monday,Session 1,08:00 - 08:55,6CS 1207_AIML_E_LAb,6CS 1207,Business Analytics,Program Elective,2,CS_Lab_09,LAB,FAC_079,CSE
+Monday,Session 1,08:00 - 08:55,6CS 1216_AIML_B,6CS 1216,Reinforcement Learning,Program Elective,2,LT_104,CLASS,FAC_046,Dr. Jayabhaduri R
+Monday,Session 1,08:00 - 08:55,6CS 1231_CS_A,6CS 1231,Distributed System Security,Program Elective,2,LT_204,CLASS,FAC_060,Dr. Rekha R Nair
+Monday,Session 1,08:00 - 08:55,6CS 1296_DA_A,6CS 1296,MLOps,Program Elective,2,LT_206,CLASS,FAC_064,Dr. A. Ezil Sam Leni
+Monday,Session 1,08:00 - 08:55,6IT 1022_IT_Gen_A,6IT 1022,Data Privacy and Security,Core,2,LT_208,CLASS,FAC_068,Dr. K . Ramalakshmi
+Monday,Session 2,09:00 - 09:55,5CS 1222_IT_CCIT,5CS 1222,Cloud Analytics,Program Elective,2,CS_Room,CLASS,FAC_001,Prof. Radha R
+Monday,Session 2,09:00 - 09:55,6CS 1028_CC,6CS 1028,Containerization and Dockers,Core,2,LT_405,CLASS,FAC_039,Mr. Naren J
+Monday,Session 2,09:00 - 09:55,6CS 1028_CC_A,6CS 1028,Containerization and Dockers,Core,2,LT_406,CLASS,FAC_096,CSE
+Monday,Session 2,09:00 - 09:55,6CS 1207_AIML_A,6CS 1207,Business Analytics,Program Elective,2,LT_101,CLASS,FAC_009,Dr.R. Rajagopal
+Monday,Session 2,09:00 - 09:55,6CS 1207_AIML_B,6CS 1207,Business Analytics,Program Elective,2,LT_102,CLASS,FAC_014,Prof. Nivedita Manohar Mathkunti
+Monday,Session 2,09:00 - 09:55,6CS 1207_AIML_B_LAB,6CS 1207,Business Analytics,Program Elective,2,CS_Lab_03,LAB,FAC_076,CSE
+Monday,Session 2,09:00 - 09:55,6CS 1207_AIML_C,6CS 1207,Business Analytics,Program Elective,2,LT_103,CLASS,FAC_016,Ms. Soumi Dhar
+Monday,Session 2,09:00 - 09:55,6CS 1207_AIML_D,6CS 1207,Business Analytics,Program Elective,2,LT_301,CLASS,FAC_019,Dr. S. Prabagar
+Monday,Session 2,09:00 - 09:55,6CS 1207_AIML_E,6CS 1207,Business Analytics,Program Elective,2,LT_105,CLASS,FAC_020,Mr. Ebin P.M
+Monday,Session 2,09:00 - 09:55,6CS 1207_AIML_F,6CS 1207,Business Analytics,Program Elective,2,LT_210,CLASS,FAC_027,Ms. Pragya
+Monday,Session 2,09:00 - 09:55,6CS 1207_AIML_F_lab,6CS 1207,Business Analytics,Program Elective,2,CS_Lab_06,LAB,FAC_080,CSE
+Monday,Session 2,09:00 - 09:55,6CS 1207_AIML_G,6CS 1207,Business Analytics,Program Elective,2,LT_107,CLASS,FAC_028,Dr Mousumi Karmakar
+Monday,Session 2,09:00 - 09:55,6CS 1207_AIML_G_lab,6CS 1207,Business Analytics,Program Elective,2,CS_Lab_05,LAB,FAC_081,CSE
+Monday,Session 2,09:00 - 09:55,6CS 1207_AIML_H,6CS 1207,Business Analytics,Program Elective,2,LT_108,CLASS,FAC_029,Dr Niranchana R
+Monday,Session 2,09:00 - 09:55,6CS 1207_AIML_H_lab,6CS 1207,Business Analytics,Program Elective,2,CS_Lab_12,LAB,FAC_082,CSE
+Monday,Session 2,09:00 - 09:55,6CS 1207_Gen_A,6CS 1207,Business Analytics,Program Elective,2,LT_201,CLASS,FAC_032,Dr. Lopa Mandal
+Monday,Session 2,09:00 - 09:55,6CS 1207_Gen_A_LAB,6CS 1207,Business Analytics,Program Elective,2,CS_Lab_04,LAB,FAC_083,IT
+Monday,Session 2,09:00 - 09:55,6CS 1207_Gen_B,6CS 1207,Business Analytics,Program Elective,2,LT_202,CLASS,FAC_033,Ms. Asha Kurian
+Monday,Session 2,09:00 - 09:55,6CS 1207_Gen_B_LAb,6CS 1207,Business Analytics,Program Elective,2,CS_Lab_02,LAB,FAC_084,CSE
+Monday,Session 2,09:00 - 09:55,6CS 1207_Gen_C,6CS 1207,Business Analytics,Program Elective,2,LT_203,CLASS,FAC_034,Dr. R. C. Karpagalakshmi
+Monday,Session 2,09:00 - 09:55,6CS 1231_CS_A_Lab,6CS 1231,Distributed System Security,Program Elective,2,CS_Lab_01,LAB,FAC_089,CSE
+Monday,Session 2,09:00 - 09:55,6CS 1231_CS_B,6CS 1231,Distributed System Security,Program Elective,2,LT_205,CLASS,FAC_063,Deepika Nayak
+Monday,Session 2,09:00 - 09:55,6CS 1231_CS_B_Lab,6CS 1231,Distributed System Security,Program Elective,2,CS_Lab_10,LAB,FAC_090,CSE
+Monday,Session 2,09:00 - 09:55,6CS 1296_DA_A_Lab,6CS 1296,MLOps,Program Elective,2,CS_Lab_07,LAB,FAC_091,CSE
+Monday,Session 2,09:00 - 09:55,6CS 1296_DA_B,6CS 1296,MLOps,Program Elective,2,LT_207,CLASS,FAC_067,Dr. P. Mano Paul
+Monday,Session 2,09:00 - 09:55,6CS 1296_DA_B_Lab,6CS 1296,MLOps,Program Elective,2,CS_Lab_08,LAB,FAC_092,CSE
+Monday,Session 2,09:00 - 09:55,6IT 1039_IT_CC,6IT 1039,Big Data Analytics,Core,2,LT_407,CLASS,FAC_007,Dr.Virendra Kumar Shrivastava
+Monday,Session 3,10:00 - 10:55,6CS 1209_Gen_A_Lab,6CS 1209,Penetration Testing and Vulnerability Assessment,Program Elective,2,CS_Lab_09,LAB,FAC_086,CSE
+Monday,Session 4,11:05 - 12:00,5IT 1259_IT_CCIT,5IT 1259,Deep Learning,Program Elective,2,CS_Room,CLASS,FAC_073,Prof. Ananthanagu U
+Monday,Session 4,11:05 - 12:00,5IT 1259_IT_CCIT_Lab,5IT 1259,Deep Learning,Program Elective,2,CS_Lab_05,LAB,FAC_005,Dr. Mir Wajahat Hussain
+Monday,Session 4,11:05 - 12:00,5IT 1259_IT_Gen,5IT 1259,Deep Learning,Program Elective,2,LT_101,CLASS,FAC_008,Dr. V. Keerthika
+Monday,Session 4,11:05 - 12:00,5IT 1259_IT_Gen_Lab,5IT 1259,Deep Learning,Program Elective,2,CS_Lab_11,LAB,FAC_074,Program
+Monday,Session 4,11:05 - 12:00,6CS 1014_CSE_Gen_A,6CS 1014,Neural Networks and Deep Learning,Core,2,LT_306,CLASS,FAC_025,Dr. Tamilarasi R
+Monday,Session 4,11:05 - 12:00,6CS 1014_CSE_Gen_C,6CS 1014,Neural Networks and Deep Learning,Core,2,LT_308,CLASS,FAC_007,Dr.Virendra Kumar Shrivastava
+Monday,Session 4,11:05 - 12:00,6CS 1022_IT_Gen_lab,6CS 1022,Data Privacy and Security,Core,2,CS_Lab_10,LAB,FAC_055,Ms.Savita Vijy
+Monday,Session 4,11:05 - 12:00,6CS 1029_CC,6CS 1029,Cloud Security,Core,2,LT_202,CLASS,FAC_003,Dr. Chetan J Shelke
+Monday,Session 4,11:05 - 12:00,6CS 1029_CC_A,6CS 1029,Cloud Security,Core,2,LT_203,CLASS,FAC_097,CSE
+Monday,Session 4,11:05 - 12:00,6CS 1035_CS_A,6CS 1035,Secured Software Engineering and Agile Development,Core,2,LT_204,CLASS,FAC_098,CSE
+Monday,Session 4,11:05 - 12:00,6CS 1035_CS_B,6CS 1035,Secured Software Engineering and Agile Development,Core,2,LT_205,CLASS,FAC_099,CSE
+Monday,Session 4,11:05 - 12:00,6CS 1209_Gen_B,6CS 1209,Penetration Testing and Vulnerability Assessment,Program Elective,2,LT_103,CLASS,FAC_045,Dr R. Rajasekar
+Monday,Session 4,11:05 - 12:00,6CS 1209_Gen_B_Lab,6CS 1209,Penetration Testing and Vulnerability Assessment,Program Elective,2,CS_Lab_07,LAB,FAC_087,CSE
+Monday,Session 4,11:05 - 12:00,6CS 1209_Gen_C,6CS 1209,Penetration Testing and Vulnerability Assessment,Program Elective,2,LT_104,CLASS,FAC_059,Dr. Tina Babu
+Monday,Session 4,11:05 - 12:00,6CS 1209_Gen_C_Lab,6CS 1209,Penetration Testing and Vulnerability Assessment,Program Elective,2,CS_Lab_06,LAB,FAC_088,CSE
+Monday,Session 4,11:05 - 12:00,6CS 1215_AIML_A,6CS 1215,Data Science for MLOps,Program Elective,2,LT_208,CLASS,FAC_002,Dr. Senbagavalli M
+Monday,Session 4,11:05 - 12:00,6CS 1215_AIML_A_lab,6CS 1215,Data Science for MLOps,Program Elective,2,CS_Lab_08,LAB,FAC_084,CSE
+Monday,Session 4,11:05 - 12:00,6CS 1215_AIML_D,6CS 1215,Data Science for MLOps,Program Elective,2,LT_210,CLASS,FAC_077,CSE
+Monday,Session 4,11:05 - 12:00,6CS 1215_AIML_E,6CS 1215,Data Science for MLOps,Program Elective,2,LT_212,CLASS,FAC_039,Mr. Naren J
+Monday,Session 4,11:05 - 12:00,6CS 1215_AIML_F,6CS 1215,Data Science for MLOps,Program Elective,2,LT_213,CLASS,FAC_079,CSE
+Monday,Session 4,11:05 - 12:00,6CS 1215_AIML_F_lab,6CS 1215,Data Science for MLOps,Program Elective,2,CS_Lab_04,LAB,FAC_089,CSE
+Monday,Session 4,11:05 - 12:00,6CS 1215_AIML_G,6CS 1215,Data Science for MLOps,Program Elective,2,LT_215,CLASS,FAC_080,CSE
+Monday,Session 4,11:05 - 12:00,6CS 1215_AIML_G_lab,6CS 1215,Data Science for MLOps,Program Elective,2,CS_Lab_03,LAB,FAC_090,CSE
+Monday,Session 4,11:05 - 12:00,6CS 1215_AIML_H,6CS 1215,Data Science for MLOps,Program Elective,2,LT_216,CLASS,FAC_081,CSE
+Monday,Session 4,11:05 - 12:00,6CS 1215_AIML_H_lab,6CS 1215,Data Science for MLOps,Program Elective,2,CS_Lab_02,LAB,FAC_091,CSE
+Monday,Session 4,11:05 - 12:00,6CS 1295_DA_B_Lab,6CS 1295,Java Web Development,Program Elective,2,CS_Lab_01,LAB,FAC_126,Dr. Sridhar Devarajan
+Monday,Session 4,11:05 - 12:00,6CS 1295_DA__A__DA_B,6CS 1295,Java Web Development,Program Elective,2,LT_206,CLASS,FAC_107,CSE
+Monday,Session 4,11:05 - 12:00,6IT 1206_IT_Gen_lab,6IT 1206,Web Data Processing,Program Elective,2,CS_Lab_12,LAB,FAC_071,Dr. Neeba E A
+Monday,Session 5,12:05 - 13:00,6CS 1018_AIML_A,6CS 1018,Generative AI,Core,2,LT_105,CLASS,FAC_037,Dr.Pavithra K
+Monday,Session 7,14:10 - 15:05,5CS 1012_CC,5CS 1012,Java Full Stack Development,Core,2,CS_Room,CLASS,FAC_094,CSE
+Monday,Session 7,14:10 - 15:05,5CS 1012_CC_Lab,5CS 1012,Java Full Stack Development,Core,2,CS_Lab_12,LAB,FAC_133,Face Prep Faculty
+Monday,Session 7,14:10 - 15:05,5CS 1012_IT_Gen,5CS 1012,Java Full Stack Development,Core,2,LT_101,CLASS,FAC_095,CSE
+Monday,Session 7,14:10 - 15:05,5CS 1012_IT_Gen_Lab,5CS 1012,Java Full Stack Development,Core,2,CS_Lab_11,LAB,FAC_038,Ms.Swetha C B
+Monday,Session 7,14:10 - 15:05,6CS 1015_CSE_Gen_A,6CS 1015,Cryptography and Network Security,Core,2,LT_212,CLASS,FAC_012,Dr. M. Selvam
+Monday,Session 7,14:10 - 15:05,6CS 1015_CSE_Gen_B,6CS 1015,Cryptography and Network Security,Core,2,LT_213,CLASS,FAC_069,Dr. N Sengottaiyan
+Monday,Session 7,14:10 - 15:05,6CS 1015_CSE_Gen_C,6CS 1015,Cryptography and Network Security,Core,2,LT_215,CLASS,FAC_123,Dr. R Niranchana
+Monday,Session 7,14:10 - 15:05,6CS 1015_Gen_A,6CS 1015,Cryptography and Network Security,Core,2,LT_216,CLASS,FAC_141,Dr. R. Niranchana
+Monday,Session 7,14:10 - 15:05,6CS 1015_Gen_A_LAB,6CS 1015,Cryptography and Network Security,Core,2,CS_Lab_10,LAB,FAC_113,Dr. M Selvam
+Monday,Session 7,14:10 - 15:05,6CS 1215_AIML_B,6CS 1215,Data Science for MLOps,Program Elective,2,LT_207,CLASS,FAC_002,Dr. Senbagavalli M
+Monday,Session 7,14:10 - 15:05,6CS 1215_AIML_C_Lab,6CS 1215,Data Science for MLOps,Program Elective,2,CS_Lab_05,LAB,FAC_086,CSE
+Monday,Session 7,14:10 - 15:05,6CS 1215_AIML_D_lab,6CS 1215,Data Science for MLOps,Program Elective,2,CS_Lab_07,LAB,FAC_087,CSE
+Monday,Session 7,14:10 - 15:05,6CS 1215_AIML_E_LAb,6CS 1215,Data Science for MLOps,Program Elective,2,CS_Lab_04,LAB,FAC_088,CSE
+Monday,Session 7,14:10 - 15:05,6CS 1233_CS_A,6CS 1233,Cyber Security Risk Management Mitigation Policies and Standards,Program Elective,2,LT_102,CLASS,FAC_105,CSE
+Monday,Session 7,14:10 - 15:05,6CS 1233_CS_A_Lab,6CS 1233,Cyber Security Risk Management Mitigation Policies and Standards,Program Elective,2,CS_Lab_03,LAB,FAC_124,Dr. Smitha Rajagopal
+Monday,Session 7,14:10 - 15:05,6CS 1233_CS_B,6CS 1233,Cyber Security Risk Management Mitigation Policies and Standards,Program Elective,2,LT_103,CLASS,FAC_106,CSE
+Monday,Session 7,14:10 - 15:05,6CS 1233_CS_B_Lab,6CS 1233,Cyber Security Risk Management Mitigation Policies and Standards,Program Elective,2,CS_Lab_02,LAB,FAC_068,Dr. K . Ramalakshmi
+Monday,Session 7,14:10 - 15:05,6CS 1297_DA_A_Lab,6CS 1297,Natural Language Processing,Program Elective,2,CS_Lab_01,LAB,FAC_130,Dr. R Rajasekar
+Monday,Session 7,14:10 - 15:05,6CS 1297_DA_B,6CS 1297,Natural Language Processing,Program Elective,2,LT_105,CLASS,FAC_109,CSE
+Monday,Session 7,14:10 - 15:05,6CS 1297_DA_B_Lab,6CS 1297,Natural Language Processing,Program Elective,2,CS_Lab_08,LAB,FAC_071,Dr. Neeba E A
+Monday,Session 7,14:10 - 15:05,6IT 1042_IT_CC,6IT 1042,DevOps and Continuous Integration/Continuous Deployment (CI/CD),Core,2,LT_106,CLASS,FAC_128,Dr. Mohammed Arif
+Monday,Session 7,14:10 - 15:05,6IT 1042_IT_CCIT,6IT 1042,DevOps and Continuous Integration/Continuous Deployment (CI/CD),Core,2,LT_107,CLASS,FAC_034,Dr. R. C. Karpagalakshmi
+Monday,Session 7,14:10 - 15:05,6IT 1042_IT_CCIT_lab,6IT 1042,DevOps and Continuous Integration/Continuous Deployment (CI/CD),Core,2,CS_Lab_06,LAB,FAC_074,Program
+Tuesday,Session 1,08:00 - 08:55,5CS 1014_Gen_A,5CS 1014,Neural Networks and Deep Learning,Core,2,LT_108,CLASS,FAC_111,IT
+Tuesday,Session 1,08:00 - 08:55,6CS 1017_CSE_Gen_B,6CS 1017,Parallel and Distributed Computing,Core,2,LT_203,CLASS,FAC_019,Dr. S. Prabagar
+Tuesday,Session 1,08:00 - 08:55,6CS 1018_AIML_B,6CS 1018,Generative AI,Core,2,LT_205,CLASS,FAC_042,Dr. Revathi T
+Tuesday,Session 1,08:00 - 08:55,6CS 1018_AIML_D,6CS 1018,Generative AI,Core,2,LT_303,CLASS,FAC_046,Dr. Jayabhaduri R
+Tuesday,Session 1,08:00 - 08:55,6CS 1207_Gen_C_LAB,6CS 1207,Business Analytics,Program Elective,2,CS_Lab_10,LAB,FAC_085,CSE
+Tuesday,Session 1,08:00 - 08:55,6CS 1208_Gen_C,6CS 1208,Stream Processing and Analytics,Core,2,LT_103,CLASS,FAC_102,CSE
+Tuesday,Session 1,08:00 - 08:55,6CS 1215_AIML_C,6CS 1215,Data Science for MLOps,Program Elective,2,LT_209,CLASS,FAC_076,CSE
+Tuesday,Session 1,08:00 - 08:55,6HS 1505_Gen_A,6HS 1505,Gender Studies,Core,1,LT_202,CLASS,FAC_020,Mr. Ebin P.M
+Tuesday,Session 1,08:00 - 08:55,6IT 1206_IT_Gen,6IT 1206,Web Data Processing,Program Elective,2,LT_403,CLASS,FAC_071,Dr. Neeba E A
+Tuesday,Session 1,08:00 - 08:55,6IT 1213_IT_CCIT,6IT 1213,Cloud Application Development and Deployment,Program Elective,2,LT_302,CLASS,FAC_010,Dr. Chintureena Thingom
+Tuesday,Session 2,09:00 - 09:55,6CS 1014_DA_A,6CS 1014,Neural Networks and Deep Learning,Core,2,LT_206,CLASS,FAC_025,Dr. Tamilarasi R
+Tuesday,Session 2,09:00 - 09:55,6CS 1014_DA_B,6CS 1014,Neural Networks and Deep Learning,Core,2,LT_207,CLASS,FAC_035,Dr. D Sumathi
+Tuesday,Session 2,09:00 - 09:55,6CS 1018_AIML_A_lab,6CS 1018,Generative AI,Core,2,CS_Lab_01,LAB,FAC_018,Mr. Antony Kovilpillai J
+Tuesday,Session 2,09:00 - 09:55,6CS 1018_AIML_B_lab,6CS 1018,Generative AI,Core,2,CS_Lab_06,LAB,FAC_037,Dr.Pavithra K
+Tuesday,Session 2,09:00 - 09:55,6CS 1018_AIML_D_lab,6CS 1018,Generative AI,Core,2,CS_Lab_04,LAB,FAC_054,Prakhar Consul
+Tuesday,Session 2,09:00 - 09:55,6CS 1018_AIML_E_lab,6CS 1018,Generative AI,Core,2,CS_Lab_05,LAB,FAC_131,Dr. Pavithra K
+Tuesday,Session 2,09:00 - 09:55,6CS 1035_CS_A_lab,6CS 1035,Secured Software Engineering and Agile Development,Core,2,CS_Lab_11,LAB,FAC_045,Dr R. Rajasekar
+Tuesday,Session 2,09:00 - 09:55,6CS 1035_CS_B_lab,6CS 1035,Secured Software Engineering and Agile Development,Core,2,CS_Lab_02,LAB,FAC_003,Dr. Chetan J Shelke
+Tuesday,Session 2,09:00 - 09:55,6CS 1208_CC,6CS 1208,Stream Processing and Analytics,Core,2,CS_Room,CLASS,FAC_057,Dr. Akey Sungheetha
+Tuesday,Session 2,09:00 - 09:55,6CS 1208_Gen_A_LAB,6CS 1208,Stream Processing and Analytics,Core,2,CS_Lab_09,LAB,FAC_060,Dr. Rekha R Nair
+Tuesday,Session 2,09:00 - 09:55,6CS 1208_Gen_B,6CS 1208,Stream Processing and Analytics,Core,2,LT_102,CLASS,FAC_101,CSE
+Tuesday,Session 2,09:00 - 09:55,6CS 1208_Gen_B_LAb,6CS 1208,Stream Processing and Analytics,Core,2,CS_Lab_08,LAB,FAC_063,Deepika Nayak
+Tuesday,Session 2,09:00 - 09:55,6CS 1208_Gen_C_LAb,6CS 1208,Stream Processing and Analytics,Core,2,CS_Lab_12,LAB,FAC_064,Dr. A. Ezil Sam Leni
+Tuesday,Session 2,09:00 - 09:55,6CS 1208_IT_CC,6CS 1208,Stream Processing and Analytics,Core,2,LT_104,CLASS,FAC_103,CSE
+Tuesday,Session 2,09:00 - 09:55,6CS 1208_IT_CCIT,6CS 1208,Stream Processing and Analytics,Core,2,LT_105,CLASS,FAC_104,CSE
+Tuesday,Session 2,09:00 - 09:55,6CS 1208_IT_CCIT_lab,6CS 1208,Stream Processing and Analytics,Core,2,CS_Lab_03,LAB,FAC_067,Dr. P. Mano Paul
+Tuesday,Session 2,09:00 - 09:55,6IT 1021_IT_Gen,6IT 1021,Information Management and Integration Systems,Core,2,LT_106,CLASS,FAC_026,Dr. N Rajkumar
+Tuesday,Session 2,09:00 - 09:55,6IT 1021_IT_Gen_lab,6IT 1021,Information Management and Integration Systems,Core,2,CS_Lab_07,LAB,FAC_072,Dr. Sumit Kumar Banshal
+Tuesday,Session 3,10:00 - 10:55,6HS 1505_CS_B,6HS 1505,Gender Studies,Core,1,LT_101,CLASS,FAC_005,Dr. Mir Wajahat Hussain
+Tuesday,Session 3,10:00 - 10:55,6HS 1505_DA_B,6HS 1505,Gender Studies,Core,1,LT_107,CLASS,FAC_001,Prof. Radha R
+Tuesday,Session 3,10:00 - 10:55,6HS 1505_IT_CCIT,6HS 1505,Gender Studies,Core,1,LT_205,CLASS,FAC_029,Dr Niranchana R
+Tuesday,Session 4,11:05 - 12:00,5CS 1014_DA_A,5CS 1014,Neural Networks and Deep Learning,Core,2,LT_106,CLASS,FAC_117,Dr. Virendra Kumar Shrivastava
+Tuesday,Session 4,11:05 - 12:00,5CS 1014_DA_A_lab,5CS 1014,Neural Networks and Deep Learning,Core,2,CS_Lab_12,LAB,FAC_005,Dr. Mir Wajahat Hussain
+Tuesday,Session 4,11:05 - 12:00,5CS 1014_DA_B,5CS 1014,Neural Networks and Deep Learning,Core,2,LT_107,CLASS,FAC_110,CSE
+Tuesday,Session 4,11:05 - 12:00,5CS 1014_DA_B_lab,5CS 1014,Neural Networks and Deep Learning,Core,2,CS_Lab_03,LAB,FAC_008,Dr. V. Keerthika
+Tuesday,Session 4,11:05 - 12:00,5CS 1014_Gen_B_LAB,5CS 1014,Neural Networks and Deep Learning,Core,2,CS_Lab_09,LAB,FAC_014,Prof. Nivedita Manohar Mathkunti
+Tuesday,Session 4,11:05 - 12:00,5CS 1014_Gen_C,5CS 1014,Neural Networks and Deep Learning,Core,2,LT_201,CLASS,FAC_001,Prof. Radha R
+Tuesday,Session 4,11:05 - 12:00,5CS 1014_Gen_C_LAB,5CS 1014,Neural Networks and Deep Learning,Core,2,CS_Lab_08,LAB,FAC_016,Ms. Soumi Dhar
+Tuesday,Session 4,11:05 - 12:00,6CS 1013_DA_A_Lab,6CS 1013,Compiler Design,Core,2,CS_Lab_11,LAB,FAC_022,Mr Muthulingam
+Tuesday,Session 4,11:05 - 12:00,6CS 1013_DA_B_Lab,6CS 1013,Compiler Design,Core,2,CS_Lab_05,LAB,FAC_023,Dr. Mir Wajahat Hussain
+Tuesday,Session 4,11:05 - 12:00,6CS 1013_Gen_A_LAB,6CS 1013,Compiler Design,Core,2,CS_Lab_04,LAB,FAC_044,Dr. Jagdish Chandra Patni
+Tuesday,Session 4,11:05 - 12:00,6CS 1013_Gen_B_LAb,6CS 1013,Compiler Design,Core,2,CS_Lab_02,LAB,FAC_049,Dr. Shailesh Kumar
+Tuesday,Session 4,11:05 - 12:00,6CS 1013_Gen_C_LAB,6CS 1013,Compiler Design,Core,2,CS_Lab_01,LAB,FAC_051,Ms. Anupama K Ingale
+Tuesday,Session 4,11:05 - 12:00,6CS 1018_AIML_F_lab,6CS 1018,Generative AI,Core,2,CS_Lab_06,LAB,FAC_132,Mr. Prakhar Consul
+Tuesday,Session 4,11:05 - 12:00,6CS 1036_CS_A,6CS 1036,Cyber Forensics,Core,2,LT_103,CLASS,FAC_036,Dr.Smitha Rajagopal
+Tuesday,Session 4,11:05 - 12:00,6CS 1036_CS_A_lab,6CS 1036,Cyber Forensics,Core,2,CS_Lab_10,LAB,FAC_082,CSE
+Tuesday,Session 4,11:05 - 12:00,6CS 1036_CS_B_Lab,6CS 1036,Cyber Forensics,Core,2,CS_Lab_07,LAB,FAC_083,IT
+Tuesday,Session 4,11:05 - 12:00,6CS 1225_CC,6CS 1225,Big Data Processing,Program Elective,2,LT_208,CLASS,FAC_048,Dr. Saliha Bathool
+Tuesday,Session 4,11:05 - 12:00,6IT 1021_IT_Gen_A,6IT 1021,Information Management and Integration Systems,Core,2,LT_101,CLASS,FAC_026,Dr. N Rajkumar
+Tuesday,Session 6,13:10 - 14:05,6CS 1013_AIML_A_LAB,6CS 1013,Compiler Design,Core,2,CS_Lab_12,LAB,FAC_049,Dr. Shailesh Kumar
+Tuesday,Session 6,13:10 - 14:05,6CS 1018_AIML_H_lab,6CS 1018,Generative AI,Core,2,CS_Lab_01,LAB,FAC_018,Mr. Antony Kovilpillai J
+Tuesday,Session 6,13:10 - 14:05,6HS 1505_CC,6HS 1505,Gender Studies,Core,1,LT_102,CLASS,FAC_014,Prof. Nivedita Manohar Mathkunti
+Tuesday,Session 7,14:10 - 15:05,6HS 1505_AIML_B,6HS 1505,Gender Studies,Core,1,LT_101,CLASS,FAC_111,IT
+Tuesday,Session 7,14:10 - 15:05,6HS 1505_AIML_H,6HS 1505,Gender Studies,Core,1,LT_104,CLASS,FAC_005,Dr. Mir Wajahat Hussain
+Tuesday,Session 8,15:10 - 16:00,6HS 1505_Gen_C,6HS 1505,Gender Studies,Core,1,LT_104,CLASS,FAC_001,Prof. Radha R
+Wednesday,Session 1,08:00 - 08:55,6CS 1015_Gen_B_LAb,6CS 1015,Cryptography and Network Security,Core,2,CS_Lab_04,LAB,FAC_123,Dr. R Niranchana
+Wednesday,Session 1,08:00 - 08:55,6CS 1018_AIML_C_lab,6CS 1018,Generative AI,Core,2,CS_Lab_03,LAB,FAC_042,Dr. Revathi T
+Wednesday,Session 1,08:00 - 08:55,6CS 1018_AIML_G_lab,6CS 1018,Generative AI,Core,2,CS_Lab_07,LAB,FAC_142,Dr.Rajasekar R
+Wednesday,Session 1,08:00 - 08:55,6CS 1039_DA_B,6CS 1039,Big Data Analytics,Core,2,LT_209,CLASS,FAC_115,Ms. Lalli K
+Wednesday,Session 1,08:00 - 08:55,6CS 1209_Gen_A,6CS 1209,Penetration Testing and Vulnerability Assessment,Program Elective,2,LT_102,CLASS,FAC_038,Ms.Swetha C B
+Wednesday,Session 1,08:00 - 08:55,6CS 1297_DA_A,6CS 1297,Natural Language Processing,Program Elective,2,LT_104,CLASS,FAC_108,CSE
+Wednesday,Session 1,08:00 - 08:55,6IT 1024_IT_Gen_A,6IT 1024,Web and Mobile Systems,Core,2,LT_201,CLASS,FAC_013,Dr. Rydhm Beri
+Wednesday,Session 2,09:00 - 09:55,5CS 1014_Gen_B,5CS 1014,Neural Networks and Deep Learning,Core,2,LT_105,CLASS,FAC_117,Dr. Virendra Kumar Shrivastava
+Wednesday,Session 2,09:00 - 09:55,6CS 1016_AIML_A,6CS 1016,Software Engineering and Agile Development,Core,2,LT_106,CLASS,FAC_031,Dr. C. Viji
+Wednesday,Session 2,09:00 - 09:55,6CS 1016_AIML_B,6CS 1016,Software Engineering and Agile Development,Core,2,LT_107,CLASS,FAC_041,Ms. Geetha Rani Edupuganti
+Wednesday,Session 2,09:00 - 09:55,6CS 1016_AIML_C,6CS 1016,Software Engineering and Agile Development,Core,2,LT_108,CLASS,FAC_050,Dr. N Vijayalakshmi
+Wednesday,Session 2,09:00 - 09:55,6CS 1016_AIML_D,6CS 1016,Software Engineering and Agile Development,Core,2,LT_210,CLASS,FAC_058,Dr. Ghantasala Gnana Sudha Pradeep
+Wednesday,Session 2,09:00 - 09:55,6CS 1016_AIML_E,6CS 1016,Software Engineering and Agile Development,Core,2,LT_202,CLASS,FAC_061,Mano Shankari J
+Wednesday,Session 2,09:00 - 09:55,6CS 1016_AIML_F,6CS 1016,Software Engineering and Agile Development,Core,2,LT_203,CLASS,FAC_062,Jaspine Bami Rani Y
+Wednesday,Session 2,09:00 - 09:55,6CS 1016_AIML_F_lab,6CS 1016,Software Engineering and Agile Development,Core,2,CS_Lab_01,LAB,FAC_026,Dr. N Rajkumar
+Wednesday,Session 2,09:00 - 09:55,6CS 1016_AIML_G,6CS 1016,Software Engineering and Agile Development,Core,2,LT_204,CLASS,FAC_070,Dr. Gnanaprakasam Thangavel
+Wednesday,Session 2,09:00 - 09:55,6CS 1016_AIML_H,6CS 1016,Software Engineering and Agile Development,Core,2,LT_205,CLASS,FAC_137,Dr. C Viji
+Wednesday,Session 2,09:00 - 09:55,6CS 1016_CC_A,6CS 1016,Software Engineering and Agile Development,Core,2,LT_206,CLASS,FAC_138,Dr. R C Karpagalakshmi
+Wednesday,Session 2,09:00 - 09:55,6CS 1016_CSE_Gen_A,6CS 1016,Software Engineering and Agile Development,Core,2,LT_207,CLASS,FAC_139,Ms. Jaspine Bami Rani Y
+Wednesday,Session 2,09:00 - 09:55,6CS 1016_CSE_Gen_B,6CS 1016,Software Engineering and Agile Development,Core,2,LT_208,CLASS,FAC_140,Ms. Mano Shankari J
+Wednesday,Session 2,09:00 - 09:55,6CS 1016_Gen_A_lab,6CS 1016,Software Engineering and Agile Development,Core,2,CS_Lab_02,LAB,FAC_063,Deepika Nayak
+Wednesday,Session 2,09:00 - 09:55,6CS 1016_Gen_B_Lab,6CS 1016,Software Engineering and Agile Development,Core,2,CS_Lab_10,LAB,FAC_067,Dr. P. Mano Paul
+Wednesday,Session 2,09:00 - 09:55,6CS 1016_Gen_C_lab,6CS 1016,Software Engineering and Agile Development,Core,2,CS_Lab_09,LAB,FAC_068,Dr. K . Ramalakshmi
+Wednesday,Session 2,09:00 - 09:55,6CS 1028_CC_lab,6CS 1028,Containerization and Dockers,Core,2,CS_Lab_08,LAB,FAC_039,Mr. Naren J
+Wednesday,Session 2,09:00 - 09:55,6CS 1036_CS_B,6CS 1036,Cyber Forensics,Core,2,CS_Room,CLASS,FAC_036,Dr.Smitha Rajagopal
+Wednesday,Session 2,09:00 - 09:55,6CS 1207_AIML_A_lab,6CS 1207,Business Analytics,Program Elective,2,CS_Lab_05,LAB,FAC_075,CSE
+Wednesday,Session 2,09:00 - 09:55,6IT 1023_IT_Gen_A,6IT 1023,IT Infrastructure Management,Core,2,LT_101,CLASS,FAC_033,Ms. Asha Kurian
+Wednesday,Session 2,09:00 - 09:55,6IT 1213_IT_CCIT_lab,6IT 1213,Cloud Application Development and Deployment,Program Elective,2,CS_Lab_11,LAB,FAC_010,Dr. Chintureena Thingom
+Wednesday,Session 4,11:05 - 12:00,5CS 1014_Gen_A_LAB,5CS 1014,Neural Networks and Deep Learning,Core,2,CS_Lab_04,LAB,FAC_009,Dr.R. Rajagopal
+Wednesday,Session 4,11:05 - 12:00,6CS 1015_Gen_B,6CS 1015,Cryptography and Network Security,Core,2,LT_106,CLASS,FAC_012,Dr. M. Selvam
+Wednesday,Session 4,11:05 - 12:00,6CS 1015_Gen_C,6CS 1015,Cryptography and Network Security,Core,2,LT_107,CLASS,FAC_069,Dr. N Sengottaiyan
+Wednesday,Session 4,11:05 - 12:00,6CS 1015_Gen_C_LAB,6CS 1015,Cryptography and Network Security,Core,2,CS_Lab_01,LAB,FAC_141,Dr. R. Niranchana
+Wednesday,Session 4,11:05 - 12:00,6CS 1016_AIML_G_lab,6CS 1016,Software Engineering and Agile Development,Core,2,CS_Lab_08,LAB,FAC_031,Dr. C. Viji
+Wednesday,Session 4,11:05 - 12:00,6CS 1016_AIML_H_lab,6CS 1016,Software Engineering and Agile Development,Core,2,CS_Lab_09,LAB,FAC_041,Ms. Geetha Rani Edupuganti
+Wednesday,Session 4,11:05 - 12:00,6CS 1016_CC_A_lab,6CS 1016,Software Engineering and Agile Development,Core,2,CS_Lab_05,LAB,FAC_050,Dr. N Vijayalakshmi
+Wednesday,Session 4,11:05 - 12:00,6CS 1016_DA_A_Lab,6CS 1016,Software Engineering and Agile Development,Core,2,CS_Lab_03,LAB,FAC_061,Mano Shankari J
+Wednesday,Session 4,11:05 - 12:00,6CS 1016_DA_B_lab,6CS 1016,Software Engineering and Agile Development,Core,2,CS_Lab_06,LAB,FAC_062,Jaspine Bami Rani Y
+Wednesday,Session 4,11:05 - 12:00,6CS 1029_CC_lab,6CS 1029,Cloud Security,Core,2,CS_Lab_02,LAB,FAC_003,Dr. Chetan J Shelke
+Wednesday,Session 4,11:05 - 12:00,6CS 1207_AIML_D_lab,6CS 1207,Business Analytics,Program Elective,2,CS_Lab_10,LAB,FAC_078,CSE
+Wednesday,Session 4,11:05 - 12:00,6CS 1232_CS_A,6CS 1232,Artificial Intelligence in Cyber security,Program Elective,2,LT_103,CLASS,FAC_066,Dr. Rathnakar Achary
+Wednesday,Session 4,11:05 - 12:00,6CS 1232_CS_B,6CS 1232,Artificial Intelligence in Cyber security,Program Elective,2,LT_104,CLASS,FAC_114,Dr. Judeson Antony Kovilpillai J
+Wednesday,Session 4,11:05 - 12:00,6CS 1232_CS_B_Lab,6CS 1232,Artificial Intelligence in Cyber security,Program Elective,2,CS_Lab_07,LAB,FAC_092,CSE
+Wednesday,Session 4,11:05 - 12:00,6IT 1024_IT_Gen,6IT 1024,Web and Mobile Systems,Core,2,CS_Room,CLASS,FAC_013,Dr. Rydhm Beri
+Wednesday,Session 4,11:05 - 12:00,6IT 1024_IT_Gen_lab,6IT 1024,Web and Mobile Systems,Core,2,CS_Lab_12,LAB,FAC_073,Prof. Ananthanagu U
+Wednesday,Session 4,11:05 - 12:00,6IT 1043_IT_CCIT_lab,6IT 1043,Cloud Performance Optimization,Core,2,CS_Lab_11,LAB,FAC_011,Prof. Goutham E
+Wednesday,Session 6,13:10 - 14:05,6IT 1043_IT_CC,6IT 1043,Cloud Performance Optimization,Core,2,LT_208,CLASS,FAC_118,Mr. Goutham E
+Wednesday,Session 7,14:10 - 15:05,6CS 1013_AIML_B_Lab,6CS 1013,Compiler Design,Core,2,CS_Lab_12,LAB,FAC_051,Ms. Anupama K Ingale
+Wednesday,Session 7,14:10 - 15:05,6CS 1013_AIML_C_Lab,6CS 1013,Compiler Design,Core,2,CS_Lab_02,LAB,FAC_053,Dr.Rashmi Mathkur
+Wednesday,Session 7,14:10 - 15:05,6CS 1013_AIML_D_Lab,6CS 1013,Compiler Design,Core,2,CS_Lab_10,LAB,FAC_056,Dr. Rajesh Sharma R
+Wednesday,Session 7,14:10 - 15:05,6CS 1013_AIML_E_lab,6CS 1013,Compiler Design,Core,2,CS_Lab_09,LAB,FAC_065,Dr. Shekhar R
+Wednesday,Session 7,14:10 - 15:05,6CS 1013_AIML_F_lab,6CS 1013,Compiler Design,Core,2,CS_Lab_08,LAB,FAC_119,Dr .Rashmi Mothkur
+Wednesday,Session 7,14:10 - 15:05,6CS 1013_AIML_H_lab,6CS 1013,Compiler Design,Core,2,CS_Lab_07,LAB,FAC_121,Mr. Ebin P M
+Wednesday,Session 7,14:10 - 15:05,6CS 1013_CS_B_Lab,6CS 1013,Compiler Design,Core,2,CS_Lab_04,LAB,FAC_017,Mr. Aniruddha Prabhu B P
+Wednesday,Session 7,14:10 - 15:05,6CS 1013_DA_B,6CS 1013,Compiler Design,Core,2,LT_107,CLASS,FAC_006,Dr. Anoop Kumar Srivastava
+Wednesday,Session 7,14:10 - 15:05,6CS 1013_Gen_A,6CS 1013,Compiler Design,Core,2,LT_108,CLASS,FAC_022,Mr Muthulingam
+Wednesday,Session 7,14:10 - 15:05,6CS 1013_Gen_B,6CS 1013,Compiler Design,Core,2,LT_201,CLASS,FAC_023,Dr. Mir Wajahat Hussain
+Wednesday,Session 7,14:10 - 15:05,6CS 1013_Gen_C,6CS 1013,Compiler Design,Core,2,LT_202,CLASS,FAC_044,Dr. Jagdish Chandra Patni
+Wednesday,Session 7,14:10 - 15:05,6CS 1022_AIML_D_Lab,6CS 1022,Data Privacy and Security,Core,2,CS_Lab_03,LAB,FAC_004,Dr. Saswati Debnath
+Wednesday,Session 7,14:10 - 15:05,6CS 1022_AIML_E_Lab,6CS 1022,Data Privacy and Security,Core,2,CS_Lab_01,LAB,FAC_024,Dr K Sathesh Kumar
+Wednesday,Session 7,14:10 - 15:05,6CS 1022_IT_CCIT_lab,6CS 1022,Data Privacy and Security,Core,2,CS_Lab_06,LAB,FAC_052,Dr.Sridhar Devarajan
+Wednesday,Session 7,14:10 - 15:05,6CS 1232_CS_A_Lab,6CS 1232,Artificial Intelligence in Cyber security,Program Elective,2,CS_Lab_11,LAB,FAC_066,Dr. Rathnakar Achary
+Thursday,Session 1,08:00 - 08:55,6CS 1013_AIML_G_lab,6CS 1013,Compiler Design,Core,2,CS_Lab_06,LAB,FAC_120,Mr. S Muthulingam
+Thursday,Session 1,08:00 - 08:55,6CS 1013_CC_Lab,6CS 1013,Compiler Design,Core,2,CS_Lab_05,LAB,FAC_122,Ms. Swetha C B
+Thursday,Session 1,08:00 - 08:55,6CS 1016_AIML_D_lab,6CS 1016,Software Engineering and Agile Development,Core,2,CS_Lab_08,LAB,FAC_139,Ms. Jaspine Bami Rani Y
+Thursday,Session 1,08:00 - 08:55,6CS 1017_AIML_C,6CS 1017,Parallel and Distributed Computing,Core,2,LT_203,CLASS,FAC_047,Dr. K Sasi Kala Rani
+Thursday,Session 1,08:00 - 08:55,6CS 1017_Gen_B,6CS 1017,Parallel and Distributed Computing,Core,2,LT_206,CLASS,FAC_028,Dr Mousumi Karmakar
+Thursday,Session 1,08:00 - 08:55,6CS 1022_DA_A,6CS 1022,Data Privacy and Security,Core,2,LT_102,CLASS,FAC_052,Dr.Sridhar Devarajan
+Thursday,Session 1,08:00 - 08:55,6CS 1033_CS_A,6CS 1033,Applied Cryptography,Core,2,LT_202,CLASS,FAC_043,Dr. Rohit kumar
+Thursday,Session 1,08:00 - 08:55,6CS 1034_CS_A_lab,6CS 1034,Security Automation and Orchestration,Core,2,CS_Lab_12,LAB,FAC_099,CSE
+Thursday,Session 1,08:00 - 08:55,6CS 1208_Gen_A,6CS 1208,Stream Processing and Analytics,Core,2,LT_101,CLASS,FAC_100,IT
+Thursday,Session 1,08:00 - 08:55,6CS 1216_AIML_A,6CS 1216,Reinforcement Learning,Program Elective,2,LT_103,CLASS,FAC_104,CSE
+Thursday,Session 1,08:00 - 08:55,6CS 1216_AIML_D,6CS 1216,Reinforcement Learning,Program Elective,2,LT_105,CLASS,FAC_021,Dr. Tinka Singh
+Thursday,Session 1,08:00 - 08:55,6CS 1216_AIML_H,6CS 1216,Reinforcement Learning,Program Elective,2,LT_108,CLASS,FAC_097,CSE
+Thursday,Session 1,08:00 - 08:55,6CS 1216_AIML_H_lab,6CS 1216,Reinforcement Learning,Program Elective,2,CS_Lab_02,LAB,FAC_108,CSE
+Thursday,Session 1,08:00 - 08:55,6CS 1216_CC_Lab,6CS 1216,Reinforcement Learning,Program Elective,2,CS_Lab_07,LAB,FAC_109,CSE
+Thursday,Session 1,08:00 - 08:55,6IT 1043_IT_CCIT,6IT 1043,Cloud Performance Optimization,Core,2,LT_402,CLASS,FAC_011,Prof. Goutham E
+Thursday,Session 1,08:00 - 08:55,6IT 1207_IT_Gen,6IT 1207,Mobile Application Development,Program Elective,2,CS_Room,CLASS,FAC_134,Ms. Radha R
+Thursday,Session 2,09:00 - 09:55,6CS 1017_AIML_A,6CS 1017,Parallel and Distributed Computing,Core,2,LT_209,CLASS,FAC_017,Mr. Aniruddha Prabhu B P
+Thursday,Session 2,09:00 - 09:55,6CS 1017_AIML_B,6CS 1017,Parallel and Distributed Computing,Core,2,LT_107,CLASS,FAC_030,Dr. Sulaiman Syed Mohamed
+Thursday,Session 2,09:00 - 09:55,6CS 1017_AIML_D,6CS 1017,Parallel and Distributed Computing,Core,2,LT_201,CLASS,FAC_135,Dr. Sonali Samal
+Thursday,Session 2,09:00 - 09:55,6CS 1017_AIML_H,6CS 1017,Parallel and Distributed Computing,Core,2,LT_106,CLASS,FAC_128,Dr. Mohammed Arif
+Thursday,Session 2,09:00 - 09:55,6CS 1017_CSE_Gen_C,6CS 1017,Parallel and Distributed Computing,Core,2,LT_204,CLASS,FAC_020,Mr. Ebin P.M
+Thursday,Session 2,09:00 - 09:55,6CS 1017_Gen_A,6CS 1017,Parallel and Distributed Computing,Core,2,LT_205,CLASS,FAC_027,Ms. Pragya
+Thursday,Session 2,09:00 - 09:55,6CS 1017_Gen_C,6CS 1017,Parallel and Distributed Computing,Core,2,LT_207,CLASS,FAC_029,Dr Niranchana R
+Thursday,Session 2,09:00 - 09:55,6CS 1033_CS_A_lab,6CS 1033,Applied Cryptography,Core,2,CS_Lab_01,LAB,FAC_113,Dr. M Selvam
+Thursday,Session 2,09:00 - 09:55,6CS 1033_CS_B,6CS 1033,Applied Cryptography,Core,2,LT_104,CLASS,FAC_112,Mr. Rohit kumar
+Thursday,Session 2,09:00 - 09:55,6CS 1039_DA_A,6CS 1039,Big Data Analytics,Core,2,LT_208,CLASS,FAC_015,Ms. K . Lalli
+Thursday,Session 2,09:00 - 09:55,6CS 1039_IT_CCIT,6CS 1039,Big Data Analytics,Core,2,LT_210,CLASS,FAC_116,Ms. Deepika Nayak
+Thursday,Session 2,09:00 - 09:55,6CS 1225_CC_Lab,6CS 1225,Big Data Processing,Program Elective,2,CS_Lab_11,LAB,FAC_048,Dr. Saliha Bathool
+Thursday,Session 2,09:00 - 09:55,6IT 1207_IT_Gen_lab,6IT 1207,Mobile Application Development,Program Elective,2,CS_Lab_03,LAB,FAC_075,CSE
+Thursday,Session 3,10:00 - 10:55,6CS 1033_CS_B_lab,6CS 1033,Applied Cryptography,Core,2,CS_Lab_07,LAB,FAC_043,Dr. Rohit kumar
+Thursday,Session 4,11:05 - 12:00,6CS 1034_CS_A,6CS 1034,Security Automation and Orchestration,Core,2,LT_101,CLASS,FAC_093,CSE
+Thursday,Session 4,11:05 - 12:00,6CS 1034_CS_B,6CS 1034,Security Automation and Orchestration,Core,2,LT_102,CLASS,FAC_094,CSE
+Thursday,Session 4,11:05 - 12:00,6CS 1034_CS_B_lab,6CS 1034,Security Automation and Orchestration,Core,2,CS_Lab_04,LAB,FAC_100,IT
+Thursday,Session 4,11:05 - 12:00,6CS 1039_DA_A_Lab,6CS 1039,Big Data Analytics,Core,2,CS_Lab_01,LAB,FAC_117,Dr. Virendra Kumar Shrivastava
+Thursday,Session 4,11:05 - 12:00,6CS 1039_DA_B_Lab,6CS 1039,Big Data Analytics,Core,2,CS_Lab_05,LAB,FAC_115,Ms. Lalli K
+Thursday,Session 4,11:05 - 12:00,6CS 1039_IT_CCIT_lab,6CS 1039,Big Data Analytics,Core,2,CS_Lab_10,LAB,FAC_116,Ms. Deepika Nayak
+Thursday,Session 4,11:05 - 12:00,6CS 1216_AIML_B_LAB,6CS 1216,Reinforcement Learning,Program Elective,2,CS_Lab_08,LAB,FAC_096,CSE
+Thursday,Session 4,11:05 - 12:00,6CS 1216_AIML_C,6CS 1216,Reinforcement Learning,Program Elective,2,LT_105,CLASS,FAC_102,CSE
+Thursday,Session 4,11:05 - 12:00,6CS 1216_AIML_C_Lab,6CS 1216,Reinforcement Learning,Program Elective,2,CS_Lab_06,LAB,FAC_103,CSE
+Thursday,Session 4,11:05 - 12:00,6CS 1216_AIML_D_lab,6CS 1216,Reinforcement Learning,Program Elective,2,CS_Lab_03,LAB,FAC_105,CSE
+Thursday,Session 4,11:05 - 12:00,6CS 1216_AIML_E_LAb,6CS 1216,Reinforcement Learning,Program Elective,2,CS_Lab_09,LAB,FAC_101,CSE
+Thursday,Session 4,11:05 - 12:00,6CS 1216_AIML_F,6CS 1216,Reinforcement Learning,Program Elective,2,LT_106,CLASS,FAC_095,CSE
+Thursday,Session 4,11:05 - 12:00,6CS 1216_AIML_G,6CS 1216,Reinforcement Learning,Program Elective,2,LT_107,CLASS,FAC_107,CSE
+Thursday,Session 4,11:05 - 12:00,6CS 1216_CC,6CS 1216,Reinforcement Learning,Program Elective,2,LT_201,CLASS,FAC_098,CSE
+Thursday,Session 4,11:05 - 12:00,6IT 1023_IT_Gen_lab,6IT 1023,IT Infrastructure Management,Core,2,CS_Lab_11,LAB,FAC_040,Dr. Neeraj Jain
+Thursday,Session 7,14:10 - 15:05,6CS 1016_AIML_A_lab,6CS 1016,Software Engineering and Agile Development,Core,2,CS_Lab_01,LAB,FAC_070,Dr. Gnanaprakasam Thangavel
+Thursday,Session 7,14:10 - 15:05,6CS 1016_AIML_B_LAB,6CS 1016,Software Engineering and Agile Development,Core,2,CS_Lab_11,LAB,FAC_137,Dr. C Viji
+Thursday,Session 7,14:10 - 15:05,6CS 1016_AIML_C_lab,6CS 1016,Software Engineering and Agile Development,Core,2,CS_Lab_10,LAB,FAC_138,Dr. R C Karpagalakshmi
+Thursday,Session 7,14:10 - 15:05,6CS 1016_AIML_E_LAb,6CS 1016,Software Engineering and Agile Development,Core,2,CS_Lab_08,LAB,FAC_140,Ms. Mano Shankari J
+Thursday,Session 7,14:10 - 15:05,6CS 1016_CSE_Gen_C,6CS 1016,Software Engineering and Agile Development,Core,2,LT_103,CLASS,FAC_031,Dr. C. Viji
+Thursday,Session 7,14:10 - 15:05,6CS 1016_DA_A,6CS 1016,Software Engineering and Agile Development,Core,2,LT_104,CLASS,FAC_041,Ms. Geetha Rani Edupuganti
+Thursday,Session 7,14:10 - 15:05,6CS 1016_DA_B,6CS 1016,Software Engineering and Agile Development,Core,2,LT_105,CLASS,FAC_050,Dr. N Vijayalakshmi
+Thursday,Session 7,14:10 - 15:05,6CS 1016_Gen_A,6CS 1016,Software Engineering and Agile Development,Core,2,LT_106,CLASS,FAC_058,Dr. Ghantasala Gnana Sudha Pradeep
+Thursday,Session 7,14:10 - 15:05,6CS 1016_Gen_B,6CS 1016,Software Engineering and Agile Development,Core,2,LT_107,CLASS,FAC_061,Mano Shankari J
+Thursday,Session 7,14:10 - 15:05,6CS 1016_Gen_C,6CS 1016,Software Engineering and Agile Development,Core,2,LT_108,CLASS,FAC_062,Jaspine Bami Rani Y
+Thursday,Session 7,14:10 - 15:05,6CS 1216_AIML_E,6CS 1216,Reinforcement Learning,Program Elective,2,LT_101,CLASS,FAC_046,Dr. Jayabhaduri R
+Friday,Session 1,08:00 - 08:55,6CS 1013_AIML_D,6CS 1013,Compiler Design,Core,2,LT_107,CLASS,FAC_044,Dr. Jagdish Chandra Patni
+Friday,Session 1,08:00 - 08:55,6CS 1013_AIML_G,6CS 1013,Compiler Design,Core,2,LT_202,CLASS,FAC_053,Dr.Rashmi Mathkur
+Friday,Session 1,08:00 - 08:55,6CS 1013_AIML_H,6CS 1013,Compiler Design,Core,2,LT_203,CLASS,FAC_056,Dr. Rajesh Sharma R
+Friday,Session 1,08:00 - 08:55,6CS 1013_CS_A,6CS 1013,Compiler Design,Core,2,LT_206,CLASS,FAC_120,Mr. S Muthulingam
+Friday,Session 1,08:00 - 08:55,6CS 1013_DA_A,6CS 1013,Compiler Design,Core,2,LT_208,CLASS,FAC_122,Ms. Swetha C B
+Friday,Session 1,08:00 - 08:55,6CS 1022_AIML_G_Lab,6CS 1022,Data Privacy and Security,Core,2,CS_Lab_09,LAB,FAC_034,Dr. R. C. Karpagalakshmi
+Friday,Session 1,08:00 - 08:55,6CS 1022_AIML_H,6CS 1022,Data Privacy and Security,Core,2,LT_101,CLASS,FAC_024,Dr K Sathesh Kumar
+Friday,Session 1,08:00 - 08:55,6CS 1207_AIML_C_lab,6CS 1207,Business Analytics,Program Elective,2,CS_Lab_07,LAB,FAC_077,CSE
+Friday,Session 1,08:00 - 08:55,6CS 1208_CC_Lab,6CS 1208,Stream Processing and Analytics,Core,2,CS_Lab_11,LAB,FAC_057,Dr. Akey Sungheetha
+Friday,Session 2,09:00 - 09:55,6CS 1013_AIML_A,6CS 1013,Compiler Design,Core,2,LT_104,CLASS,FAC_006,Dr. Anoop Kumar Srivastava
+Friday,Session 2,09:00 - 09:55,6CS 1013_AIML_B,6CS 1013,Compiler Design,Core,2,LT_105,CLASS,FAC_022,Mr Muthulingam
+Friday,Session 2,09:00 - 09:55,6CS 1013_AIML_C,6CS 1013,Compiler Design,Core,2,LT_106,CLASS,FAC_023,Dr. Mir Wajahat Hussain
+Friday,Session 2,09:00 - 09:55,6CS 1013_AIML_E,6CS 1013,Compiler Design,Core,2,LT_108,CLASS,FAC_049,Dr. Shailesh Kumar
+Friday,Session 2,09:00 - 09:55,6CS 1013_AIML_F,6CS 1013,Compiler Design,Core,2,LT_201,CLASS,FAC_051,Ms. Anupama K Ingale
+Friday,Session 2,09:00 - 09:55,6CS 1013_CC,6CS 1013,Compiler Design,Core,2,LT_204,CLASS,FAC_065,Dr. Shekhar R
+Friday,Session 2,09:00 - 09:55,6CS 1013_CC_A,6CS 1013,Compiler Design,Core,2,LT_205,CLASS,FAC_119,Dr .Rashmi Mothkur
+Friday,Session 2,09:00 - 09:55,6CS 1013_CS_B,6CS 1013,Compiler Design,Core,2,LT_207,CLASS,FAC_121,Mr. Ebin P M
+Friday,Session 2,09:00 - 09:55,6CS 1017_AIML_E,6CS 1017,Parallel and Distributed Computing,Core,2,CS_Room,CLASS,FAC_017,Mr. Aniruddha Prabhu B P
+Friday,Session 2,09:00 - 09:55,6CS 1017_AIML_F,6CS 1017,Parallel and Distributed Computing,Core,2,LT_209,CLASS,FAC_030,Dr. Sulaiman Syed Mohamed
+Friday,Session 2,09:00 - 09:55,6CS 1017_AIML_G,6CS 1017,Parallel and Distributed Computing,Core,2,LT_102,CLASS,FAC_047,Dr. K Sasi Kala Rani
+Friday,Session 2,09:00 - 09:55,6CS 1017_CSE_Gen_A,6CS 1017,Parallel and Distributed Computing,Core,2,LT_103,CLASS,FAC_135,Dr. Sonali Samal
+Friday,Session 4,11:05 - 12:00,6CS 1022_AIML_A,6CS 1022,Data Privacy and Security,Core,2,CS_Room,CLASS,FAC_004,Dr. Saswati Debnath
+Friday,Session 4,11:05 - 12:00,6CS 1022_AIML_A_Lab,6CS 1022,Data Privacy and Security,Core,2,CS_Lab_12,LAB,FAC_126,Dr. Sridhar Devarajan
+Friday,Session 4,11:05 - 12:00,6CS 1022_AIML_B,6CS 1022,Data Privacy and Security,Core,2,LT_101,CLASS,FAC_024,Dr K Sathesh Kumar
+Friday,Session 4,11:05 - 12:00,6CS 1022_AIML_C,6CS 1022,Data Privacy and Security,Core,2,LT_102,CLASS,FAC_052,Dr.Sridhar Devarajan
+Friday,Session 4,11:05 - 12:00,6CS 1022_AIML_C_Lab,6CS 1022,Data Privacy and Security,Core,2,CS_Lab_11,LAB,FAC_032,Dr. Lopa Mandal
+Friday,Session 4,11:05 - 12:00,6CS 1022_AIML_D,6CS 1022,Data Privacy and Security,Core,2,LT_103,CLASS,FAC_055,Ms.Savita Vijy
+Friday,Session 4,11:05 - 12:00,6CS 1022_AIML_E,6CS 1022,Data Privacy and Security,Core,2,LT_104,CLASS,FAC_125,Dr. K Sathesh Kumar
+Friday,Session 4,11:05 - 12:00,6CS 1022_AIML_F,6CS 1022,Data Privacy and Security,Core,2,LT_105,CLASS,FAC_127,Ms. Savita Vijay
+Friday,Session 4,11:05 - 12:00,6CS 1022_AIML_F_Lab,6CS 1022,Data Privacy and Security,Core,2,CS_Lab_10,LAB,FAC_033,Ms. Asha Kurian
+Friday,Session 4,11:05 - 12:00,6CS 1022_AIML_H_Lab,6CS 1022,Data Privacy and Security,Core,2,CS_Lab_04,LAB,FAC_038,Ms.Swetha C B
+Friday,Session 4,11:05 - 12:00,6CS 1022_DA_A_Lab,6CS 1022,Data Privacy and Security,Core,2,CS_Lab_08,LAB,FAC_043,Dr. Rohit kumar
+Friday,Session 4,11:05 - 12:00,6CS 1022_DA_B_Lab,6CS 1022,Data Privacy and Security,Core,2,CS_Lab_06,LAB,FAC_045,Dr R. Rajasekar
+Friday,Session 4,11:05 - 12:00,6CS 1022_IT_CCIT,6CS 1022,Data Privacy and Security,Core,2,LT_106,CLASS,FAC_112,Mr. Rohit kumar
+Friday,Session 4,11:05 - 12:00,6CS 1215_AIML_B_LAB,6CS 1215,Data Science for MLOps,Program Elective,2,CS_Lab_05,LAB,FAC_085,CSE
+Friday,Session 4,11:05 - 12:00,6CS 1216_AIML_A_lab,6CS 1216,Reinforcement Learning,Program Elective,2,CS_Lab_09,LAB,FAC_101,CSE
+Friday,Session 7,14:10 - 15:05,6CS 1022_AIML_B_Lab,6CS 1022,Data Privacy and Security,Core,2,CS_Lab_12,LAB,FAC_127,Ms. Savita Vijay
+Friday,Session 7,14:10 - 15:05,6CS 1022_AIML_G,6CS 1022,Data Privacy and Security,Core,2,CS_Room,CLASS,FAC_004,Dr. Saswati Debnath
+Friday,Session 7,14:10 - 15:05,6CS 1022_DA_B,6CS 1022,Data Privacy and Security,Core,2,LT_103,CLASS,FAC_055,Ms.Savita Vijy
+Friday,Session 7,14:10 - 15:05,6CS 1022_IT_Gen,6CS 1022,Data Privacy and Security,Core,2,LT_104,CLASS,FAC_125,Dr. K Sathesh Kumar

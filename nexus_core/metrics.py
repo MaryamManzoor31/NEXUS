@@ -3,7 +3,7 @@ from __future__ import annotations
 import statistics
 from collections import defaultdict
 from .models import *
-from .validator import validate, section_slots
+from .validator import validate
 
 
 def compute(ds: Dataset, sched: Schedule):
@@ -27,11 +27,26 @@ def compute(ds: Dataset, sched: Schedule):
     loads = [load.get(f, 0) for f in ds.faculty]
     return {
         "method": sched.method, "validator_status": rep.status, "solver_status": sched.status,
-        "stage_a_status": sched.status,
+        "stage_a_status": sched.info.get("stage_a_status", sched.status),
+        "stage_a_objective": sched.info.get("objective"),
+        "stage_a_best_bound": sched.info.get("best_bound"),
+        "stage_a_branches": sched.info.get("stage_a_branches"),
+        "stage_a_conflicts": sched.info.get("stage_a_conflicts"),
+        "stage_a_time_s": sched.info.get("wall_a"),
         "stage_b_status": sched.info.get("status_b", "NOT_RUN"),
         "stage_b_status_reason": sched.info.get("status_b_reason"),
+        "stage_b_objective": sched.info.get("stage_b_objective"),
+        "stage_b_best_bound": sched.info.get("stage_b_best_bound"),
+        "stage_b_branches": sched.info.get("stage_b_branches"),
+        "stage_b_conflicts": sched.info.get("stage_b_conflicts"),
+        "stage_b_time_s": sched.info.get("wall_b"),
+        "time_budget_s": sched.info.get("time_budget_s"),
+        "complete_allocation_status": sched.info.get("complete_allocation_status"),
+        "complete_allocation_reason": sched.info.get("complete_allocation_reason"),
         "hard_violations": len(rep.violations), "violations_by_rule": rep.by_rule(),
         "scheduled_sections": f"{len(ds.sections) - len(rep.unscheduled)}/{len(ds.sections)}",
+        "placed_selections": total_sel - unplaced,
+        "total_selections": total_sel,
         "unplaced_selections": f"{unplaced}/{total_sel}",
         "fully_scheduled_students_pct": round(100 * full / len(ds.students), 1) if ds.students else None,
         "room_utilization_pct": round(100 * used / avail, 1) if avail else None,   # occupied / all available room-slots

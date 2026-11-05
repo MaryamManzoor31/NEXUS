@@ -1,0 +1,4 @@
+section_id,course_id,capacity,school_id,department_id,programme_id,stream,semester,batch,session_pattern
+CS101_A,CS101,30,SOET,CSE,CSE,CSE,1,CSE A,
+CS102_A,CS102,30,SOET,CSE,CSE,CSE,1,CSE A,
+MA101_A,MA101,30,SOET,MAT,CSE,CSE,1,CSE A,

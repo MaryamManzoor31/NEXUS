@@ -1,0 +1,749 @@
+{
+  "dataset": "synthetic_S3_20_seed329",
+  "synthetic": true,
+  "scenario": "S3",
+  "students": 20,
+  "seed": 329,
+  "measured_wall_seconds": 15.672,
+  "metrics": {
+    "method": "cpsat",
+    "validator_status": "INVALID",
+    "solver_status": "FEASIBLE",
+    "stage_a_status": "FEASIBLE",
+    "stage_a_objective": 56.0,
+    "stage_a_best_bound": 4.0,
+    "stage_a_branches": 86873,
+    "stage_a_conflicts": 719,
+    "stage_b_status": "OPTIMAL",
+    "stage_b_status_reason": null,
+    "stage_b_objective": 847640.0,
+    "stage_b_best_bound": 847640.0,
+    "stage_b_branches": 41988,
+    "stage_b_conflicts": 139,
+    "complete_allocation_status": "INFEASIBLE",
+    "complete_allocation_reason": "The best feasible partial allocation leaves 140 required selections unplaced under the hard session, workload, lunch, overlap, waiting-time, and capacity constraints.",
+    "hard_violations": 33,
+    "violations_by_rule": {
+      "H15": 33
+    },
+    "scheduled_sections": "43/43",
+    "placed_selections": 40,
+    "total_selections": 180,
+    "unplaced_selections": "140/180",
+    "fully_scheduled_students_pct": 0.0,
+    "room_utilization_pct": 9.0,
+    "faculty_load_range_h": [
+      2,
+      6
+    ],
+    "faculty_load_std_h": 1.44,
+    "runtime_s": 15.66
+  },
+  "stage_a_status": "FEASIBLE",
+  "stage_b_status": "OPTIMAL",
+  "validation": {
+    "status": "INVALID",
+    "hard_violations": 33,
+    "violations_by_rule": {
+      "H15": 33
+    },
+    "violations": [
+      {
+        "rule": "H15",
+        "message": "student S0001 day 3: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0002 day 1: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0003 day 2: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0003 day 0: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0004 day 0: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0004 day 3: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0004 day 4: extended session requires more than 5 required class hours"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0005 day 3: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0005 day 0: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0006 day 3: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0007 day 3: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0007 day 1: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0008 day 3: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0008 day 2: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0008 day 0: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0009 day 3: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0009 day 0: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0011 day 3: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0012 day 3: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0012 day 1: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0012 day 4: extended session requires more than 5 required class hours"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0013 day 1: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0013 day 2: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0013 day 3: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0014 day 3: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0014 day 0: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0015 day 3: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0016 day 3: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0016 day 0: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0017 day 3: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0017 day 1: required class hours exceed the half-day limit"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0017 day 4: extended session requires more than 5 required class hours"
+      },
+      {
+        "rule": "H15",
+        "message": "student S0018 day 2: required class hours exceed the half-day limit"
+      }
+    ],
+    "unscheduled_sections": [],
+    "unassigned_selections": [
+      {
+        "student": "S0001",
+        "course": "C01"
+      },
+      {
+        "student": "S0001",
+        "course": "C02"
+      },
+      {
+        "student": "S0001",
+        "course": "C03"
+      },
+      {
+        "student": "S0001",
+        "course": "C04"
+      },
+      {
+        "student": "S0001",
+        "course": "C41"
+      },
+      {
+        "student": "S0001",
+        "course": "C46"
+      },
+      {
+        "student": "S0001",
+        "course": "C50"
+      },
+      {
+        "student": "S0002",
+        "course": "C07"
+      },
+      {
+        "student": "S0002",
+        "course": "C08"
+      },
+      {
+        "student": "S0002",
+        "course": "C09"
+      },
+      {
+        "student": "S0002",
+        "course": "C10"
+      },
+      {
+        "student": "S0002",
+        "course": "C44"
+      },
+      {
+        "student": "S0002",
+        "course": "C47"
+      },
+      {
+        "student": "S0002",
+        "course": "C50"
+      },
+      {
+        "student": "S0003",
+        "course": "C13"
+      },
+      {
+        "student": "S0003",
+        "course": "C14"
+      },
+      {
+        "student": "S0003",
+        "course": "C15"
+      },
+      {
+        "student": "S0003",
+        "course": "C16"
+      },
+      {
+        "student": "S0003",
+        "course": "C31"
+      },
+      {
+        "student": "S0003",
+        "course": "C42"
+      },
+      {
+        "student": "S0003",
+        "course": "C49"
+      },
+      {
+        "student": "S0004",
+        "course": "C19"
+      },
+      {
+        "student": "S0004",
+        "course": "C20"
+      },
+      {
+        "student": "S0004",
+        "course": "C21"
+      },
+      {
+        "student": "S0004",
+        "course": "C37"
+      },
+      {
+        "student": "S0004",
+        "course": "C31"
+      },
+      {
+        "student": "S0004",
+        "course": "C41"
+      },
+      {
+        "student": "S0004",
+        "course": "C50"
+      },
+      {
+        "student": "S0005",
+        "course": "C25"
+      },
+      {
+        "student": "S0005",
+        "course": "C27"
+      },
+      {
+        "student": "S0005",
+        "course": "C28"
+      },
+      {
+        "student": "S0005",
+        "course": "C31"
+      },
+      {
+        "student": "S0005",
+        "course": "C42"
+      },
+      {
+        "student": "S0005",
+        "course": "C46"
+      },
+      {
+        "student": "S0005",
+        "course": "C50"
+      },
+      {
+        "student": "S0006",
+        "course": "C01"
+      },
+      {
+        "student": "S0006",
+        "course": "C02"
+      },
+      {
+        "student": "S0006",
+        "course": "C03"
+      },
+      {
+        "student": "S0006",
+        "course": "C04"
+      },
+      {
+        "student": "S0006",
+        "course": "C31"
+      },
+      {
+        "student": "S0006",
+        "course": "C42"
+      },
+      {
+        "student": "S0006",
+        "course": "C49"
+      },
+      {
+        "student": "S0007",
+        "course": "C07"
+      },
+      {
+        "student": "S0007",
+        "course": "C08"
+      },
+      {
+        "student": "S0007",
+        "course": "C09"
+      },
+      {
+        "student": "S0007",
+        "course": "C10"
+      },
+      {
+        "student": "S0007",
+        "course": "C31"
+      },
+      {
+        "student": "S0007",
+        "course": "C41"
+      },
+      {
+        "student": "S0007",
+        "course": "C47"
+      },
+      {
+        "student": "S0008",
+        "course": "C13"
+      },
+      {
+        "student": "S0008",
+        "course": "C14"
+      },
+      {
+        "student": "S0008",
+        "course": "C15"
+      },
+      {
+        "student": "S0008",
+        "course": "C16"
+      },
+      {
+        "student": "S0008",
+        "course": "C31"
+      },
+      {
+        "student": "S0008",
+        "course": "C45"
+      },
+      {
+        "student": "S0008",
+        "course": "C48"
+      },
+      {
+        "student": "S0009",
+        "course": "C19"
+      },
+      {
+        "student": "S0009",
+        "course": "C20"
+      },
+      {
+        "student": "S0009",
+        "course": "C21"
+      },
+      {
+        "student": "S0009",
+        "course": "C22"
+      },
+      {
+        "student": "S0009",
+        "course": "C31"
+      },
+      {
+        "student": "S0009",
+        "course": "C42"
+      },
+      {
+        "student": "S0009",
+        "course": "C48"
+      },
+      {
+        "student": "S0010",
+        "course": "C25"
+      },
+      {
+        "student": "S0010",
+        "course": "C26"
+      },
+      {
+        "student": "S0010",
+        "course": "C27"
+      },
+      {
+        "student": "S0010",
+        "course": "C28"
+      },
+      {
+        "student": "S0010",
+        "course": "C32"
+      },
+      {
+        "student": "S0010",
+        "course": "C41"
+      },
+      {
+        "student": "S0010",
+        "course": "C53"
+      },
+      {
+        "student": "S0011",
+        "course": "C01"
+      },
+      {
+        "student": "S0011",
+        "course": "C02"
+      },
+      {
+        "student": "S0011",
+        "course": "C03"
+      },
+      {
+        "student": "S0011",
+        "course": "C04"
+      },
+      {
+        "student": "S0011",
+        "course": "C31"
+      },
+      {
+        "student": "S0011",
+        "course": "C46"
+      },
+      {
+        "student": "S0011",
+        "course": "C53"
+      },
+      {
+        "student": "S0012",
+        "course": "C07"
+      },
+      {
+        "student": "S0012",
+        "course": "C08"
+      },
+      {
+        "student": "S0012",
+        "course": "C09"
+      },
+      {
+        "student": "S0012",
+        "course": "C10"
+      },
+      {
+        "student": "S0012",
+        "course": "C39"
+      },
+      {
+        "student": "S0012",
+        "course": "C46"
+      },
+      {
+        "student": "S0012",
+        "course": "C53"
+      },
+      {
+        "student": "S0013",
+        "course": "C13"
+      },
+      {
+        "student": "S0013",
+        "course": "C14"
+      },
+      {
+        "student": "S0013",
+        "course": "C15"
+      },
+      {
+        "student": "S0013",
+        "course": "C16"
+      },
+      {
+        "student": "S0013",
+        "course": "C39"
+      },
+      {
+        "student": "S0013",
+        "course": "C46"
+      },
+      {
+        "student": "S0013",
+        "course": "C53"
+      },
+      {
+        "student": "S0014",
+        "course": "C19"
+      },
+      {
+        "student": "S0014",
+        "course": "C20"
+      },
+      {
+        "student": "S0014",
+        "course": "C21"
+      },
+      {
+        "student": "S0014",
+        "course": "C22"
+      },
+      {
+        "student": "S0014",
+        "course": "C31"
+      },
+      {
+        "student": "S0014",
+        "course": "C41"
+      },
+      {
+        "student": "S0014",
+        "course": "C49"
+      },
+      {
+        "student": "S0015",
+        "course": "C25"
+      },
+      {
+        "student": "S0015",
+        "course": "C27"
+      },
+      {
+        "student": "S0015",
+        "course": "C28"
+      },
+      {
+        "student": "S0015",
+        "course": "C31"
+      },
+      {
+        "student": "S0015",
+        "course": "C35"
+      },
+      {
+        "student": "S0015",
+        "course": "C49"
+      },
+      {
+        "student": "S0015",
+        "course": "C50"
+      },
+      {
+        "student": "S0016",
+        "course": "C01"
+      },
+      {
+        "student": "S0016",
+        "course": "C02"
+      },
+      {
+        "student": "S0016",
+        "course": "C03"
+      },
+      {
+        "student": "S0016",
+        "course": "C04"
+      },
+      {
+        "student": "S0016",
+        "course": "C31"
+      },
+      {
+        "student": "S0016",
+        "course": "C41"
+      },
+      {
+        "student": "S0016",
+        "course": "C47"
+      },
+      {
+        "student": "S0017",
+        "course": "C07"
+      },
+      {
+        "student": "S0017",
+        "course": "C08"
+      },
+      {
+        "student": "S0017",
+        "course": "C09"
+      },
+      {
+        "student": "S0017",
+        "course": "C10"
+      },
+      {
+        "student": "S0017",
+        "course": "C37"
+      },
+      {
+        "student": "S0017",
+        "course": "C41"
+      },
+      {
+        "student": "S0017",
+        "course": "C46"
+      },
+      {
+        "student": "S0018",
+        "course": "C13"
+      },
+      {
+        "student": "S0018",
+        "course": "C15"
+      },
+      {
+        "student": "S0018",
+        "course": "C16"
+      },
+      {
+        "student": "S0018",
+        "course": "C34"
+      },
+      {
+        "student": "S0018",
+        "course": "C41"
+      },
+      {
+        "student": "S0018",
+        "course": "C46"
+      },
+      {
+        "student": "S0018",
+        "course": "C52"
+      },
+      {
+        "student": "S0019",
+        "course": "C19"
+      },
+      {
+        "student": "S0019",
+        "course": "C21"
+      },
+      {
+        "student": "S0019",
+        "course": "C22"
+      },
+      {
+        "student": "S0019",
+        "course": "C33"
+      },
+      {
+        "student": "S0019",
+        "course": "C40"
+      },
+      {
+        "student": "S0019",
+        "course": "C44"
+      },
+      {
+        "student": "S0019",
+        "course": "C46"
+      },
+      {
+        "student": "S0020",
+        "course": "C25"
+      },
+      {
+        "student": "S0020",
+        "course": "C28"
+      },
+      {
+        "student": "S0020",
+        "course": "C36"
+      },
+      {
+        "student": "S0020",
+        "course": "C35"
+      },
+      {
+        "student": "S0020",
+        "course": "C42"
+      },
+      {
+        "student": "S0020",
+        "course": "C49"
+      },
+      {
+        "student": "S0020",
+        "course": "C51"
+      }
+    ],
+    "missing_info": []
+  }
+}

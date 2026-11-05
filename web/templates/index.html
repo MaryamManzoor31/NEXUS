@@ -3,19 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NEXUS - NEP Timetable Generator</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/style.css?v=20261103-section-calendar-v3">
+  <title>NEXUS | Academic Timetable</title>
+  <link rel="stylesheet" href="/static/css/style.css?v=20261105-baseline-first-v1">
 </head>
 <body>
   <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <symbol id="icon-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></symbol>
     <symbol id="icon-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5M12 15V3"></path></symbol>
     <symbol id="icon-printer" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 14h12v7H6zM18 12h.01"></path></symbol>
-    <symbol id="icon-moon" viewBox="0 0 24 24"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"></path></symbol>
-    <symbol id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path></symbol>
     <symbol id="icon-graduation" viewBox="0 0 24 24"><path d="m2 10 10-5 10 5-10 5-10-5Z"></path><path d="M6 12v5c3.5 3 8.5 3 12 0v-5m4-2v6"></path></symbol>
     <symbol id="icon-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="10" cy="7" r="4"></circle><path d="M20 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path></symbol>
     <symbol id="icon-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m17 8-5-5-5 5m5-5v12"></path></symbol>
@@ -33,25 +28,21 @@
     <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></symbol>
     <symbol id="icon-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"></path></symbol>
   </svg>
-  <!-- Minimal Top Header -->
+  <!-- NEXUS masthead -->
   <header class="app-header">
     <div class="header-container">
       <div class="brand">
-        <div class="brand-icon"><svg class="icon"><use href="#icon-calendar"></use></svg></div>
+        <div class="brand-icon" aria-hidden="true">N</div>
         <div>
-          <h1 class="brand-title">NEXUS Timetable Generator</h1>
-          <p class="brand-subtitle">AI-Assisted Scheduling Engine for NEP Multidisciplinary Programmes</p>
+          <h1 class="brand-title">NEXUS</h1>
         </div>
       </div>
       <div class="header-actions">
-        <button id="btnExportCsv" class="btn btn-secondary btn-sm" title="Export current schedule as CSV">
+        <button id="btnExportCsv" class="btn btn-secondary btn-sm">
           <svg class="icon"><use href="#icon-download"></use></svg> Export CSV
         </button>
-        <button id="btnPrint" class="btn btn-secondary btn-sm" title="Print or save as PDF">
-          <svg class="icon"><use href="#icon-printer"></use></svg> Print View
-        </button>
-        <button id="btnThemeToggle" class="btn btn-icon" title="Toggle Light/Dark Theme" aria-label="Toggle theme">
-          <span id="themeIcon"><svg class="icon"><use href="#icon-moon"></use></svg></span>
+        <button id="btnPrint" class="btn btn-secondary btn-sm">
+          <svg class="icon"><use href="#icon-printer"></use></svg> Print
         </button>
       </div>
     </div>
@@ -60,62 +51,71 @@
   <main class="main-container">
     <!-- Generator Control Card (Very Simple 1-Click Interface) -->
     <section class="card control-card">
+      <div class="control-heading">
+        <div>
+          <h2>Optimize a timetable</h2>
+        </div>
+      </div>
+      <p id="datasetNotice" class="dataset-notice" role="status"></p>
       <div class="control-row">
         <!-- Scenario / Dataset Source -->
         <div class="field-group">
-          <label for="selectScenario" class="field-label">Curriculum / Dataset Source</label>
+          <label for="selectScenario" class="field-label">Dataset source</label>
           <select id="selectScenario" class="select-input">
-            <option value="excel" selected>Jan 2025 University Allocation (Real Excel)</option>
-            <option value="S1">S1: Traditional (Single discipline, cohorts)</option>
-            <option value="S2">S2: Flexible (NEP Minors & Electives)</option>
-            <option value="S3">S3: Multidisciplinary (Cross-department)</option>
+            <option value="excel" selected>Jan 2025 University Allocation</option>
+            <option value="uploaded" hidden>Uploaded dataset</option>
+            <option value="S1">S1: Traditional</option>
+            <option value="S2">S2: Flexible</option>
+            <option value="S3">S3: Multidisciplinary</option>
           </select>
         </div>
 
         <!-- Semester Scope (for Excel dataset) -->
         <div class="field-group" id="groupSemester">
-          <label for="selectSemester" class="field-label">Semester Scope</label>
+          <label for="selectSemester" class="field-label">Semester</label>
           <select id="selectSemester" class="select-input">
-            <option value="6" selected>Semester 6 (Finalized Batch)</option>
+            <option value="2">Semester 2</option>
+            <option value="6" selected>Semester 6</option>
             <option value="4">Semester 4</option>
             <option value="8">Semester 8</option>
-            <option value="all">All Semesters (Whole Institution)</option>
+            <option value="all">All Semesters</option>
           </select>
+        </div>
+
+        <div class="field-group" id="groupSemesterSession">
+          <label class="field-label">Session</label>
+          <div id="semesterSessionControls"></div>
         </div>
 
         <!-- Student Count (for synthetic scenarios) -->
         <div class="field-group hidden" id="groupStudents">
           <label for="selectStudents" class="field-label">Student Cohort</label>
           <select id="selectStudents" class="select-input">
-            <option value="20">20 Students (Fast Demo)</option>
-            <option value="50">50 Students (Standard)</option>
-            <option value="100" selected>100 Students (Full NEP Batch)</option>
-          </select>
-        </div>
-
-        <!-- Solver Algorithm -->
-        <div class="field-group">
-          <label for="selectAlgorithm" class="field-label">Algorithm</label>
-          <select id="selectAlgorithm" class="select-input">
-            <option value="cpsat" selected>CP-SAT (Google OR-Tools constraint solver)</option>
+            <option value="20">20 Students</option>
+            <option value="50">50 Students</option>
+            <option value="100" selected>100 Students</option>
           </select>
         </div>
 
         <!-- Main Action Buttons -->
         <div class="field-actions">
-          <button id="btnGenerate" class="btn btn-primary" title="Generate conflict-free weekly timetable">
-            <span id="btnGenSpinner" class="spinner hidden"></span>
-            <span id="btnGenText"><svg class="icon"><use href="#icon-calendar"></use></svg> Generate Timetable</span>
-          </button>
-          <button id="btnAllocateMembers" class="btn btn-secondary" title="Run intelligent faculty member allocation">
-            <svg class="icon"><use href="#icon-users"></use></svg> Allocate Members
-          </button>
-          <button id="btnLoadExcel" class="btn btn-outline" title="Reload original Excel file">
-            <svg class="icon"><use href="#icon-refresh"></use></svg> Reset to Excel
-          </button>
-          <button id="btnOpenUpload" class="btn btn-outline" title="Upload custom Excel or CSV files">
-            <svg class="icon"><use href="#icon-upload"></use></svg> Upload File
-          </button>
+          <div class="field-action-group">
+            <button id="btnGenerate" class="btn btn-primary">
+              <span id="btnGenSpinner" class="spinner hidden"></span>
+              <span id="btnGenText"><svg class="icon"><use href="#icon-calendar"></use></svg> Optimize timetable</span>
+            </button>
+            <button id="btnAllocateMembers" class="btn btn-secondary">
+              <svg class="icon"><use href="#icon-users"></use></svg> Optimize & view faculty
+            </button>
+          </div>
+          <div class="field-action-group field-action-secondary">
+            <button id="btnLoadExcel" class="btn btn-outline">
+              <svg class="icon"><use href="#icon-refresh"></use></svg> Show original baseline
+            </button>
+            <button id="btnOpenUpload" class="btn btn-outline">
+              <svg class="icon"><use href="#icon-upload"></use></svg> Upload data
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -124,48 +124,51 @@
     <section id="metricsBar" class="metrics-grid">
       <div class="metric-card" id="cardStatus">
         <div class="metric-title">Validation Status</div>
-        <div class="metric-value status-badge" id="valStatusBadge">VALID_COMPLETE</div>
-        <div class="metric-caption" id="valStatusSub">14/14 Hard Constraints Met</div>
+        <div class="metric-value status-badge" id="valStatusBadge">Loading</div>
+        <div class="metric-caption" id="valStatusSub">Loading original timetable</div>
       </div>
 
       <div class="metric-card">
-        <div class="metric-title">Student Placed Selections</div>
-        <div class="metric-value" id="valEnrolment">100%</div>
-        <div class="metric-caption" id="valEnrolmentSub">All students scheduled clash-free</div>
+        <div class="metric-title">Student Selections Placed</div>
+        <div class="metric-value" id="valEnrolment">—</div>
+        <div class="metric-caption" id="valEnrolmentSub">Awaiting source data</div>
       </div>
 
       <div class="metric-card">
         <div class="metric-title">Sections Scheduled</div>
-        <div class="metric-value" id="valSections">308 / 318</div>
-        <div class="metric-caption" id="valSectionsSub">Room & Lab placements active</div>
+        <div class="metric-value" id="valSections">—</div>
+        <div class="metric-caption" id="valSectionsSub">Awaiting source data</div>
       </div>
 
       <div class="metric-card">
         <div class="metric-title">Solver Execution Time</div>
-        <div class="metric-value" id="valRuntime">0.65 s</div>
-        <div class="metric-caption" id="valRuntimeSub">Engine: CP-SAT</div>
+        <div class="metric-value" id="valRuntime">—</div>
+        <div class="metric-caption" id="valRuntimeSub">No optimization run</div>
       </div>
     </section>
 
     <!-- Navigation Tabs for Timetable Views -->
     <nav class="view-tabs" aria-label="Timetable Views">
-      <button class="tab-btn active" data-tab="section"><svg class="icon"><use href="#icon-building"></use></svg> Section Timetable</button>
-      <button class="tab-btn" data-tab="faculty"><svg class="icon"><use href="#icon-faculty"></use></svg> Faculty Timetable</button>
-      <button class="tab-btn" data-tab="allocations"><svg class="icon"><use href="#icon-users"></use></svg> Faculty Allocation & Workload</button>
-      <button class="tab-btn" data-tab="room"><svg class="icon"><use href="#icon-door"></use></svg> Room Timetable</button>
-      <button class="tab-btn" data-tab="student"><svg class="icon"><use href="#icon-graduation"></use></svg> Student Timetable</button>
+      <button class="tab-btn active" data-tab="section"><svg class="icon"><use href="#icon-building"></use></svg> Section</button>
+      <button class="tab-btn" data-tab="faculty"><svg class="icon"><use href="#icon-faculty"></use></svg> Faculty</button>
+      <button class="tab-btn" data-tab="allocations"><svg class="icon"><use href="#icon-users"></use></svg> Faculty Workload</button>
+      <button class="tab-btn" data-tab="room"><svg class="icon"><use href="#icon-door"></use></svg> Room</button>
+      <button class="tab-btn" data-tab="student"><svg class="icon"><use href="#icon-graduation"></use></svg> Student</button>
       <button class="tab-btn" data-tab="master"><svg class="icon"><use href="#icon-table"></use></svg> Master Table</button>
-      <button class="tab-btn" data-tab="constraints"><svg class="icon"><use href="#icon-shield"></use></svg> Constraint Audit (H1–H14)</button>
-      <button class="tab-btn" data-tab="disruption"><svg class="icon"><use href="#icon-wrench"></use></svg> Disruption Repair</button>
+      <button class="tab-btn" data-tab="diagnostics"><svg class="icon"><use href="#icon-alert"></use></svg> Diagnostics</button>
+      <button class="tab-btn" data-tab="constraints"><svg class="icon"><use href="#icon-shield"></use></svg> Constraints</button>
+      <button class="tab-btn" data-tab="disruption"><svg class="icon"><use href="#icon-wrench"></use></svg> Repair</button>
     </nav>
 
     <!-- Active View Area -->
     <section class="card content-card">
       <aside class="schedule-sidebar" id="scheduleSidebar">
         <div class="sidebar-heading">
-          <span class="sidebar-eyebrow">TIMETABLE VIEW</span>
-          <h2>Section schedule</h2>
-          <p>Choose a semester, then view a university class section and its courses.</p>
+          <h2 id="scheduleViewHeading">Original university timetable</h2>
+          <div class="baseline-switch hidden" id="baselineSwitch">
+            <button type="button" class="btn btn-sm btn-secondary" id="btnShowOriginal">Original baseline</button>
+            <button type="button" class="btn btn-sm btn-outline" id="btnShowOptimized">Optimized result</button>
+          </div>
         </div>
         <div class="sidebar-field">
           <label for="filterSemester" class="field-label">Semester</label>
@@ -183,29 +186,28 @@
             <div class="constraint-checklist" id="sidebarConstraintList"></div>
 
             <div class="sidebar-field baseline-control">
-              <label for="baselineModeSelect" class="field-label">Baseline assignment policy</label>
+              <label for="baselineModeSelect" class="field-label">Baseline policy</label>
               <select id="baselineModeSelect" class="select-input">
-                <option value="fixed">Fixed — preserve time, room & faculty</option>
-                <option value="preferred">Preferred — minimize changes</option>
-                <option value="flexible">Flexible — allow rescheduling</option>
+                <option value="fixed">Fixed</option>
+                <option value="preferred">Preferred</option>
+                <option value="flexible">Flexible</option>
               </select>
               <button id="btnApplyBaselineMode" class="btn btn-outline btn-sm">Apply to this section</button>
             </div>
 
             <div class="sidebar-field">
-              <label for="sidebarBlockedRoomSelect" class="field-label">Temporarily avoid room</label>
+              <label for="sidebarBlockedRoomSelect" class="field-label">Avoid room</label>
               <select id="sidebarBlockedRoomSelect" class="select-input">
-                <option value="">No room restriction</option>
+                <option value="">None</option>
               </select>
             </div>
             <div class="sidebar-field">
-              <label for="sidebarBlockedFacultySelect" class="field-label">Temporarily avoid faculty</label>
+              <label for="sidebarBlockedFacultySelect" class="field-label">Avoid faculty</label>
               <select id="sidebarBlockedFacultySelect" class="select-input">
-                <option value="">No faculty restriction</option>
+                <option value="">None</option>
               </select>
             </div>
-            <p class="sidebar-help">Temporary resource exclusions apply to the entire timetable during repair.</p>
-            <button id="btnApplySidebarConstraints" class="btn btn-primary sidebar-action">Apply &amp; repair timetable</button>
+            <button id="btnApplySidebarConstraints" class="btn btn-primary sidebar-action">Apply</button>
             <div id="sidebarConstraintNotice" class="sidebar-notice hidden" role="status"></div>
           </div>
         </details>
@@ -215,24 +217,22 @@
         <!-- Entity Filter Bar for faculty, room, and student views -->
         <div class="view-toolbar" id="viewToolbar">
           <div class="toolbar-left">
-            <label id="selectorLabel" for="entitySelect" class="toolbar-label">Select Faculty:</label>
+            <label id="selectorLabel" for="entitySelect" class="toolbar-label">Select faculty:</label>
             <select id="entitySelect" class="select-input select-entity"></select>
             <span id="entityInfo" class="entity-info-pill"></span>
           </div>
           <div class="toolbar-right">
             <div class="legend">
               <span class="legend-item"><span class="badge badge-lecture"></span> Lecture</span>
-              <span class="legend-item"><span class="badge badge-lab"></span> Lab session</span>
-              <span class="legend-item"><span class="badge badge-free"></span> Free period</span>
+              <span class="legend-item"><span class="badge badge-lab"></span> Lab</span>
+              <span class="legend-item"><span class="badge badge-free"></span> Free</span>
             </div>
           </div>
         </div>
 
         <div class="section-view-header" id="sectionViewHeader">
           <div class="section-view-title">
-            <span class="sidebar-eyebrow">GENERATED TIMETABLE</span>
             <h2 id="scheduleTitle">Section Time Table</h2>
-            <p id="scheduleSubtitle">Weekly view · Monday to Friday</p>
           </div>
           <div class="section-view-tabs" role="tablist" aria-label="Section timetable format">
             <button type="button" class="section-view-tab active" id="btnCalendarView" role="tab" aria-selected="true">Calendar View</button>
@@ -240,7 +240,7 @@
           </div>
         </div>
 
-        <!-- Timetable Grid Container (Monday-Friday x Periods 1-6) -->
+        
         <div id="gridWrapper" class="timetable-wrapper">
           <table class="timetable-grid" id="timetableGrid">
             <thead>
@@ -278,7 +278,7 @@
       <!-- Master List View (Hidden by default, shown when 'master' tab is active) -->
       <div id="masterWrapper" class="table-container hidden">
         <div class="search-bar">
-          <input type="text" id="masterSearch" class="search-input" placeholder="Search by course, section, faculty, or room...">
+          <input type="text" id="masterSearch" class="search-input" placeholder="Search">
         </div>
         <table class="table master-table">
           <thead>
@@ -303,11 +303,10 @@
       <div id="allocationsWrapper" class="allocations-container hidden">
         <div class="allocations-header">
           <div>
-            <h3><svg class="icon"><use href="#icon-users"></use></svg> Faculty Member Allocation & Workload Tracker</h3>
-            <p class="text-muted">Statutory workload targets: Professor (12h), Associate Professor (14h), Assistant Professor (16h). Real data from Jan 2025 allocation sheet.</p>
+            <h3><svg class="icon"><use href="#icon-users"></use></svg> Faculty Workload</h3>
           </div>
           <div class="allocations-actions">
-            <button id="btnReallocateInView" class="btn btn-primary btn-sm"><svg class="icon"><use href="#icon-refresh"></use></svg> Re-run Member Allocation</button>
+            <button id="btnReallocateInView" class="btn btn-primary btn-sm"><svg class="icon"><use href="#icon-refresh"></use></svg> Optimize faculty assignments</button>
           </div>
         </div>
 
@@ -316,13 +315,13 @@
         </div>
 
         <div class="search-bar" style="margin-top: 0.5rem; display: flex; gap: 10px;">
-          <input type="text" id="facultySearch" class="search-input" placeholder="Search faculty by name, designation, department, or subject...">
+          <input type="text" id="facultySearch" class="search-input" placeholder="Search faculty">
           <select id="facultyStatusFilter" class="select-input" style="width: auto;">
             <option value="all">All Statuses</option>
-            <option value="OPTIMAL">Optimal (Full Quota)</option>
-            <option value="UNDERLOADED">Underloaded (&lt; Max)</option>
+            <option value="OPTIMAL">Optimal</option>
+            <option value="UNDERLOADED">Underloaded</option>
             <option value="OVERLOADED">Overloaded</option>
-            <option value="AVAILABLE">Available (0 hrs)</option>
+            <option value="AVAILABLE">Available</option>
           </select>
         </div>
 
@@ -345,11 +344,29 @@
         </div>
       </div>
 
+      <!-- Solver diagnostics -->
+      <div id="diagnosticsWrapper" class="diagnostics-container hidden">
+        <div class="constraints-header">
+          <h3>Scheduling Diagnostics</h3>
+          <p id="diagnosticsIntro" class="text-muted"></p>
+        </div>
+        <div id="diagnosticsSummary" class="diagnostics-summary"></div>
+        <div class="diagnostics-columns">
+          <section>
+            <h4>Unscheduled sections</h4>
+            <div id="unscheduledSectionsList" class="diagnostics-list"></div>
+          </section>
+          <section>
+            <h4>Unplaced student selections</h4>
+            <div id="unplacedStudentsList" class="diagnostics-list"></div>
+          </section>
+        </div>
+      </div>
+
       <!-- Constraints Audit View (Hidden by default) -->
       <div id="constraintsWrapper" class="constraints-container hidden">
         <div class="constraints-header">
-          <h3>Independent Validator Report (14 Hard Constraints)</h3>
-          <p class="text-muted">Every rule is independently verified against the canonical dataset to mathematically guarantee a clash-free schedule.</p>
+          <h3>Constraints</h3>
         </div>
         <div class="constraints-list" id="constraintsList">
           <!-- Populated by JS -->
@@ -359,26 +376,25 @@
       <!-- Disruption Repair View (Hidden by default) -->
       <div id="disruptionWrapper" class="disruption-container hidden">
         <div class="disruption-header">
-          <h3>Emergency Disruption Simulator (Module M9)</h3>
-          <p class="text-muted">Simulate real-world university emergencies (e.g. room flooded, faculty emergency leave) and let the CP-SAT engine repair the schedule with minimal disruption.</p>
+          <h3>Disruption Repair</h3>
         </div>
         <div class="disruption-form">
           <div class="disruption-inputs">
             <div class="field-group">
-              <label for="blockedRoomSelect" class="field-label">Block Room (Simulate Room Flooding/Maintenance):</label>
+              <label for="blockedRoomSelect" class="field-label">Block room</label>
               <select id="blockedRoomSelect" class="select-input">
                 <option value="">-- None --</option>
               </select>
             </div>
             <div class="field-group">
-              <label for="blockedFacultySelect" class="field-label">Block Faculty (Simulate Emergency Medical Leave):</label>
+              <label for="blockedFacultySelect" class="field-label">Block faculty</label>
               <select id="blockedFacultySelect" class="select-input">
                 <option value="">-- None --</option>
               </select>
             </div>
             <div class="disruption-btn-wrap">
               <button id="btnApplyRepair" class="btn btn-warning">
-                <svg class="icon"><use href="#icon-alert"></use></svg> Simulate Emergency & Repair Timetable
+                <svg class="icon"><use href="#icon-alert"></use></svg> Repair timetable
               </button>
             </div>
           </div>
@@ -399,15 +415,15 @@
       <div class="modal-body">
         <!-- Excel Upload Form -->
         <div class="upload-section card" style="padding: 1rem; margin-bottom: 1.5rem; background: var(--bg-subtle);">
-          <h3 style="font-size: 1rem; margin-bottom: 0.5rem;"><svg class="icon"><use href="#icon-file"></use></svg> Option 1: University Allocation Excel (.xlsx) [Recommended]</h3>
-          <p class="text-muted" style="font-size: 0.8rem; margin-bottom: 1rem;">Upload any university course & faculty allocation workbook directly:</p>
+          <h3 style="font-size: 1rem; margin-bottom: 0.5rem;"><svg class="icon"><use href="#icon-file"></use></svg> Excel (.xlsx)</h3>
           <form id="excelUploadForm">
             <div class="upload-field" style="margin-bottom: 0.75rem;">
               <input type="file" id="excelFileInput" name="excel_file" accept=".xlsx" required class="select-input">
             </div>
             <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 1rem;">
-              <label for="uploadSemesterSelect" style="font-size: 0.82rem; font-weight: 600;">Semester Scope:</label>
+              <label for="uploadSemesterSelect" style="font-size: 0.82rem; font-weight: 600;">Semester:</label>
               <select id="uploadSemesterSelect" name="semester" class="select-input" style="width: auto;">
+                <option value="2">Semester 2</option>
                 <option value="6" selected>Semester 6</option>
                 <option value="4">Semester 4</option>
                 <option value="8">Semester 8</option>
@@ -415,54 +431,58 @@
               </select>
             </div>
             <div class="upload-field" style="margin-bottom: 0.75rem;">
-              <label for="excelBaselineInput" style="font-size: 0.82rem; font-weight: 600;">Optional existing timetable CSV (baseline)</label>
+              <label class="field-label">Session</label>
+              <div id="uploadSemesterSessionControls"></div>
+            </div>
+            <div class="upload-field" style="margin-bottom: 0.75rem;">
+              <label for="excelBaselineInput" style="font-size: 0.82rem; font-weight: 600;">Existing timetable CSV (optional)</label>
               <input type="file" id="excelBaselineInput" name="timetable_file" accept=".csv" class="select-input">
             </div>
-            <button type="submit" id="btnSubmitExcel" class="btn btn-primary btn-sm">Upload & Generate Timetable</button>
+            <button type="submit" id="btnSubmitExcel" class="btn btn-primary btn-sm">Upload data</button>
           </form>
         </div>
 
         <!-- CSV Upload Form -->
         <details>
           <summary style="cursor: pointer; font-weight: 600; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">
-            <svg class="icon"><use href="#icon-folder"></use></svg> Option 2: Upload CSV Files (courses/sections/faculty/rooms/students + optional timetable)
+            <svg class="icon"><use href="#icon-folder"></use></svg> CSV files
           </summary>
           <form id="uploadForm" style="margin-top: 0.5rem;">
             <div class="upload-field">
-              <label>1. courses.csv (course_id, title, category, credits, pattern)</label>
+              <label>courses.csv</label>
               <input type="file" name="courses" accept=".csv">
             </div>
             <div class="upload-field">
-              <label>2. sections.csv (section_id, course_id, capacity)</label>
+              <label>sections.csv</label>
               <input type="file" name="sections" accept=".csv">
             </div>
             <div class="upload-field">
-              <label>3. faculty.csv (faculty_id, name, qualified, max_hours, unavailable)</label>
+              <label>faculty.csv</label>
               <input type="file" name="faculty" accept=".csv">
             </div>
             <div class="upload-field">
-              <label>4. rooms.csv (room_id, type, capacity, unavailable)</label>
+              <label>rooms.csv</label>
               <input type="file" name="rooms" accept=".csv">
             </div>
             <div class="upload-field">
-              <label>5. students.csv (student_id, programme, selections)</label>
+              <label>students.csv</label>
               <input type="file" name="students" accept=".csv">
             </div>
             <div class="upload-field">
-              <label>6. timetable.csv (optional baseline: Day, Period, Section, Room, Faculty ID, ...)</label>
+              <label>timetable.csv (optional)</label>
               <input type="file" name="timetable" accept=".csv">
             </div>
             <div class="upload-field">
-              <label for="csvAssignmentMode">Baseline assignment mode</label>
+              <label for="csvAssignmentMode">Baseline mode</label>
               <select id="csvAssignmentMode" name="assignment_mode" class="select-input">
-                <option value="preferred" selected>Preferred (soft / changeable)</option>
-                <option value="fixed">Fixed (must keep)</option>
-                <option value="flexible">Flexible (free to move)</option>
+                <option value="preferred" selected>Preferred</option>
+                <option value="fixed">Fixed</option>
+                <option value="flexible">Flexible</option>
               </select>
             </div>
             <div class="modal-footer" style="padding-top: 1rem;">
               <button type="button" id="btnCancelUpload" class="btn btn-secondary btn-sm">Cancel</button>
-              <button type="submit" id="btnSubmitUpload" class="btn btn-outline btn-sm">Validate CSVs & Generate</button>
+              <button type="submit" id="btnSubmitUpload" class="btn btn-outline btn-sm">Upload data</button>
             </div>
           </form>
         </details>
@@ -472,13 +492,6 @@
     </div>
   </dialog>
 
-  <!-- Footer -->
-  <footer class="app-footer">
-    <div class="footer-container">
-      <p>NEXUS Core • AI-Assisted Timetable Generation • 5th Semester Design Project (Review II)</p>
-    </div>
-  </footer>
-
-  <script src="/static/js/app.js?v=20261103-section-calendar-v8"></script>
+  <script src="/static/js/app.js?v=20261105-baseline-first-v1"></script>
 </body>
 </html>

@@ -1,0 +1,100 @@
+Day,Period,Time Range,Section,Course Code,Course Title,Category,Duration (Hrs),Room,Room Type,Faculty ID,Faculty Name
+Monday,Session 1,08:00 - 08:55,C01-A,C01,CSE Major 1,Major,1,R09,CLASS,F12,Faculty F12
+Monday,Session 1,08:00 - 08:55,C04-A,C04,CSE Major 4,Major,1,R17,CLASS,F27,Faculty F27
+Monday,Session 1,08:00 - 08:55,C09-A,C09,ECE Major 3,Major,1,R14,CLASS,F01,Faculty F01
+Monday,Session 1,08:00 - 08:55,C14-A,C14,MECH Major 2,Major,1,R12,CLASS,F20,Faculty F20
+Monday,Session 1,08:00 - 08:55,C16-A,C16,MECH Major 4,Major,2,L05,LAB,F22,Faculty F22
+Monday,Session 1,08:00 - 08:55,C20-A,C20,BBA Major 2,Major,1,R13,CLASS,F30,Faculty F30
+Monday,Session 1,08:00 - 08:55,C21-A,C21,BBA Major 3,Major,1,R01,CLASS,F16,Faculty F16
+Monday,Session 1,08:00 - 08:55,C22-A,C22,BBA Major 4,Major,1,R05,CLASS,F13,Faculty F13
+Monday,Session 1,08:00 - 08:55,C25-A,C25,PSY Major 1,Major,1,R15,CLASS,F11,Faculty F11
+Monday,Session 1,08:00 - 08:55,C27-A,C27,PSY Major 3,Major,1,R02,CLASS,F29,Faculty F29
+Monday,Session 1,08:00 - 08:55,C31-A,C31,Minor 1,Minor,1,R03,CLASS,F18,Faculty F18
+Monday,Session 1,08:00 - 08:55,C37-A,C37,Minor 7,Minor,1,R11,CLASS,F08,Faculty F08
+Monday,Session 1,08:00 - 08:55,C40-A,C40,Minor 10,Minor,1,R04,CLASS,F24,Faculty F24
+Monday,Session 1,08:00 - 08:55,C41-A,C41,Skill-Based 1,Skill-Based,1,R18,CLASS,F17,Faculty F17
+Monday,Session 1,08:00 - 08:55,C42-A,C42,Skill-Based 2,Skill-Based,1,R20,CLASS,F25,Faculty F25
+Monday,Session 1,08:00 - 08:55,C43-A,C43,Skill-Based 3,Skill-Based,1,R06,CLASS,F23,Faculty F23
+Monday,Session 1,08:00 - 08:55,C44-A,C44,Skill-Based 4,Skill-Based,1,R19,CLASS,F03,Faculty F03
+Monday,Session 1,08:00 - 08:55,C47-A,C47,Ability-Enhancement 2,Ability-Enhancement,1,R07,CLASS,F02,Faculty F02
+Monday,Session 1,08:00 - 08:55,C48-A,C48,Ability-Enhancement 3,Ability-Enhancement,1,R10,CLASS,F14,Faculty F14
+Monday,Session 1,08:00 - 08:55,C50-A,C50,Value-Added 1,Value-Added,1,R08,CLASS,F10,Faculty F10
+Monday,Session 1,08:00 - 08:55,C53-A,C53,Value-Added 4,Value-Added,1,R16,CLASS,F26,Faculty F26
+Tuesday,Session 1,08:00 - 08:55,C03-A,C03,CSE Major 3,Major,1,R02,CLASS,F16,Faculty F16
+Tuesday,Session 1,08:00 - 08:55,C07-A,C07,ECE Major 1,Major,2,L05,LAB,F07,Faculty F07
+Tuesday,Session 1,08:00 - 08:55,C09-A,C09,ECE Major 3,Major,1,R20,CLASS,F01,Faculty F01
+Tuesday,Session 1,08:00 - 08:55,C10-A,C10,ECE Major 4,Major,2,L02,LAB,F24,Faculty F24
+Tuesday,Session 1,08:00 - 08:55,C13-A,C13,MECH Major 1,Major,1,R04,CLASS,F15,Faculty F15
+Tuesday,Session 1,08:00 - 08:55,C14-A,C14,MECH Major 2,Major,1,R17,CLASS,F20,Faculty F20
+Tuesday,Session 1,08:00 - 08:55,C15-A,C15,MECH Major 3,Major,1,R09,CLASS,F30,Faculty F30
+Tuesday,Session 1,08:00 - 08:55,C22-A,C22,BBA Major 4,Major,2,L03,LAB,F13,Faculty F13
+Tuesday,Session 1,08:00 - 08:55,C25-A,C25,PSY Major 1,Major,1,R08,CLASS,F11,Faculty F11
+Tuesday,Session 1,08:00 - 08:55,C27-A,C27,PSY Major 3,Major,1,R03,CLASS,F29,Faculty F29
+Tuesday,Session 1,08:00 - 08:55,C34-A,C34,Minor 4,Minor,1,R13,CLASS,F10,Faculty F10
+Tuesday,Session 1,08:00 - 08:55,C36-A,C36,Minor 6,Minor,1,R18,CLASS,F14,Faculty F14
+Tuesday,Session 1,08:00 - 08:55,C37-A,C37,Minor 7,Minor,1,R01,CLASS,F08,Faculty F08
+Tuesday,Session 1,08:00 - 08:55,C38-A,C38,Minor 8,Minor,1,R07,CLASS,F21,Faculty F21
+Tuesday,Session 1,08:00 - 08:55,C39-A,C39,Minor 9,Minor,1,R11,CLASS,F02,Faculty F02
+Tuesday,Session 1,08:00 - 08:55,C43-A,C43,Skill-Based 3,Skill-Based,1,R06,CLASS,F23,Faculty F23
+Tuesday,Session 1,08:00 - 08:55,C45-A,C45,Skill-Based 5,Skill-Based,1,R15,CLASS,F18,Faculty F18
+Tuesday,Session 1,08:00 - 08:55,C51-A,C51,Value-Added 2,Value-Added,1,R10,CLASS,F27,Faculty F27
+Tuesday,Session 1,08:00 - 08:55,C52-A,C52,Value-Added 3,Value-Added,1,R19,CLASS,F05,Faculty F05
+Tuesday,Session 1,08:00 - 08:55,C53-A,C53,Value-Added 4,Value-Added,1,R16,CLASS,F26,Faculty F26
+Wednesday,Session 1,08:00 - 08:55,C04-A,C04,CSE Major 4,Major,2,L02,LAB,F27,Faculty F27
+Wednesday,Session 1,08:00 - 08:55,C07-A,C07,ECE Major 1,Major,1,R17,CLASS,F07,Faculty F07
+Wednesday,Session 1,08:00 - 08:55,C13-A,C13,MECH Major 1,Major,2,L05,LAB,F15,Faculty F15
+Wednesday,Session 1,08:00 - 08:55,C15-A,C15,MECH Major 3,Major,1,R01,CLASS,F30,Faculty F30
+Wednesday,Session 1,08:00 - 08:55,C16-A,C16,MECH Major 4,Major,1,R03,CLASS,F22,Faculty F22
+Wednesday,Session 1,08:00 - 08:55,C19-A,C19,BBA Major 1,Major,1,R05,CLASS,F06,Faculty F06
+Wednesday,Session 1,08:00 - 08:55,C22-A,C22,BBA Major 4,Major,1,R20,CLASS,F13,Faculty F13
+Wednesday,Session 1,08:00 - 08:55,C26-A,C26,PSY Major 2,Major,1,R07,CLASS,F03,Faculty F03
+Wednesday,Session 1,08:00 - 08:55,C28-A,C28,PSY Major 4,Major,1,R16,CLASS,F09,Faculty F09
+Wednesday,Session 1,08:00 - 08:55,C31-A,C31,Minor 1,Minor,1,R18,CLASS,F18,Faculty F18
+Wednesday,Session 1,08:00 - 08:55,C32-A,C32,Minor 2,Minor,1,R09,CLASS,F04,Faculty F04
+Wednesday,Session 1,08:00 - 08:55,C33-A,C33,Minor 3,Minor,1,R04,CLASS,F11,Faculty F11
+Wednesday,Session 1,08:00 - 08:55,C34-A,C34,Minor 4,Minor,1,R13,CLASS,F10,Faculty F10
+Wednesday,Session 1,08:00 - 08:55,C35-A,C35,Minor 5,Minor,1,R06,CLASS,F08,Faculty F08
+Wednesday,Session 1,08:00 - 08:55,C38-A,C38,Minor 8,Minor,1,R14,CLASS,F21,Faculty F21
+Wednesday,Session 1,08:00 - 08:55,C39-A,C39,Minor 9,Minor,1,R08,CLASS,F02,Faculty F02
+Wednesday,Session 1,08:00 - 08:55,C40-A,C40,Minor 10,Minor,1,R10,CLASS,F24,Faculty F24
+Wednesday,Session 1,08:00 - 08:55,C49-A,C49,Ability-Enhancement 4,Ability-Enhancement,1,R02,CLASS,F20,Faculty F20
+Wednesday,Session 1,08:00 - 08:55,C52-A,C52,Value-Added 3,Value-Added,1,R19,CLASS,F05,Faculty F05
+Thursday,Session 1,08:00 - 08:55,C01-A,C01,CSE Major 1,Major,2,L02,LAB,F12,Faculty F12
+Thursday,Session 1,08:00 - 08:55,C02-A,C02,CSE Major 2,Major,1,R15,CLASS,F21,Faculty F21
+Thursday,Session 1,08:00 - 08:55,C03-A,C03,CSE Major 3,Major,1,R09,CLASS,F16,Faculty F16
+Thursday,Session 1,08:00 - 08:55,C04-A,C04,CSE Major 4,Major,1,R17,CLASS,F27,Faculty F27
+Thursday,Session 1,08:00 - 08:55,C08-A,C08,ECE Major 2,Major,1,R13,CLASS,F19,Faculty F19
+Thursday,Session 1,08:00 - 08:55,C10-A,C10,ECE Major 4,Major,1,R11,CLASS,F24,Faculty F24
+Thursday,Session 1,08:00 - 08:55,C13-A,C13,MECH Major 1,Major,1,R12,CLASS,F15,Faculty F15
+Thursday,Session 1,08:00 - 08:55,C16-A,C16,MECH Major 4,Major,1,R20,CLASS,F22,Faculty F22
+Thursday,Session 1,08:00 - 08:55,C19-A,C19,BBA Major 1,Major,1,R05,CLASS,F06,Faculty F06
+Thursday,Session 1,08:00 - 08:55,C20-A,C20,BBA Major 2,Major,1,R02,CLASS,F30,Faculty F30
+Thursday,Session 1,08:00 - 08:55,C26-A,C26,PSY Major 2,Major,1,R19,CLASS,F03,Faculty F03
+Thursday,Session 1,08:00 - 08:55,C28-A,C28,PSY Major 4,Major,1,R16,CLASS,F09,Faculty F09
+Thursday,Session 1,08:00 - 08:55,C31-A,C31,Minor 1,Minor,2,L05,LAB,F18,Faculty F18
+Thursday,Session 1,08:00 - 08:55,C32-A,C32,Minor 2,Minor,1,R01,CLASS,F04,Faculty F04
+Thursday,Session 1,08:00 - 08:55,C33-A,C33,Minor 3,Minor,1,R04,CLASS,F11,Faculty F11
+Thursday,Session 1,08:00 - 08:55,C35-A,C35,Minor 5,Minor,1,R14,CLASS,F08,Faculty F08
+Thursday,Session 1,08:00 - 08:55,C39-A,C39,Minor 9,Minor,2,L04,LAB,F02,Faculty F02
+Thursday,Session 1,08:00 - 08:55,C41-A,C41,Skill-Based 1,Skill-Based,1,R07,CLASS,F17,Faculty F17
+Thursday,Session 1,08:00 - 08:55,C46-A,C46,Ability-Enhancement 1,Ability-Enhancement,1,R18,CLASS,F28,Faculty F28
+Thursday,Session 1,08:00 - 08:55,C48-A,C48,Ability-Enhancement 3,Ability-Enhancement,1,R10,CLASS,F14,Faculty F14
+Thursday,Session 1,08:00 - 08:55,C50-A,C50,Value-Added 1,Value-Added,1,R08,CLASS,F10,Faculty F10
+Friday,Session 1,08:00 - 08:55,C01-A,C01,CSE Major 1,Major,1,R09,CLASS,F12,Faculty F12
+Friday,Session 1,08:00 - 08:55,C02-A,C02,CSE Major 2,Major,1,R06,CLASS,F21,Faculty F21
+Friday,Session 1,08:00 - 08:55,C07-A,C07,ECE Major 1,Major,1,R19,CLASS,F07,Faculty F07
+Friday,Session 1,08:00 - 08:55,C08-A,C08,ECE Major 2,Major,1,R04,CLASS,F19,Faculty F19
+Friday,Session 1,08:00 - 08:55,C10-A,C10,ECE Major 4,Major,1,R11,CLASS,F24,Faculty F24
+Friday,Session 1,08:00 - 08:55,C19-A,C19,BBA Major 1,Major,2,L03,LAB,F06,Faculty F06
+Friday,Session 1,08:00 - 08:55,C21-A,C21,BBA Major 3,Major,1,R01,CLASS,F16,Faculty F16
+Friday,Session 1,08:00 - 08:55,C25-A,C25,PSY Major 1,Major,2,L02,LAB,F11,Faculty F11
+Friday,Session 1,08:00 - 08:55,C28-A,C28,PSY Major 4,Major,2,L04,LAB,F09,Faculty F09
+Friday,Session 1,08:00 - 08:55,C35-A,C35,Minor 5,Minor,2,L05,LAB,F08,Faculty F08
+Friday,Session 1,08:00 - 08:55,C36-A,C36,Minor 6,Minor,1,R18,CLASS,F14,Faculty F14
+Friday,Session 1,08:00 - 08:55,C42-A,C42,Skill-Based 2,Skill-Based,1,R20,CLASS,F25,Faculty F25
+Friday,Session 1,08:00 - 08:55,C44-A,C44,Skill-Based 4,Skill-Based,1,R17,CLASS,F03,Faculty F03
+Friday,Session 1,08:00 - 08:55,C45-A,C45,Skill-Based 5,Skill-Based,1,R16,CLASS,F18,Faculty F18
+Friday,Session 1,08:00 - 08:55,C46-A,C46,Ability-Enhancement 1,Ability-Enhancement,1,R05,CLASS,F28,Faculty F28
+Friday,Session 1,08:00 - 08:55,C47-A,C47,Ability-Enhancement 2,Ability-Enhancement,1,R07,CLASS,F02,Faculty F02
+Friday,Session 1,08:00 - 08:55,C49-A,C49,Ability-Enhancement 4,Ability-Enhancement,1,R02,CLASS,F20,Faculty F20
+Friday,Session 1,08:00 - 08:55,C51-A,C51,Value-Added 2,Value-Added,1,R10,CLASS,F27,Faculty F27

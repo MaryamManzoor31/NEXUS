@@ -3,20 +3,32 @@ from __future__ import annotations
 import csv
 import io
 import re
-from collections import defaultdict
-from nexus_core.models import Dataset, Schedule, DAYS, PERIODS, CLASS, LAB
+from collections import Counter, defaultdict
+from nexus_core.models import (
+    Dataset, Schedule, DAYS, PERIODS, SESSION_TIMES, CLASS, LAB,
+    MORNING_SESSION, AFTERNOON_SESSION, EXTENDED_EARLY_SESSION, EXTENDED_LATE_SESSION,
+)
 from nexus_core.validator import validate, Report
 from nexus_core.metrics import compute
+from nexus_core.common import is_minor_or_elective
 
 DAY_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+
 PERIOD_TIMES = [
-    ("09:00 - 10:00", "09:00", "10:00"),
-    ("10:00 - 11:00", "10:00", "11:00"),
-    ("11:15 - 12:15", "11:15", "12:15"),
-    ("12:15 - 13:15", "12:15", "13:15"),
-    ("14:00 - 15:00", "14:00", "15:00"),
-    ("15:00 - 16:00", "15:00", "16:00"),
+    (
+        f"{start} - {end}",
+        start,
+        end,
+    )
+    for start, end in SESSION_TIMES
 ]
+
+STUDENT_SESSION_LABELS = {
+    MORNING_SESSION: "Morning Session (8:00 AM-1:00 PM)",
+    AFTERNOON_SESSION: "Afternoon Session (1:00 PM-6:00 PM)",
+    EXTENDED_EARLY_SESSION: "Extended Session (8:00 AM-4:00 PM)",
+    EXTENDED_LATE_SESSION: "Extended Session (10:00 AM-6:00 PM)",
+}
 
 CONSTRAINT_SPECS = [
     ("H1", "Faculty Clash", "Faculty teaches at most one session at any time", "PS, ITC"),
@@ -33,6 +45,10 @@ CONSTRAINT_SPECS = [
     ("H12", "Section Capacity", "Student enrolment does not exceed section limit", "TD"),
     ("H13", "Resource Blocking", "Blocked/unavailable resources remain unused", "PS"),
     ("H14", "Faculty Workload", "Faculty weekly hours do not exceed max_hours limit", "TD"),
+    ("H15", "Student Day Sessions", "Morning and afternoon days have at most five class hours; days requiring more must use an extended window with a protected lunch break between noon and 2 PM", "TD"),
+    ("H16", "Semester Session Window", "Students stay in their selected morning/afternoon batch or its matching extended window; automatic mode assigns per student", "TD"),
+    ("H17", "Student Offering Scope", "Core courses use a section offered to the student's department/programme/stream/batch/semester; minor and elective sections remain cross-program", "TD"),
+    ("H18", "Student Waiting Time", "Waiting gaps between consecutive classes are at most 120 minutes; an extended-session lunch break is protected", "TD"),
 ]
 
 
@@ -101,6 +117,10 @@ def serialize_schedule(ds: Dataset, sched: Schedule, report: Report = None, metr
             "id": c.id,
             "title": c.title,
             "category": c.category,
+            "course_type": c.course_type or c.category,
+            "department_id": c.department_id,
+            "programme_id": c.programme_id,
+            "stream": c.stream,
             "credits": c.credits,
             "sessions": [{"duration": s.duration, "room_type": s.room_type} for s in c.sessions],
         }
@@ -152,13 +172,38 @@ def serialize_schedule(ds: Dataset, sched: Schedule, report: Report = None, metr
         students_dict[st.id] = {
             "id": st.id,
             "programme": st.programme,
+            "department_id": st.department_id,
             "selections": list(st.selections),
             "enrolled": enrol,
+            "section_by_course": {
+                course_id: {
+                    "section_id": section_id,
+                    "university_section": sections_dict.get(section_id, {}).get("university_section", section_id),
+                    "course_type": (ds.courses[course_id].course_type or ds.courses[course_id].category)
+                    if course_id in ds.courses else "",
+                }
+                for course_id, section_id in enrol.items()
+            },
+            "minor_electives": [
+                course_id for course_id in st.selections
+                if course_id in ds.courses
+                and is_minor_or_elective(ds.courses[course_id])
+            ],
+            "minor_elective_enrolments": {
+                course_id: section_id
+                for course_id, section_id in enrol.items()
+                if course_id in ds.courses and is_minor_or_elective(ds.courses[course_id])
+            },
             "placed_count": len(enrol),
             "total_selected": len(st.selections),
+            "session_by_day": {
+                DAY_NAMES[day]: STUDENT_SESSION_LABELS[mode]
+                for day, mode in sched.student_categories.get(st.id, {}).items()
+                if 0 <= day < len(DAY_NAMES) and mode in STUDENT_SESSION_LABELS
+            },
         }
 
-    # Grids: 5 days x 6 periods = 30 slots
+    # Grids: 5 days x 10 teaching sessions = 50 slots
     # by_section[sec_id] -> list of placement sessions
     # by_faculty[fac_id] -> list of placement sessions
     # by_room[room_id]   -> list of placement sessions
@@ -230,23 +275,56 @@ def serialize_schedule(ds: Dataset, sched: Schedule, report: Report = None, metr
     master_list.sort(key=lambda x: (x["day"], x["period"], x["section_id"]))
 
     unplaced_list = []
+    allocation_diagnostics = {
+        (item["student_id"], item["course_id"]): item
+        for item in sched.info.get("unplaced_choice_diagnostics", [])
+    }
     for stid, cid in report.unplaced:
         c = ds.courses.get(cid)
-        unplaced_list.append({
+        item = {
             "student_id": stid,
             "course_id": cid,
             "course_title": c.title if c else cid,
-        })
+        }
+        diagnostic = allocation_diagnostics.get((stid, cid))
+        if diagnostic:
+            item.update({
+                "reason": diagnostic["reason"],
+                "description": diagnostic["description"],
+                "candidate_sections": diagnostic["candidate_sections"],
+            })
+        unplaced_list.append(item)
+    unplaced_reason_counts = dict(Counter(
+        item["reason"] for item in unplaced_list if item.get("reason")
+    ))
 
     unscheduled_list = []
     for sid in report.unscheduled:
         sec = ds.sections.get(sid)
         cid = sec.course_id if sec else ""
         c = ds.courses.get(cid) if cid else None
+        specs = ds.section_sessions(sid) if sec else ()
+        qualified_faculty = [f.id for f in ds.faculty.values() if cid in f.qualified]
+        rooms_by_session = [
+            [r.id for r in ds.rooms.values() if r.type == spec.room_type and r.capacity >= sec.capacity]
+            for spec in specs
+        ]
+        if not qualified_faculty:
+            likely_blocker = "No qualified faculty is listed for this course."
+        elif any(not room_ids for room_ids in rooms_by_session):
+            likely_blocker = "At least one required session has no matching room with sufficient capacity."
+        else:
+            likely_blocker = (
+                "No single cause is confirmed. Check time-slot conflicts, faculty workload, room availability, "
+                "fixed baseline assignments, and the solver search limit."
+            )
         unscheduled_list.append({
             "section_id": sid,
             "course_id": cid,
             "course_title": c.title if c else cid,
+            "likely_blocker": likely_blocker,
+            "qualified_faculty": qualified_faculty,
+            "matching_rooms_by_session": rooms_by_session,
         })
 
     # Faculty summary and allocation stats
@@ -332,25 +410,48 @@ def serialize_schedule(ds: Dataset, sched: Schedule, report: Report = None, metr
             "total_slots": DAYS * PERIODS,
             "days": DAY_NAMES,
             "periods": [
-                {"index": i, "label": f"Period {i+1}", "time": PERIOD_TIMES[i][0]}
+                {"index": i, "label": f"Session {i+1}", "time": PERIOD_TIMES[i][0]}
                 for i in range(PERIODS)
             ],
             "semester_filter": ds.meta.get("semester_filter", "all"),
+            "semester_sessions": ds.meta.get("semester_sessions", {}),
             "source_file": ds.meta.get("source_file", ""),
+            "student_data_mode": ds.meta.get("student_data_mode", "actual" if ds.students else "unavailable"),
+            "student_data_note": ds.meta.get("student_data_note", ""),
+            "capacity_basis": ds.meta.get("capacity_basis", "Imported from source data"),
+            "availability_basis": ds.meta.get("availability_basis", "Imported from source data"),
+            "original_timetable_loaded": bool(ds.baseline),
+            "baseline_validation_note": ds.meta.get("baseline_validation_note", ""),
         },
         "metrics": {
             "method": sched.method,
             "validator_status": report.status,
             "solver_status": sched.status,
             "stage_a_status": metrics.get("stage_a_status", sched.status),
+            "stage_a_objective": metrics.get("stage_a_objective"),
+            "stage_a_best_bound": metrics.get("stage_a_best_bound"),
+            "stage_a_branches": metrics.get("stage_a_branches"),
+            "stage_a_conflicts": metrics.get("stage_a_conflicts"),
+            "stage_a_time_s": metrics.get("stage_a_time_s"),
             "stage_b_status": metrics.get("stage_b_status", "NOT_RUN"),
             "stage_b_status_reason": metrics.get("stage_b_status_reason"),
+            "stage_b_objective": metrics.get("stage_b_objective"),
+            "stage_b_best_bound": metrics.get("stage_b_best_bound"),
+            "stage_b_branches": metrics.get("stage_b_branches"),
+            "stage_b_conflicts": metrics.get("stage_b_conflicts"),
+            "stage_b_time_s": metrics.get("stage_b_time_s"),
+            "time_budget_s": metrics.get("time_budget_s"),
+            "complete_allocation_status": metrics.get("complete_allocation_status"),
+            "complete_allocation_reason": metrics.get("complete_allocation_reason"),
             "runtime_s": round(sched.runtime, 3),
             "scheduled_sections": metrics.get("scheduled_sections", f"{len(ds.sections)-len(report.unscheduled)}/{len(ds.sections)}"),
             "unplaced_selections": metrics.get("unplaced_selections", f"{len(report.unplaced)}"),
+            "placed_selections": metrics.get("placed_selections", 0),
+            "total_selections": metrics.get("total_selections", 0),
             "fully_scheduled_students_pct": metrics.get("fully_scheduled_students_pct", 0.0),
             "room_utilization_pct": metrics.get("room_utilization_pct", 0.0),
             "hard_violations": report.status != "VALID_COMPLETE" and len(report.violations),
+            "unplaced_reason_counts": unplaced_reason_counts,
             "faculty_load_std_h": metrics.get("faculty_load_std_h", 0.0),
         },
         "constraints": constraints_list,
@@ -372,6 +473,7 @@ def serialize_schedule(ds: Dataset, sched: Schedule, report: Report = None, metr
         "master_list": master_list,
         "unplaced_selections": unplaced_list,
         "unscheduled_sections": unscheduled_list,
+        "unplaced_selection_details": unplaced_list,
     }
 
 
@@ -388,7 +490,7 @@ def generate_timetable_csv(ds: Dataset, sched: Schedule) -> str:
     for item in data["master_list"]:
         writer.writerow([
             item["day_name"],
-            f"Period {item['period']+1}",
+            f"Session {item['period']+1}",
             item["period_time"],
             item["section_id"],
             item["course_id"],
@@ -401,3 +503,4 @@ def generate_timetable_csv(ds: Dataset, sched: Schedule) -> str:
             item["faculty_name"],
         ])
     return output.getvalue()
+

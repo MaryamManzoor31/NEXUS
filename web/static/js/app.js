@@ -6,12 +6,15 @@
 // Application State
 let appState = {
   data: null,
+  originalData: null,
+  optimizedData: null,
+  viewMode: 'original',
   activeTab: 'section',
   activeEntityId: null,
   activeSectionId: null,
   activeSemester: null,
-  sectionView: 'calendar',
-  theme: localStorage.getItem('nexus_theme') || 'light'
+  semesterSessions: {},
+  sectionView: 'calendar'
 };
 
 // DOM References
@@ -19,20 +22,24 @@ const elements = {
   selectScenario: document.getElementById('selectScenario'),
   selectSemester: document.getElementById('selectSemester'),
   groupSemester: document.getElementById('groupSemester'),
+  groupSemesterSession: document.getElementById('groupSemesterSession'),
+  semesterSessionControls: document.getElementById('semesterSessionControls'),
   groupStudents: document.getElementById('groupStudents'),
   selectStudents: document.getElementById('selectStudents'),
-  selectAlgorithm: document.getElementById('selectAlgorithm'),
   btnGenerate: document.getElementById('btnGenerate'),
   btnGenSpinner: document.getElementById('btnGenSpinner'),
   btnGenText: document.getElementById('btnGenText'),
+  baselineSwitch: document.getElementById('baselineSwitch'),
+  btnShowOriginal: document.getElementById('btnShowOriginal'),
+  btnShowOptimized: document.getElementById('btnShowOptimized'),
+  scheduleViewHeading: document.getElementById('scheduleViewHeading'),
+  datasetNotice: document.getElementById('datasetNotice'),
   btnAllocateMembers: document.getElementById('btnAllocateMembers'),
   btnLoadExcel: document.getElementById('btnLoadExcel'),
   btnLoadSample: document.getElementById('btnLoadSample'),
   btnOpenUpload: document.getElementById('btnOpenUpload'),
   btnExportCsv: document.getElementById('btnExportCsv'),
   btnPrint: document.getElementById('btnPrint'),
-  btnThemeToggle: document.getElementById('btnThemeToggle'),
-  themeIcon: document.getElementById('themeIcon'),
 
   // Metrics
   valStatusBadge: document.getElementById('valStatusBadge'),
@@ -43,6 +50,11 @@ const elements = {
   valSectionsSub: document.getElementById('valSectionsSub'),
   valRuntime: document.getElementById('valRuntime'),
   valRuntimeSub: document.getElementById('valRuntimeSub'),
+  diagnosticsWrapper: document.getElementById('diagnosticsWrapper'),
+  diagnosticsIntro: document.getElementById('diagnosticsIntro'),
+  diagnosticsSummary: document.getElementById('diagnosticsSummary'),
+  unscheduledSectionsList: document.getElementById('unscheduledSectionsList'),
+  unplacedStudentsList: document.getElementById('unplacedStudentsList'),
 
   // Views & Tabs
   tabs: document.querySelectorAll('.tab-btn'),
@@ -60,7 +72,6 @@ const elements = {
   sidebarConstraintNotice: document.getElementById('sidebarConstraintNotice'),
   sectionViewHeader: document.getElementById('sectionViewHeader'),
   scheduleTitle: document.getElementById('scheduleTitle'),
-  scheduleSubtitle: document.getElementById('scheduleSubtitle'),
   btnCalendarView: document.getElementById('btnCalendarView'),
   btnTabularView: document.getElementById('btnTabularView'),
   sectionTableWrapper: document.getElementById('sectionTableWrapper'),
@@ -93,37 +104,22 @@ const elements = {
   btnCancelUpload: document.getElementById('btnCancelUpload'),
   excelUploadForm: document.getElementById('excelUploadForm'),
   uploadSemesterSelect: document.getElementById('uploadSemesterSelect'),
+  uploadSemesterSessionControls: document.getElementById('uploadSemesterSessionControls'),
   uploadForm: document.getElementById('uploadForm'),
   uploadIssues: document.getElementById('uploadIssues'),
 };
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-  initTheme();
   setupEventListeners();
   loadCurrentSchedule();
 });
 
-// Theme Management
-function initTheme() {
-  document.documentElement.setAttribute('data-theme', appState.theme);
-  const icon = appState.theme === 'dark' ? 'sun' : 'moon';
-  const label = appState.theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
-  elements.themeIcon.innerHTML = `<svg class="icon"><use href="#icon-${icon}"></use></svg>`;
-  elements.btnThemeToggle.setAttribute('aria-label', label);
-  elements.btnThemeToggle.title = label;
-}
-
-function toggleTheme() {
-  appState.theme = appState.theme === 'dark' ? 'light' : 'dark';
-  localStorage.setItem('nexus_theme', appState.theme);
-  initTheme();
-}
-
 // Event Listeners
 function setupEventListeners() {
-  elements.btnThemeToggle.addEventListener('click', toggleTheme);
   elements.btnGenerate.addEventListener('click', onGenerate);
+  elements.btnShowOriginal?.addEventListener('click', () => showScheduleView('original'));
+  elements.btnShowOptimized?.addEventListener('click', () => showScheduleView('optimized'));
   if (elements.btnAllocateMembers) {
     elements.btnAllocateMembers.addEventListener('click', onAllocateMembers);
   }
@@ -146,6 +142,20 @@ function setupEventListeners() {
 
   // Scenario change
   elements.selectScenario.addEventListener('change', onScenarioChange);
+  if (elements.selectSemester) {
+    elements.selectSemester.addEventListener('change', () => renderSemesterSessionControls(
+      elements.semesterSessionControls,
+      elements.selectSemester.value,
+      'main'
+    ));
+  }
+  if (elements.uploadSemesterSelect) {
+    elements.uploadSemesterSelect.addEventListener('change', () => renderSemesterSessionControls(
+      elements.uploadSemesterSessionControls,
+      elements.uploadSemesterSelect.value,
+      'upload'
+    ));
+  }
 
   // Tab switching
   elements.tabs.forEach(tab => {
@@ -184,6 +194,14 @@ function setupEventListeners() {
     elements.uploadIssues.classList.add('hidden');
     if (elements.uploadForm) elements.uploadForm.reset();
     if (elements.excelUploadForm) elements.excelUploadForm.reset();
+    if (elements.uploadSemesterSelect && elements.selectSemester) {
+      elements.uploadSemesterSelect.value = elements.selectSemester.value;
+      renderSemesterSessionControls(
+        elements.uploadSemesterSessionControls,
+        elements.uploadSemesterSelect.value,
+        'upload'
+      );
+    }
     elements.uploadModal.showModal();
   });
   elements.btnCloseUpload.addEventListener('click', () => elements.uploadModal.close());
@@ -198,8 +216,59 @@ function setupEventListeners() {
 
 function onScenarioChange() {
   const isExcel = elements.selectScenario.value === 'excel';
+  if (!isExcel && elements.selectScenario.value !== 'uploaded') {
+    appState.originalData = null;
+    updateScheduleViewControls();
+  }
   if (elements.groupSemester) elements.groupSemester.classList.toggle('hidden', !isExcel);
+  if (elements.groupSemesterSession) elements.groupSemesterSession.classList.toggle('hidden', !isExcel);
   if (elements.groupStudents) elements.groupStudents.classList.toggle('hidden', isExcel);
+}
+
+function semesterOptions() {
+  return Array.from(elements.selectSemester.options)
+    .map(option => option.value)
+    .filter(value => value !== 'all');
+}
+
+function renderSemesterSessionControls(container, scope, source) {
+  if (!container) return;
+  const semesters = scope === 'all' ? semesterOptions() : [scope];
+  const options = [
+    '<option value="">Choose session</option>',
+    '<option value="auto">Automatic — assign per student</option>',
+    '<option value="morning">Morning — 8:00 AM to 1:00 PM</option>',
+    '<option value="afternoon">Afternoon — 1:00–6:00 PM</option>'
+  ].join('');
+  container.innerHTML = `<div class="semester-session-settings">${semesters.map(semester => `
+    <div class="semester-session-row">
+      <label for="${source}Session${escapeHtml(semester)}">Semester ${escapeHtml(semester)}</label>
+      <select class="select-input semester-session-select" id="${source}Session${escapeHtml(semester)}" data-semester="${escapeHtml(semester)}">
+        ${options}
+      </select>
+    </div>`).join('')}</div>`;
+  container.querySelectorAll('.semester-session-select').forEach(select => {
+    select.value = appState.semesterSessions[select.dataset.semester] || '';
+    select.addEventListener('change', () => {
+      const { semester } = select.dataset;
+      if (select.value) appState.semesterSessions[semester] = select.value;
+      else delete appState.semesterSessions[semester];
+    });
+  });
+}
+
+function selectedSemesterSessions(container, scope) {
+  const semesters = scope === 'all' ? semesterOptions() : [scope];
+  const sessions = {};
+  for (const semester of semesters) {
+    const select = container?.querySelector(`[data-semester="${CSS.escape(semester)}"]`);
+    if (!select?.value) {
+      alert(`Choose automatic, morning, or afternoon assignment for Semester ${semester}.`);
+      return null;
+    }
+    sessions[semester] = select.value;
+  }
+  return sessions;
 }
 
 // Load schedule data from server
@@ -210,13 +279,28 @@ async function loadCurrentSchedule() {
     const json = await res.json();
     if (json.success) {
       appState.data = json.data;
+      appState.viewMode = json.active_method === 'baseline' ? 'original' : 'optimized';
+      if (appState.viewMode === 'original') appState.originalData = json.data;
+      else appState.optimizedData = json.data;
+      const originalResponse = await fetch('/api/original');
+      const originalJson = await originalResponse.json();
+      if (originalJson.success) appState.originalData = originalJson.data;
+      Object.assign(appState.semesterSessions, json.data?.meta?.semester_sessions || {});
+      renderSemesterSessionControls(
+        elements.semesterSessionControls,
+        elements.selectSemester.value,
+        'main'
+      );
       updateMetrics();
       populateEntitySelectors();
       renderActiveTab();
+      updateScheduleViewControls();
       const stageAStatus = json.data?.metrics?.stage_a_status;
-      if (json.is_excel && !['OPTIMAL', 'FEASIBLE'].includes(stageAStatus)) {
+      if (json.is_excel && !['OPTIMAL', 'FEASIBLE', 'BASELINE'].includes(stageAStatus)) {
         alert(`The timetable was not generated. CP-SAT Stage A status: ${stageAStatus || 'unknown'}. Click Generate Timetable to try again.`);
       }
+    } else {
+      alert(`Could not load the selected timetable: ${json.error || 'Unknown server error'}`);
     }
   } catch (err) {
     console.error('Failed to load current schedule:', err);
@@ -228,10 +312,36 @@ async function loadCurrentSchedule() {
 // Generate schedule action
 async function onGenerate() {
   const scenario = elements.selectScenario.value;
-  const algorithm = elements.selectAlgorithm.value;
+
+  if (scenario === 'uploaded') {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/optimize-active', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ limit_a: 15, limit_b: 10, seed: 329 })
+      });
+      const json = await res.json();
+      if (!json.success) throw new Error(json.error || 'Optimization failed');
+      appState.optimizedData = json.data;
+      appState.data = json.data;
+      appState.viewMode = 'optimized';
+      updateMetrics();
+      populateEntitySelectors();
+      renderActiveTab();
+      updateScheduleViewControls();
+    } catch (err) {
+      alert(`Optimization failed: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+    return;
+  }
 
   if (scenario === 'excel') {
     const semester = elements.selectSemester ? elements.selectSemester.value : '6';
+    const semesterSessions = selectedSemesterSessions(elements.semesterSessionControls, semester);
+    if (!semesterSessions) return;
     setLoading(true);
     try {
       const res = await fetch('/api/load-excel', {
@@ -239,18 +349,22 @@ async function onGenerate() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           semester,
-          algorithm,
+          semester_sessions: semesterSessions,
           allocate_members: true,
-          limit_a: 15,
-          limit_b: 10
+          limit_a: 50,
+          limit_b: 35
         })
       });
       const json = await res.json();
       if (json.success) {
+        appState.originalData ||= appState.data;
+        appState.optimizedData = json.data;
         appState.data = json.data;
+        appState.viewMode = 'optimized';
         updateMetrics();
         populateEntitySelectors();
         renderActiveTab();
+        updateScheduleViewControls();
       } else {
         alert('Error generating timetable from Excel: ' + (json.error || 'Unknown error'));
       }
@@ -272,7 +386,6 @@ async function onGenerate() {
       body: JSON.stringify({
         scenario,
         students,
-        algorithm,
         seed: 329,
         limit_a: 15,
         limit_b: 10
@@ -280,10 +393,14 @@ async function onGenerate() {
     });
     const json = await res.json();
     if (json.success) {
+      appState.originalData ||= appState.data;
+      appState.optimizedData = json.data;
       appState.data = json.data;
+      appState.viewMode = 'optimized';
       updateMetrics();
       populateEntitySelectors();
       renderActiveTab();
+      updateScheduleViewControls();
     } else {
       alert('Error generating schedule: ' + (json.error || 'Unknown error'));
     }
@@ -296,43 +413,62 @@ async function onGenerate() {
 
 // Allocate members action
 async function onAllocateMembers() {
-  setLoading(true);
-  try {
-    const res = await fetch('/api/allocate-members', { method: 'POST' });
-    const json = await res.json();
-    if (json.success) {
-      appState.data = json.data;
-      updateMetrics();
-      populateEntitySelectors();
-      
-      // Switch tab to allocations view
-      elements.tabs.forEach(t => t.classList.remove('active'));
-      const allocTab = Array.from(elements.tabs).find(t => t.getAttribute('data-tab') === 'allocations');
-      if (allocTab) allocTab.classList.add('active');
-      appState.activeTab = 'allocations';
-      renderActiveTab();
-    } else {
-      alert('Member allocation error: ' + (json.error || ''));
-    }
-  } catch (err) {
-    alert('Request failed: ' + err.message);
-  } finally {
-    setLoading(false);
-  }
+  await onGenerate();
+  if (appState.viewMode !== 'optimized') return;
+  elements.tabs.forEach(t => t.classList.remove('active'));
+  const allocTab = Array.from(elements.tabs).find(t => t.getAttribute('data-tab') === 'allocations');
+  if (allocTab) allocTab.classList.add('active');
+  appState.activeTab = 'allocations';
+  renderActiveTab();
 }
 
 // Reset / Load original Excel dataset
 async function onLoadExcel() {
-  elements.selectScenario.value = 'excel';
-  onScenarioChange();
-  await onGenerate();
+  if (appState.originalData) {
+    showScheduleView('original');
+    return;
+  }
+  await loadCurrentSchedule();
+}
+
+function showScheduleView(mode) {
+  const next = mode === 'optimized' ? appState.optimizedData : appState.originalData;
+  if (!next) return;
+  appState.data = next;
+  appState.viewMode = mode;
+  updateMetrics();
+  populateEntitySelectors();
+  renderActiveTab();
+  updateScheduleViewControls();
+}
+
+function updateScheduleViewControls() {
+  const hasBoth = Boolean(appState.originalData && appState.optimizedData);
+  elements.baselineSwitch?.classList.toggle('hidden', !hasBoth);
+  if (elements.btnShowOriginal) {
+    elements.btnShowOriginal.classList.toggle('btn-primary', appState.viewMode === 'original');
+  }
+  if (elements.btnShowOptimized) {
+    elements.btnShowOptimized.classList.toggle('btn-primary', appState.viewMode === 'optimized');
+  }
+  if (elements.scheduleViewHeading) {
+    elements.scheduleViewHeading.textContent = appState.viewMode === 'original'
+      ? 'Original university timetable'
+      : 'Optimized timetable';
+  }
 }
 
 // Excel upload submission
 async function onExcelUploadSubmit(e) {
   e.preventDefault();
   const formData = new FormData(elements.excelUploadForm);
-  formData.append('algorithm', elements.selectAlgorithm.value);
+  const semesterScope = elements.uploadSemesterSelect?.value || '6';
+  const semesterSessions = selectedSemesterSessions(
+    elements.uploadSemesterSessionControls,
+    semesterScope
+  );
+  if (!semesterSessions) return;
+  formData.append('semester_sessions', JSON.stringify(semesterSessions));
 
   setLoading(true);
   try {
@@ -344,11 +480,18 @@ async function onExcelUploadSubmit(e) {
     if (json.success) {
       elements.uploadModal.close();
       appState.data = json.data;
-      elements.selectScenario.value = 'excel';
+      appState.originalData = json.data;
+      appState.optimizedData = null;
+      appState.viewMode = 'original';
+      Object.assign(appState.semesterSessions, json.data?.meta?.semester_sessions || {});
+      if (elements.selectSemester) elements.selectSemester.value = semesterScope;
+      renderSemesterSessionControls(elements.semesterSessionControls, semesterScope, 'main');
+      elements.selectScenario.value = 'uploaded';
       onScenarioChange();
       updateMetrics();
       populateEntitySelectors();
       renderActiveTab();
+      updateScheduleViewControls();
     } else {
       elements.uploadIssues.innerHTML = `<strong>Upload Error:</strong> ${json.error}`;
       elements.uploadIssues.classList.remove('hidden');
@@ -369,9 +512,15 @@ async function onLoadSample() {
     const json = await res.json();
     if (json.success) {
       appState.data = json.data;
+      appState.originalData = json.data;
+      appState.optimizedData = null;
+      appState.viewMode = 'original';
+      elements.selectScenario.value = 'uploaded';
+      onScenarioChange();
       updateMetrics();
       populateEntitySelectors();
       renderActiveTab();
+      updateScheduleViewControls();
     } else {
       alert('Failed to load sample: ' + (json.error || ''));
     }
@@ -386,7 +535,6 @@ async function onLoadSample() {
 async function onUploadSubmit(e) {
   e.preventDefault();
   const formData = new FormData(elements.uploadForm);
-  formData.append('algorithm', elements.selectAlgorithm.value);
 
   setLoading(true);
   try {
@@ -398,9 +546,15 @@ async function onUploadSubmit(e) {
     if (json.success) {
       elements.uploadModal.close();
       appState.data = json.data;
+      appState.originalData = json.data;
+      appState.optimizedData = null;
+      appState.viewMode = 'original';
+      elements.selectScenario.value = 'uploaded';
+      onScenarioChange();
       updateMetrics();
       populateEntitySelectors();
       renderActiveTab();
+      updateScheduleViewControls();
     } else {
       elements.uploadIssues.innerHTML = `<strong>Validation Error:</strong> ${json.error}<br>${(json.issues || []).join('<br>')}`;
       elements.uploadIssues.classList.remove('hidden');
@@ -445,7 +599,7 @@ async function onSimulateDisruption() {
         faculty ? `Faculty ${faculty}` : null
       ].filter(Boolean).join(' and ');
 
-      elements.repairResultNotice.innerHTML = `<svg class="icon"><use href="#icon-check"></use></svg> <strong>Disruption Handled:</strong> Timetable successfully repaired. Blocked ${blockedDesc} was completely avoided while maintaining clash-free schedule validity.`;
+      elements.repairResultNotice.innerHTML = `<svg class="icon"><use href="#icon-check"></use></svg> <strong>Repaired:</strong> ${blockedDesc} avoided.`;
       elements.repairResultNotice.classList.remove('hidden');
     } else {
       alert('Repair failed: ' + (json.error || ''));
@@ -462,34 +616,118 @@ function updateMetrics() {
   if (!appState.data) return;
   const m = appState.data.metrics;
   const meta = appState.data.meta;
+  const isOriginalBaseline = m.method === 'baseline';
+  if (elements.datasetNotice) {
+    const notices = [meta.student_data_note, meta.capacity_basis, meta.availability_basis, meta.baseline_validation_note]
+      .filter(Boolean);
+    elements.datasetNotice.textContent = notices.join(' ');
+    elements.datasetNotice.classList.toggle('hidden', notices.length === 0);
+  }
+  const sessionLabels = { auto: 'automatic student-based shifts', morning: 'morning', afternoon: 'afternoon' };
 
   // Status Badge
   elements.valStatusBadge.textContent = m.validator_status;
   elements.valStatusBadge.className = 'metric-value status-badge';
   if (m.validator_status === 'VALID_COMPLETE') {
     elements.valStatusBadge.classList.add('success');
-    elements.valStatusSub.textContent = '14/14 Hard Constraints Met (No Clashes)';
+    elements.valStatusSub.textContent = 'No clashes';
   } else if (m.validator_status === 'VALID_INCOMPLETE') {
     elements.valStatusBadge.classList.add('warning');
-    elements.valStatusSub.textContent = 'Clash-Free, Some Choices Unplaced';
+    elements.valStatusSub.textContent = isOriginalBaseline
+      ? 'Original baseline · not solver-optimized'
+      : (m.complete_allocation_status === 'INFEASIBLE'
+      ? 'Best feasible partial allocation · complete allocation infeasible'
+      : (m.complete_allocation_status === 'UNKNOWN'
+        ? 'Partial allocation · complete feasibility not proven'
+        : (m.stage_b_status === 'INFEASIBLE'
+          ? 'Student allocation infeasible under hard constraints'
+          : (m.stage_b_status === 'UNKNOWN'
+            ? 'Student allocation did not finish within the solver limit'
+            : 'Some unplaced'))));
   } else {
     elements.valStatusBadge.classList.add('danger');
-    elements.valStatusSub.textContent = `${m.hard_violations} Hard Violations Detected`;
+    elements.valStatusSub.textContent = `${m.hard_violations} violations`;
+  }
+  if (isOriginalBaseline) {
+    const violationText = m.hard_violations
+      ? ` · ${m.hard_violations} source-baseline validation findings`
+      : '';
+    elements.valStatusSub.textContent = `Original timetable · not CP-SAT optimized${violationText}`;
   }
 
   // Student Enrolment
-  elements.valEnrolment.textContent = `${m.fully_scheduled_students_pct}%`;
-  elements.valEnrolmentSub.textContent = `Unplaced choices: ${m.unplaced_selections} (Dataset: ${meta.total_students} students)`;
-
+  const placedSelections = Number(m.placed_selections) || 0;
+  const totalSelections = Number(m.total_selections) || 0;
+  const placedPct = totalSelections ? Math.round(100 * placedSelections / totalSelections) : 0;
+  elements.valEnrolment.textContent = isOriginalBaseline ? 'Not in baseline' : `${placedSelections} / ${totalSelections}`;
+  elements.valEnrolmentSub.textContent = isOriginalBaseline
+    ? 'Student-level course allocations are not included in the original timetable'
+    : `${placedPct}% assigned · ${m.unplaced_selections} unplaced`;
+  elements.valEnrolment.title = Object.entries(meta.semester_sessions || {})
+    .map(([semester, session]) => `Semester ${semester}: ${sessionLabels[session] || session}`)
+    .join('\n');
   // Sections
   elements.valSections.textContent = m.scheduled_sections;
-  elements.valSectionsSub.textContent = `Total sections in curriculum: ${meta.total_sections}`;
+  elements.valSectionsSub.textContent = `of ${meta.total_sections}`;
 
   // Runtime
-  elements.valRuntime.textContent = `${m.runtime_s} s`;
+  elements.valRuntime.textContent = isOriginalBaseline ? '—' : `${m.runtime_s} s`;
   const stageBStatus = m.stage_b_status || 'NOT_RUN';
   const stageBLabel = stageBStatus === 'NOT_RUN' ? '' : `; Stage B: ${stageBStatus}`;
-  elements.valRuntimeSub.textContent = `Engine: CP-SAT (Stage A: ${m.stage_a_status || m.solver_status}${stageBLabel})`;
+  elements.valRuntimeSub.textContent = isOriginalBaseline ? 'No optimization run' : `CP-SAT · Stage B ${stageBStatus}`;
+  if (appState.activeTab === 'diagnostics') renderDiagnosticsView();
+}
+
+function renderDiagnosticsView() {
+  if (!appState.data) return;
+  const data = appState.data;
+  const metrics = data.metrics || {};
+  const sections = data.unscheduled_sections || [];
+  const students = data.unplaced_selection_details || [];
+  const isBaseline = metrics.method === 'baseline';
+  elements.diagnosticsIntro.textContent = isBaseline
+    ? 'This is the source timetable. Student allocation and CP-SAT search diagnostics appear after optimization.'
+    : `CP-SAT status: Stage A ${metrics.stage_a_status || '—'} · Stage B ${metrics.stage_b_status || '—'} · ${metrics.runtime_s ?? '—'} s total.`;
+
+  const stageATime = metrics.stage_a_time_s == null ? NaN : Number(metrics.stage_a_time_s);
+  const stageBTime = metrics.stage_b_time_s == null ? NaN : Number(metrics.stage_b_time_s);
+  const reasonCounts = metrics.unplaced_reason_counts || {};
+  const reasonSummary = Object.entries(reasonCounts)
+    .map(([reason, count]) => `${escapeHtml(reason.replaceAll('_', ' '))}: ${count}`)
+    .join(' · ') || 'No unplaced selection reasons';
+  elements.diagnosticsSummary.innerHTML = `
+    <div class="diagnostics-stat"><strong>${escapeHtml(metrics.scheduled_sections || '—')}</strong><span>Sections scheduled</span></div>
+    <div class="diagnostics-stat"><strong>${Number(metrics.placed_selections) || 0} / ${Number(metrics.total_selections) || 0}</strong><span>Selections placed</span></div>
+    <div class="diagnostics-stat"><strong>${Number.isFinite(stageATime) ? `${stageATime.toFixed(1)} s` : '—'}</strong><span>Stage A time</span></div>
+    <div class="diagnostics-stat"><strong>${Number.isFinite(stageBTime) ? `${stageBTime.toFixed(1)} s` : '—'}</strong><span>Stage B time</span></div>
+    <div class="diagnostics-stat"><strong>${metrics.time_budget_s != null ? `${escapeHtml(metrics.time_budget_s)} s` : '—'}</strong><span>Total solve budget</span></div>
+    <div class="diagnostics-stat"><strong>${escapeHtml(metrics.complete_allocation_status || 'Not run')}</strong><span>Complete allocation</span></div>
+    <div class="diagnostics-stat diagnostics-reasons"><strong>Unplaced selection reasons</strong><span>${reasonSummary}</span></div>`;
+  if (metrics.complete_allocation_reason) {
+    elements.diagnosticsSummary.insertAdjacentHTML(
+      'beforeend',
+      `<p class="diagnostics-explanation">${escapeHtml(metrics.complete_allocation_reason)}</p>`
+    );
+  }
+
+  elements.unscheduledSectionsList.innerHTML = sections.length
+    ? sections.map(section => `
+      <article class="diagnostic-item">
+        <strong>${escapeHtml(section.section_id)} · ${escapeHtml(section.course_title || section.course_id)}</strong>
+        <p>${escapeHtml(section.likely_blocker || 'No specific blocker was identified; inspect time, rooms, faculty, baseline rules, and solver limit.')}</p>
+        <small>Qualified faculty listed: ${section.qualified_faculty?.length ?? '—'} · Matching rooms by session: ${(section.matching_rooms_by_session || []).map(rooms => rooms.length).join(', ') || '—'}</small>
+      </article>`).join('')
+    : '<p class="text-muted">No unscheduled sections.</p>';
+
+  const shownStudents = students.slice(0, 100);
+  elements.unplacedStudentsList.innerHTML = students.length
+    ? `${shownStudents.map(item => `
+      <article class="diagnostic-item">
+        <strong>${escapeHtml(item.student_id)} · ${escapeHtml(item.course_id)}${item.course_title ? ` — ${escapeHtml(item.course_title)}` : ''}</strong>
+        <p>${escapeHtml(item.description || 'No specific cause was recorded.')}</p>
+        ${item.candidate_sections?.length ? `<small>Candidate sections: ${item.candidate_sections.map(escapeHtml).join(', ')}</small>` : ''}
+      </article>`).join('')}${students.length > shownStudents.length ? `<p class="text-muted">Showing ${shownStudents.length} of ${students.length} selections.</p>` : ''}`
+    : '<p class="text-muted">No unplaced student selections.</p>';
 }
 
 // Populate dropdown selectors
@@ -500,10 +738,10 @@ function populateEntitySelectors() {
   // Blocked dropdowns for disruption
   const roomOptions = Object.values(entities.rooms).map(r => `<option value="${escapeHtml(r.id)}">${escapeHtml(r.id)} (${escapeHtml(r.type)}, Cap: ${escapeHtml(r.capacity)})</option>`).join('');
   const facultyOptions = Object.values(entities.faculty).map(f => `<option value="${escapeHtml(f.id)}">${escapeHtml(f.id)}: ${escapeHtml(f.name)} (Max: ${escapeHtml(f.max_hours)}h)</option>`).join('');
-  elements.blockedRoomSelect.innerHTML = '<option value="">-- None --</option>' + roomOptions;
-  elements.sidebarBlockedRoomSelect.innerHTML = '<option value="">No room restriction</option>' + roomOptions;
-  elements.blockedFacultySelect.innerHTML = '<option value="">-- None --</option>' + facultyOptions;
-  elements.sidebarBlockedFacultySelect.innerHTML = '<option value="">No faculty restriction</option>' + facultyOptions;
+  elements.blockedRoomSelect.innerHTML = '<option value="">None</option>' + roomOptions;
+  elements.sidebarBlockedRoomSelect.innerHTML = '<option value="">None</option>' + roomOptions;
+  elements.blockedFacultySelect.innerHTML = '<option value="">None</option>' + facultyOptions;
+  elements.sidebarBlockedFacultySelect.innerHTML = '<option value="">None</option>' + facultyOptions;
 
   populateSectionFilters();
   renderSidebarConstraints();
@@ -631,7 +869,7 @@ function populateSectionFilters() {
 
 function updateSelectedSectionSummary() {
   if (!appState.data || !appState.activeEntityId) {
-    elements.selectedSectionSummary.textContent = 'No sections are available for this semester.';
+    elements.selectedSectionSummary.textContent = 'No sections';
     elements.baselineModeSelect.disabled = true;
     elements.btnApplyBaselineMode.disabled = true;
     return;
@@ -645,7 +883,7 @@ function updateSelectedSectionSummary() {
   elements.selectedSectionSummary.innerHTML = `
     <strong>${escapeHtml(section.label)}</strong>
     <span>${section.courses.length} courses · ${escapeHtml(courseCodes)}</span>
-    <span>${scheduledCount}/${section.sections.length} course allocations scheduled</span>
+    <span>${scheduledCount}/${section.sections.length} scheduled</span>
   `;
   elements.baselineModeSelect.disabled = baselineSections.length === 0;
   elements.btnApplyBaselineMode.disabled = baselineSections.length === 0;
@@ -701,9 +939,6 @@ function setSectionView(view) {
   elements.btnTabularView.setAttribute('aria-selected', String(view === 'table'));
   elements.gridWrapper.classList.toggle('hidden', view !== 'calendar');
   elements.sectionTableWrapper.classList.toggle('hidden', view !== 'table');
-  elements.scheduleSubtitle.textContent = view === 'calendar'
-    ? 'Weekly view · Monday to Friday'
-    : 'Session list · sorted by weekday and start time';
   if (view === 'table') renderSectionTable();
 }
 
@@ -798,6 +1033,7 @@ function renderActiveTab() {
   }
   elements.constraintsWrapper.classList.toggle('hidden', tab !== 'constraints');
   elements.disruptionWrapper.classList.toggle('hidden', tab !== 'disruption');
+  elements.diagnosticsWrapper.classList.toggle('hidden', tab !== 'diagnostics');
 
   if (isGridTab) {
     if (isSectionTab) {
@@ -818,6 +1054,8 @@ function renderActiveTab() {
     renderMasterTable();
   } else if (tab === 'constraints') {
     renderConstraintsAudit();
+  } else if (tab === 'diagnostics') {
+    renderDiagnosticsView();
   }
 }
 
@@ -843,7 +1081,7 @@ function renderAllocationsView() {
       </div>
       <div class="allocation-stat-pill">
         <span class="allocation-stat-value">${stats.total_teaching_hours || 0} hrs</span>
-        <span class="allocation-stat-label">Total Teaching Hours</span>
+        <span class="allocation-stat-label">Teaching Hours</span>
       </div>
       <div class="allocation-stat-pill">
         <span class="allocation-stat-value">${stats.overall_utilization_pct || 0}%</span>
@@ -858,7 +1096,7 @@ function renderAllocationsView() {
 function renderAllocationRows(facultyList) {
   if (!elements.allocationTbody) return;
   if (!facultyList || facultyList.length === 0) {
-    elements.allocationTbody.innerHTML = '<tr><td colspan="6" class="text-center">No faculty allocation records available</td></tr>';
+    elements.allocationTbody.innerHTML = '<tr><td colspan="6" class="text-center">No records</td></tr>';
     return;
   }
 
@@ -967,10 +1205,10 @@ function updateEntityDropdownForTab(tab) {
   }
 }
 
-// Render the 5-day x 6-period weekly timetable matrix
+// Render the 5-day x 10-session weekly timetable matrix
 function renderGrid() {
   if (!appState.data || !appState.activeEntityId) {
-    elements.gridTbody.innerHTML = '<tr><td colspan="6" class="text-center">No schedule available</td></tr>';
+    elements.gridTbody.innerHTML = '<tr><td colspan="6" class="text-center">No schedule</td></tr>';
     return;
   }
 
@@ -989,11 +1227,6 @@ function renderGrid() {
   else if (tab === 'room') items = grid_data.by_room[entityId] || [];
   else if (tab === 'student') items = grid_data.by_student[entityId] || [];
 
-  if (tab === 'section' && section?.sections.every(offering => !offering.scheduled) && items.length === 0) {
-    elements.gridTbody.innerHTML = `<tr><td colspan="6" class="text-center">No sessions scheduled for ${escapeHtml(section.label)}. Review the constraints or solver result.</td></tr>`;
-    return;
-  }
-
   // Map slots: slot_index -> session item
   const slotMap = {};
   items.forEach(item => {
@@ -1010,9 +1243,9 @@ function renderGrid() {
     }
   });
 
-  // Build 6 period rows (Period 1 to 6)
+  // Build one row for each teaching session.
   let html = '';
-  for (let p = 0; p < 6; p++) {
+  for (let p = 0; p < meta.periods.length; p++) {
     const periodMeta = meta.periods[p];
     html += `<tr>`;
     html += `<td class="period-label">
@@ -1020,18 +1253,24 @@ function renderGrid() {
       <span class="period-time-sub">${periodMeta.time}</span>
     </td>`;
 
-    // 5 Days (Monday to Friday, d = 0 to 4)
-    for (let d = 0; d < 5; d++) {
-      const slotIndex = d * 6 + p;
+    for (let d = 0; d < meta.days.length; d++) {
+      const slotIndex = d * meta.periods.length + p;
       const session = slotMap[slotIndex];
       const continuation = continuationBySlot[slotIndex];
 
       if (session) {
         const cardClass = session.is_lab ? 'lab' : 'lecture';
         const typeLabel = `${session.is_lab ? 'LAB' : 'LEC'}${session.duration > 1 ? ` (${session.duration}H)` : ''}`;
+        const cardDescription = [
+          `${session.course_id} — ${session.course_title}`,
+          typeLabel,
+          `Section ${session.section_id}`,
+          `Room ${session.room_id}`,
+          `Faculty ${session.faculty_name}`,
+        ].join(' · ');
 
         html += `<td class="slot-cell">
-          <div class="session-card ${cardClass}" title="${escapeHtml(session.course_title)}">
+          <div class="session-card ${cardClass}" title="${escapeHtml(cardDescription)}" aria-label="${escapeHtml(cardDescription)}">
             <div class="session-top">
               <span class="session-code">${escapeHtml(session.course_id)}</span>
               <span class="session-type-pill">${typeLabel}</span>
@@ -1050,7 +1289,7 @@ function renderGrid() {
         const continuationClass = continuation.is_lab ? 'lab' : 'lecture';
         const continuationLabel = continuation.is_lab ? 'Lab continuation' : 'Session continuation';
         html += `<td class="slot-cell">
-          <div class="session-card ${continuationClass}" style="opacity: 0.85; border-top: 1px dashed var(--border-color);">
+          <div class="session-card ${continuationClass} session-continuation" title="${escapeHtml(`${continuationLabel}: ${continuation.course_id} · ${continuation.room_id}`)}">
             <div class="session-top">
               <span class="session-code"><svg class="icon"><use href="#icon-arrow-right"></use></svg> ${continuationLabel}</span>
             </div>
@@ -1073,7 +1312,7 @@ function renderGrid() {
 
 function renderSectionTable() {
   if (!appState.data || !appState.activeEntityId) {
-    elements.sectionTableBody.innerHTML = '<tr><td colspan="6" class="text-center">No section timetable available.</td></tr>';
+    elements.sectionTableBody.innerHTML = '<tr><td colspan="6" class="text-center">No timetable</td></tr>';
     return;
   }
   const { grid_data, entities } = appState.data;
@@ -1109,16 +1348,28 @@ function updateEntityInfoPill(tab, id, entities) {
   if (tab === 'section' && selectedUniversitySection()) {
     const section = selectedUniversitySection();
     const hours = section.sections.reduce((total, offering) => total + offering.hours, 0);
-    elements.entityInfo.textContent = `${section.courses.length} courses • ${section.sections.length} course allocations • ${hours} contact hrs/week`;
+    elements.entityInfo.textContent = `${section.courses.length} courses • ${hours} hrs/week`;
   } else if (tab === 'faculty' && entities.faculty[id]) {
     const f = entities.faculty[id];
-    elements.entityInfo.textContent = `Workload: ${f.assigned_hours} / ${f.max_hours} max hours • Qualified courses: ${f.qualified.length}`;
+    elements.entityInfo.textContent = `${f.assigned_hours} / ${f.max_hours} hrs`;
   } else if (tab === 'room' && entities.rooms[id]) {
     const r = entities.rooms[id];
-    elements.entityInfo.textContent = `Type: ${r.type} • Seating Capacity: ${r.capacity} seats`;
+    elements.entityInfo.textContent = `${r.type} • ${r.capacity} seats`;
   } else if (tab === 'student' && entities.students[id]) {
     const st = entities.students[id];
-    elements.entityInfo.textContent = `Programme: ${st.programme} • Enrolled: ${st.placed_count} of ${st.total_selected} selections`;
+    const dailySessions = Object.entries(st.session_by_day || {})
+      .map(([day, session]) => {
+        const shortSession = session
+          .replace('Morning Session (8:00 AM-1:00 PM)', 'Morning')
+          .replace('Afternoon Session (1:00 PM-6:00 PM)', 'Afternoon')
+          .replace('Extended Session (8:00 AM-4:00 PM)', 'Extended 8 AM-4 PM')
+          .replace('Extended Session (10:00 AM-6:00 PM)', 'Extended 10 AM-6 PM');
+        return `${day.slice(0, 3)}: ${shortSession}`;
+      })
+      .join(' · ');
+    const studentElectives = (st.minor_electives || []).join(', ');
+    const sectionNames = [...new Set(Object.values(st.section_by_course || {}).map(x => x.university_section).filter(Boolean))].join(', ');
+    elements.entityInfo.textContent = `Programme: ${st.programme}${sectionNames ? ` • Section: ${sectionNames}` : ''} • Enrolled: ${st.placed_count} of ${st.total_selected} selections${studentElectives ? ` • Minor/electives: ${studentElectives}` : ''}${dailySessions ? ` • ${dailySessions}` : ''}`;
   }
 }
 
@@ -1184,12 +1435,12 @@ function setLoading(isLoading) {
   if (isLoading) {
     elements.btnGenSpinner.classList.remove('hidden');
     elements.btnGenText.textContent = elements.selectScenario.value === 'excel'
-      ? 'Solving full timetable...'
+      ? 'Optimizing...'
       : 'Generating...';
     elements.btnGenerate.disabled = true;
   } else {
     elements.btnGenSpinner.classList.add('hidden');
-    elements.btnGenText.innerHTML = '<svg class="icon"><use href="#icon-calendar"></use></svg> Generate Timetable';
+    elements.btnGenText.innerHTML = '<svg class="icon"><use href="#icon-calendar"></use></svg> Optimize timetable';
     elements.btnGenerate.disabled = false;
   }
 }

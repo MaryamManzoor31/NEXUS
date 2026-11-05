@@ -15,7 +15,7 @@ from .models import Dataset, Faculty, Section, LAB, CLASS
 class AllocationResult:
     faculty_assignments: dict[str, str]    # sec_id -> faculty_id
     faculty_summary: list[dict]            # detailed workload & assignment list per faculty
-    unassigned_sections: list[str]         # sections requiring adjunct/external staffing
+    unassigned_sections: list[str]         # sections with no qualified, available-load faculty
     stats: dict                            # overall utilization metrics
 
 
@@ -23,33 +23,45 @@ def allocate_faculty_members(
     ds: Dataset,
     pre_assigned: dict[str, str] | None = None,
     raw_faculty_info: dict | None = None,
-    allow_adjunct_pool: bool = True
+    allow_adjunct_pool: bool = False
 ) -> AllocationResult:
     """Allocate faculty members to all sections in the dataset.
 
     Args:
         ds: The canonical NEXUS Dataset.
-        pre_assigned: Dict of {section_id: faculty_id} for already fixed assignments.
+        pre_assigned: Dict of {section_id: faculty_id} for existing allocations to preserve when valid.
         raw_faculty_info: Optional metadata containing faculty ranks and departments.
-        allow_adjunct_pool: If True, introduces adjunct pools if faculty capacity is exhausted.
+    allow_adjunct_pool: Legacy compatibility argument; no synthetic adjuncts are created.
     Returns:
         AllocationResult with final faculty mapping, workload summaries, and stats.
     """
     pre_assigned = pre_assigned or {}
     raw_faculty_info = raw_faculty_info or {}
 
-    assigned = dict(pre_assigned)
+    assigned = {}
     fac_load = defaultdict(int)
     fac_courses = defaultdict(set)
     fac_sections = defaultdict(list)
 
-    # 1. Register pinned / pre-assigned allocations
-    for sid, fid in pre_assigned.items():
-        if sid in ds.sections and fid in ds.faculty:
-            hours = ds.section_hours(sid)
-            fac_load[fid] += hours
-            fac_courses[fid].add(ds.sections[sid].course_id)
-            fac_sections[fid].append(sid)
+    # 1. Keep only valid pre-assignments that preserve qualifications and load caps.
+    # Invalid or over-limit rows go back through the eligible-candidate allocator.
+    valid_preassigned = sorted(
+        pre_assigned.items(),
+        key=lambda item: (-ds.section_hours(item[0]) if item[0] in ds.sections else 0, item[0]),
+    )
+    for sid, fid in valid_preassigned:
+        if sid not in ds.sections or fid not in ds.faculty:
+            continue
+        section = ds.sections[sid]
+        member = ds.faculty[fid]
+        hours = ds.section_hours(sid)
+        if section.course_id not in member.qualified or fac_load[fid] + hours > member.max_hours:
+            continue
+        assigned[sid] = fid
+        fac_load[fid] += hours
+        fac_courses[fid].add(section.course_id)
+        fac_sections[fid].append(sid)
+    pre_assigned_kept = len(assigned)
 
     # 2. Identify unassigned sections
     unassigned = [
@@ -74,7 +86,6 @@ def allocate_faculty_members(
 
     # 3. Allocation loop
     still_unassigned = []
-    adjunct_counter = 1
 
     for sec in unassigned:
         sec_hours = ds.section_hours(sec.id)
@@ -84,6 +95,9 @@ def allocate_faculty_members(
         # Find eligible faculty candidates
         candidates = []
         for fid, f in ds.faculty.items():
+            # Qualifications are a hard requirement, not a scoring preference.
+            if cid not in f.qualified:
+                continue
             current = fac_load[fid]
             if current + sec_hours <= f.max_hours:
                 desig, max_h = rank_info(fid)
@@ -93,9 +107,8 @@ def allocate_faculty_members(
                 if cid in fac_courses[fid]:
                     score += 50
 
-                # Priority B: Qualified course match
-                if cid in f.qualified:
-                    score += 20
+                # Priority B: distribute assignments toward a balanced workload.
+                score += 20
 
                 # Priority C: Deficit incentive (faculty who need more hours to reach their quota)
                 deficit = max_h - current
@@ -123,28 +136,9 @@ def allocate_faculty_members(
             fac_courses[best_fid].add(cid)
             fac_sections[best_fid].append(sec.id)
         else:
-            # Capacity full or no qualified faculty under max_hours limit
-            if allow_adjunct_pool:
-                # Assign to university Adjunct / Co-Faculty pool
-                adjunct_id = f"FAC_ADJUNCT_{adjunct_counter:02d}"
-                if adjunct_id not in ds.faculty:
-                    ds.faculty[adjunct_id] = Faculty(
-                        id=adjunct_id,
-                        name=f"Adjunct Faculty / Co-Faculty {adjunct_counter}",
-                        qualified=frozenset(ds.courses.keys()),
-                        max_hours=16,
-                        unavailable=frozenset(),
-                        designation="Adjunct",
-                    )
-                assigned[sec.id] = adjunct_id
-                fac_load[adjunct_id] += sec_hours
-                fac_courses[adjunct_id].add(cid)
-                fac_sections[adjunct_id].append(sec.id)
-                still_unassigned.append(sec.id)
-                if fac_load[adjunct_id] >= 14:
-                    adjunct_counter += 1
-            else:
-                still_unassigned.append(sec.id)
+            # Keep the section unassigned when no qualified, capacity-feasible
+            # faculty member exists. Do not invent adjuncts or qualifications.
+            still_unassigned.append(sec.id)
 
     # 4. Generate comprehensive faculty summary report
     faculty_summary = []
@@ -207,9 +201,10 @@ def allocate_faculty_members(
 
     stats = {
         "total_sections": len(ds.sections),
-        "pre_assigned_sections": len(pre_assigned),
+        "pre_assigned_sections": pre_assigned_kept,
         "newly_allocated_sections": len(unassigned) - len(still_unassigned),
-        "adjunct_allocated_sections": len(still_unassigned),
+        "adjunct_allocated_sections": 0,
+        "unassigned_sections": len(still_unassigned),
         "active_faculty_count": sum(1 for f in faculty_summary if f["assigned_hours"] > 0),
         "total_faculty_count": len(ds.faculty),
         "total_teaching_hours": total_teaching_hours,

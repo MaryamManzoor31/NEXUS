@@ -8,6 +8,7 @@ from nexus_core.input_validator import load_csv, save_csv
 from nexus_core.excel_parser import parse_allocation_workbook
 from nexus_core.importer import (
     import_folder, load_timetable_csv, set_assignment_modes, suggest_mapping, build_dataset_from_mapped_tables,
+    _parse_start_slot,
 )
 from nexus_core.models import *
 from nexus_core.cpsat import cpsat
@@ -21,6 +22,10 @@ TEMPLATES = os.path.join(ROOT, "data", "templates")
 
 
 class ImporterTests(unittest.TestCase):
+    def test_legacy_time_range_maps_to_matching_hourly_slot(self):
+        self.assertEqual(_parse_start_slot("Monday", "Session 1", "09:00 - 10:00"), 1)
+        self.assertEqual(_parse_start_slot("Friday", "Session 10"), 49)
+
     def test_section_session_pattern_round_trips_csv(self):
         ds = tiny()
         ds.sections["A1"] = Section(
@@ -84,6 +89,7 @@ class ImporterTests(unittest.TestCase):
             students = [student for student in ds.students.values() if student.programme == cohort]
             self.assertEqual(len(students), 2)
             self.assertTrue(all("6CS 1295" in student.selections for student in students))
+            self.assertTrue(all(student.semester == "6" for student in students))
 
     def test_missing_required_mapping_reported(self):
         rows = [{"X": "1", "Y": "2"}]

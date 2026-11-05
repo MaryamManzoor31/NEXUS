@@ -1,0 +1,3 @@
+student_id,programme,selections,school_id,department_id,stream,semester,batch
+DEMO001,CSE,CS101;CS102;MA101,SOET,CSE,CSE,1,CSE A
+DEMO002,CSE,CS101;MA101,SOET,CSE,CSE,1,CSE A
