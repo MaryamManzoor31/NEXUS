@@ -4,8 +4,8 @@
 .baseline-switch { display: flex; gap: 8px; margin-top: 8px; }
 
 :root {
-  --font-family: "Inter", "Aptos", "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-  --display-family: "Inter", "Aptos", "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  --font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  --display-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
   --bg-primary: #f2f1ec;
   --bg-surface: #fffefa;
   --bg-subtle: #f7f6f1;
@@ -14,22 +14,22 @@
   --text-main: #202a25;
   --text-muted: #68736c;
   --text-subtle: #89928b;
-  --primary: #35594a;
-  --primary-hover: #29483b;
-  --primary-light: #e7eee9;
-  --success: #356b4c;
-  --success-bg: #edf4ee;
-  --success-border: #c9d9cc;
+  --primary: #86191e;
+  --primary-hover: #681216;
+  --primary-light: #f2e4e5;
+  --success: #86191e;
+  --success-bg: #f7ecec;
+  --success-border: #dfbfc1;
   --warning: #9c5738;
   --warning-bg: #f7efe8;
   --warning-border: #e6d0bd;
   --danger: #9b453d;
   --danger-bg: #f8eeeb;
   --danger-border: #e6c9c2;
-  --lecture-bg: #edf3ee;
-  --lecture-border: #c7d5ca;
-  --lecture-text: #2d4537;
-  --lecture-tag: #35594a;
+  --lecture-bg: #f7ecec;
+  --lecture-border: #dfbfc1;
+  --lecture-text: #681216;
+  --lecture-tag: #86191e;
   --lab-bg: #f5efe7;
   --lab-border: #ddcbbb;
   --lab-text: #574638;
