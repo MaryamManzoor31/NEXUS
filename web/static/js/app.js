@@ -16,6 +16,7 @@ let appState = {
   semesterSessions: {},
   sectionView: 'calendar'
 };
+let timeBudgetUserSelected = false;
 
 // DOM References
 const elements = {
@@ -26,6 +27,7 @@ const elements = {
   semesterSessionControls: document.getElementById('semesterSessionControls'),
   groupStudents: document.getElementById('groupStudents'),
   selectStudents: document.getElementById('selectStudents'),
+  selectTimeBudget: document.getElementById('selectTimeBudget'),
   btnGenerate: document.getElementById('btnGenerate'),
   btnGenSpinner: document.getElementById('btnGenSpinner'),
   btnGenText: document.getElementById('btnGenText'),
@@ -142,6 +144,9 @@ function setupEventListeners() {
 
   // Scenario change
   elements.selectScenario.addEventListener('change', onScenarioChange);
+  elements.selectTimeBudget?.addEventListener('change', () => {
+    timeBudgetUserSelected = true;
+  });
   if (elements.selectSemester) {
     elements.selectSemester.addEventListener('change', () => renderSemesterSessionControls(
       elements.semesterSessionControls,
@@ -216,6 +221,9 @@ function setupEventListeners() {
 
 function onScenarioChange() {
   const isExcel = elements.selectScenario.value === 'excel';
+  if (elements.selectTimeBudget && !timeBudgetUserSelected && elements.selectScenario.value !== 'uploaded') {
+    elements.selectTimeBudget.value = isExcel ? '90' : '30';
+  }
   if (!isExcel && elements.selectScenario.value !== 'uploaded') {
     appState.originalData = null;
     updateScheduleViewControls();
@@ -223,6 +231,10 @@ function onScenarioChange() {
   if (elements.groupSemester) elements.groupSemester.classList.toggle('hidden', !isExcel);
   if (elements.groupSemesterSession) elements.groupSemesterSession.classList.toggle('hidden', !isExcel);
   if (elements.groupStudents) elements.groupStudents.classList.toggle('hidden', isExcel);
+}
+
+function selectedTimeBudget() {
+  return Number(elements.selectTimeBudget?.value || 30);
 }
 
 function semesterOptions() {
@@ -319,7 +331,7 @@ async function onGenerate() {
       const res = await fetch('/api/optimize-active', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ limit_a: 15, limit_b: 10, seed: 329 })
+        body: JSON.stringify({ total_limit: selectedTimeBudget(), seed: 329 })
       });
       const json = await res.json();
       if (!json.success) throw new Error(json.error || 'Optimization failed');
@@ -351,8 +363,7 @@ async function onGenerate() {
           semester,
           semester_sessions: semesterSessions,
           allocate_members: true,
-          limit_a: 50,
-          limit_b: 35
+          total_limit: selectedTimeBudget()
         })
       });
       const json = await res.json();
@@ -387,8 +398,7 @@ async function onGenerate() {
         scenario,
         students,
         seed: 329,
-        limit_a: 15,
-        limit_b: 10
+        total_limit: selectedTimeBudget()
       })
     });
     const json = await res.json();
@@ -462,6 +472,7 @@ function updateScheduleViewControls() {
 async function onExcelUploadSubmit(e) {
   e.preventDefault();
   const formData = new FormData(elements.excelUploadForm);
+  formData.append('total_limit', String(selectedTimeBudget()));
   const semesterScope = elements.uploadSemesterSelect?.value || '6';
   const semesterSessions = selectedSemesterSessions(
     elements.uploadSemesterSessionControls,
@@ -584,7 +595,8 @@ async function onSimulateDisruption() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         blocked_rooms: room ? [room] : [],
-        blocked_faculty: faculty ? [faculty] : []
+        blocked_faculty: faculty ? [faculty] : [],
+        total_limit: selectedTimeBudget()
       })
     });
     const json = await res.json();
@@ -963,7 +975,8 @@ async function onApplyBaselineMode() {
       body: JSON.stringify({
         mode: elements.baselineModeSelect.value,
         section_ids: sectionIds,
-        reoptimize: true
+        reoptimize: true,
+        total_limit: selectedTimeBudget()
       })
     });
     const result = await response.json();
@@ -994,7 +1007,8 @@ async function onApplySidebarConstraints() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         blocked_rooms: room ? [room] : [],
-        blocked_faculty: faculty ? [faculty] : []
+        blocked_faculty: faculty ? [faculty] : [],
+        total_limit: selectedTimeBudget()
       })
     });
     const result = await response.json();

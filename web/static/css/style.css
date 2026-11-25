@@ -1881,7 +1881,7 @@ body {
 }
 
 .control-row {
-  grid-template-columns: minmax(230px, 1.35fr) minmax(170px, 0.85fr) minmax(220px, 1.1fr) minmax(190px, 0.9fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 14px 17px;
 }
 

@@ -69,13 +69,18 @@ def _schedule_excel_dataset(
     ds: Dataset,
     limit_b: int = 35,
     limit_a: int = EXCEL_STAGE_A_TIME_LIMIT,
+    total_limit: float = EXCEL_TOTAL_TIME_LIMIT,
 ) -> Schedule:
     """Run both optimization stages with a useful budget for real Excel data."""
+    total_limit = min(max(0.1, float(total_limit)), EXCEL_TOTAL_TIME_LIMIT)
     return cpsat(
         ds,
-        limit_a=min(max(0.1, float(limit_a)), EXCEL_STAGE_A_TIME_LIMIT),
-        limit_b=min(max(0.1, float(limit_b)), 35.0),
-        total_limit=EXCEL_TOTAL_TIME_LIMIT,
+        limit_a=min(max(0.1, float(limit_a)), EXCEL_STAGE_A_TIME_LIMIT, total_limit * 0.62),
+        limit_b=min(
+            max(0.1, float(limit_b)), 35.0,
+            total_limit * 0.38 if total_limit < EXCEL_TOTAL_TIME_LIMIT else 35.0,
+        ),
+        total_limit=total_limit,
         seed=329,
         workers=4,
         allow_unscheduled=True,
@@ -258,14 +263,16 @@ def api_generate():
     students = int(body.get("students", 20))
     seed = int(body.get("seed", 329))
     algorithm = body.get("algorithm", "cpsat")
-    limit_a = int(body.get("limit_a", 15))
-    limit_b = int(body.get("limit_b", 10))
+    has_budget = "total_limit" in body
+    total_limit = min(max(0.1, float(body.get("total_limit", 30))), EXCEL_TOTAL_TIME_LIMIT)
+    limit_a = float(body.get("limit_a", total_limit * 0.62 if has_budget else 15))
+    limit_b = float(body.get("limit_b", total_limit * 0.38 if has_budget else 10))
     if algorithm != "cpsat":
         return jsonify({"success": False, "error": "Only CP-SAT timetable generation is supported."}), 400
 
     try:
         ds = generate(students, scenario, seed)
-        sch = cpsat(ds, limit_a=limit_a, limit_b=limit_b, seed=seed)
+        sch = cpsat(ds, limit_a=limit_a, limit_b=limit_b, total_limit=total_limit, seed=seed)
         if sch.status not in ("OPTIMAL", "FEASIBLE"):
             return jsonify({
                 "success": False,
@@ -297,11 +304,20 @@ def api_optimize_active():
         return jsonify({"success": False, "error": "Only CP-SAT timetable generation is supported."}), 400
     ds = STATE["dataset"]
     try:
+        has_budget = "total_limit" in body
+        total_limit = min(max(0.1, float(body.get(
+            "total_limit", EXCEL_TOTAL_TIME_LIMIT if ds.meta.get("source_file") else 30
+        ))), EXCEL_TOTAL_TIME_LIMIT)
         if ds.meta.get("source_file"):
             sch = _schedule_excel_dataset(
                 ds,
-                limit_a=body.get("limit_a", EXCEL_STAGE_A_TIME_LIMIT),
-                limit_b=body.get("limit_b", 35),
+                limit_a=body.get("limit_a", min(EXCEL_STAGE_A_TIME_LIMIT, total_limit * 0.62) if has_budget else EXCEL_STAGE_A_TIME_LIMIT),
+                limit_b=body.get(
+                    "limit_b",
+                    min(35, total_limit * 0.38)
+                    if has_budget and total_limit < EXCEL_TOTAL_TIME_LIMIT else 35,
+                ),
+                total_limit=total_limit,
             )
             failure = _excel_solver_failure(sch)
             if failure:
@@ -309,8 +325,9 @@ def api_optimize_active():
         else:
             sch = cpsat(
                 ds,
-                limit_a=int(body.get("limit_a", 15)),
-                limit_b=int(body.get("limit_b", 10)),
+                limit_a=float(body.get("limit_a", total_limit * 0.62 if has_budget else 15)),
+                limit_b=float(body.get("limit_b", total_limit * 0.38 if has_budget else 10)),
+                total_limit=total_limit,
                 seed=int(body.get("seed", 329)),
             )
             if sch.status not in ("OPTIMAL", "FEASIBLE"):
@@ -341,8 +358,10 @@ def api_load_excel():
     semester = str(body.get("semester", "6"))
     semester_sessions = body.get("semester_sessions")
     algorithm = body.get("algorithm", "cpsat")
-    limit_a = int(body.get("limit_a", EXCEL_STAGE_A_TIME_LIMIT))
-    limit_b = int(body.get("limit_b", 35))
+    has_budget = "total_limit" in body
+    total_limit = min(max(0.1, float(body.get("total_limit", EXCEL_TOTAL_TIME_LIMIT))), EXCEL_TOTAL_TIME_LIMIT)
+    limit_a = min(EXCEL_STAGE_A_TIME_LIMIT, total_limit * 0.62) if has_budget else EXCEL_STAGE_A_TIME_LIMIT
+    limit_b = min(35, total_limit * 0.38) if has_budget and total_limit < EXCEL_TOTAL_TIME_LIMIT else 35
     if algorithm != "cpsat":
         return jsonify({"success": False, "error": "Only CP-SAT timetable generation is supported."}), 400
 
@@ -353,7 +372,9 @@ def api_load_excel():
         ds, meta = parse_allocation_workbook(DEFAULT_EXCEL_PATH, semester_filter=semester)
         _apply_semester_sessions(ds, semester, semester_sessions)
         notes = _attach_default_baseline(ds, semester)
-        sch = _schedule_excel_dataset(ds, limit_b=limit_b, limit_a=limit_a)
+        sch = _schedule_excel_dataset(
+            ds, limit_b=limit_b, limit_a=limit_a, total_limit=total_limit
+        )
         failure = _excel_solver_failure(sch)
         if failure:
             return failure
@@ -682,8 +703,18 @@ def api_baseline_modes():
     mode = body.get("mode", PREFERRED)
     section_ids = body.get("section_ids")
     reoptimize = bool(body.get("reoptimize", True))
-    limit_a = int(body.get("limit_a", EXCEL_STAGE_A_TIME_LIMIT))
-    limit_b = int(body.get("limit_b", 35))
+    has_budget = "total_limit" in body
+    total_limit = min(max(0.1, float(body.get(
+        "total_limit", EXCEL_TOTAL_TIME_LIMIT if STATE["dataset"].meta.get("source_file") else 30
+    ))), EXCEL_TOTAL_TIME_LIMIT)
+    limit_a = float(body.get(
+        "limit_a", min(EXCEL_STAGE_A_TIME_LIMIT, total_limit * 0.62)
+        if has_budget else EXCEL_STAGE_A_TIME_LIMIT
+    ))
+    limit_b = float(body.get(
+        "limit_b", min(35, total_limit * 0.38)
+        if has_budget and total_limit < EXCEL_TOTAL_TIME_LIMIT else 35
+    ))
     try:
         ds = STATE["dataset"]
         previous_baseline = ds.baseline.copy()
@@ -691,9 +722,14 @@ def api_baseline_modes():
         payload = {"success": True, "mode": mode, "baseline_count": len(ds.baseline)}
         if reoptimize:
             sch = (
-                _schedule_excel_dataset(ds, limit_b=limit_b)
+                _schedule_excel_dataset(
+                    ds, limit_a=limit_a, limit_b=limit_b, total_limit=total_limit
+                )
                 if ds.meta.get("source_file")
-                else cpsat(ds, limit_a=limit_a, limit_b=limit_b, seed=329)
+                else cpsat(
+                    ds, limit_a=limit_a, limit_b=limit_b,
+                    total_limit=total_limit, seed=329
+                )
             )
             if sch.status not in ("OPTIMAL", "FEASIBLE"):
                 ds.baseline = previous_baseline
@@ -728,13 +764,17 @@ def simulate_disruption():
     body = request.get_json(force=True, silent=True) or {}
     blocked_rooms = frozenset(body.get("blocked_rooms", []))
     blocked_faculty = frozenset(body.get("blocked_faculty", []))
+    has_budget = "total_limit" in body
+    total_limit = min(max(0.1, float(body.get("total_limit", 30))), EXCEL_TOTAL_TIME_LIMIT)
+    limit_a = min(total_limit * 0.62, float(body.get("limit_a", total_limit * 0.62 if has_budget else 15)))
+    limit_b = min(total_limit * 0.38, float(body.get("limit_b", total_limit * 0.38 if has_budget else 10)))
 
     ds = STATE["dataset"]
     # Re-run CP-SAT Stage A with blocked resources
     try:
         st_a, sch_a, info = stage_a(
             ds,
-            limit=15,
+            limit=limit_a,
             seed=329,
             blocked_rooms=blocked_rooms,
             blocked_faculty=blocked_faculty
@@ -751,7 +791,7 @@ def simulate_disruption():
                 "solver_status": st_a,
             }), 503
 
-        st_b, _ = stage_b(ds, sch_a, limit=10, seed=329)
+        st_b, _ = stage_b(ds, sch_a, limit=limit_b, seed=329)
         sch_a.info["status_b"] = st_b
         if st_b not in ("OPTIMAL", "FEASIBLE"):
             detail = (
