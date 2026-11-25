@@ -242,7 +242,7 @@ function renderSemesterSessionControls(container, scope, source) {
   ].join('');
   container.innerHTML = `<div class="semester-session-settings">${semesters.map(semester => `
     <div class="semester-session-row">
-      <label for="${source}Session${escapeHtml(semester)}">Semester ${escapeHtml(semester)}</label>
+      ${semesters.length > 1 ? `<label for="${source}Session${escapeHtml(semester)}">Semester ${escapeHtml(semester)}</label>` : ''}
       <select class="select-input semester-session-select" id="${source}Session${escapeHtml(semester)}" data-semester="${escapeHtml(semester)}">
         ${options}
       </select>
@@ -454,7 +454,7 @@ function updateScheduleViewControls() {
   if (elements.scheduleViewHeading) {
     elements.scheduleViewHeading.textContent = appState.viewMode === 'original'
       ? 'Original university timetable'
-      : 'Optimized timetable';
+      : 'Optimized university timetable';
   }
 }
 

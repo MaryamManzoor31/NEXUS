@@ -1,7 +1,28 @@
 /* NEXUS academic timetable planner */
 .dataset-notice { margin: 0 0 12px; color: var(--text-muted, #64748b); font-size: .78rem; line-height: 1.45; }
 .dataset-notice:empty { display: none; }
-.baseline-switch { display: flex; gap: 8px; margin-top: 8px; }
+.baseline-switch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; width: 100%; margin-top: 8px; }
+
+.baseline-switch .btn {
+  width: 100%;
+  min-width: 0;
+  padding-inline: 6px;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.baseline-switch .btn.btn-primary {
+  background: #86191e;
+  border-color: #86191e;
+  color: #ffffff;
+}
+
+.baseline-switch .btn.btn-primary:hover {
+  background: #681216;
+  border-color: #681216;
+  color: #ffffff;
+}
 
 :root {
   --font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
@@ -213,6 +234,22 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+#groupSemesterSession .semester-session-settings {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+#groupSemesterSession .semester-session-row:only-child {
+  gap: 0;
+}
+
+#groupSemesterSession .semester-session-row:only-child label {
+  display: none;
+}
+
+#groupSemesterSession .semester-session-row:only-child .select-input {
+  width: 100%;
 }
 
 .semester-session-row label {
@@ -1831,6 +1868,14 @@ body {
   letter-spacing: -0.025em;
 }
 
+.control-heading h2 {
+  color: #86191e;
+}
+
+#scheduleViewHeading {
+  color: #86191e;
+}
+
 .control-heading h2 { font-size: 1.55rem; font-weight: 600; }
 
 .control-heading p {
@@ -1908,6 +1953,19 @@ body {
 .btn-outline {
   border-color: #d4d3ca;
   color: var(--text-main);
+}
+
+#btnLoadExcel.btn-outline,
+#btnOpenUpload.btn-outline {
+  color: #86191e;
+  border-color: #86191e;
+}
+
+#btnLoadExcel.btn-outline:hover,
+#btnOpenUpload.btn-outline:hover {
+  color: #681216;
+  border-color: #681216;
+  background: #f7ecec;
 }
 
 .btn-secondary:hover,
@@ -2046,6 +2104,7 @@ body {
 }
 
 .section-view-title h2 { font-size: 1.5rem; font-weight: 600; }
+#scheduleTitle { color: #86191e; }
 .section-view-title p { font-size: 0.78rem; }
 .section-view-tabs { border-radius: 2px; background: #f2f1eb; }
 .section-view-tab { min-width: 108px; padding: 8px 13px; font-size: 0.77rem; }
