@@ -14,6 +14,7 @@ from nexus_core.validator import validate
 from nexus_core.metrics import compute
 from nexus_core.input_validator import load_csv
 from nexus_core.excel_parser import parse_allocation_workbook
+from nexus_core.member_allocator import allocate_faculty_members
 from nexus_core.importer import import_folder, load_timetable_csv, set_assignment_modes, preview_folder
 from nexus_core.compare import compare_schedules
 from web.serializer import serialize_schedule, generate_timetable_csv
@@ -453,10 +454,30 @@ def api_upload_excel():
 
 @app.route("/api/allocate-members", methods=["POST"])
 def api_allocate_members():
-    """Compatibility endpoint: faculty assignments are made by CP-SAT optimization."""
+    """Allocate qualified faculty and return their workload report."""
     if STATE["dataset"] is None:
         return jsonify({"success": False, "error": "No active dataset loaded"}), 400
-    return api_optimize_active()
+    ds = STATE["dataset"]
+    meta = STATE.get("meta", {})
+    try:
+        result = allocate_faculty_members(
+            ds, meta.get("pre_assigned_faculty", {}), meta.get("raw_faculty_info", {})
+        )
+        serialized = serialize_schedule(
+            ds, STATE["schedule"], validate(ds, STATE["schedule"]), compute(ds, STATE["schedule"])
+        )
+        serialized["allocation_stats"] = result.stats
+        serialized["faculty_summary"] = result.faculty_summary
+        serialized["unassigned_faculty_sections"] = result.unassigned_sections
+        return jsonify({
+            "success": True,
+            "data": serialized,
+            "allocation_stats": result.stats,
+            "faculty_summary": result.faculty_summary,
+            "unassigned_sections": result.unassigned_sections,
+        })
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
 
 
 @app.route("/api/load-sample", methods=["POST"])

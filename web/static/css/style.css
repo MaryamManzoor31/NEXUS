@@ -134,6 +134,7 @@ body {
   color: var(--primary);
   font-size: 22px;
   line-height: 1;
+  object-fit: contain;
 }
 
 .brand-title {
@@ -1789,25 +1790,14 @@ body {
 .brand { gap: 11px; }
 
 .brand-icon {
-  width: 39px;
-  height: 39px;
-  border-radius: 2px;
-  background: var(--primary);
-  color: #fffefa;
-  font: 700 1.55rem/1 var(--display-family);
-  letter-spacing: -0.08em;
-  padding: 0 4px 3px 0;
-  position: relative;
-}
-
-.brand-icon::after {
-  content: "";
-  position: absolute;
-  width: 7px;
-  height: 7px;
-  right: 5px;
-  bottom: 5px;
-  background: #c9855e;
+  display: block;
+  width: 68px;
+  height: 68px;
+  flex: 0 0 68px;
+  border-radius: 6px;
+  background: transparent;
+  object-fit: contain;
+  object-position: center;
 }
 
 .brand-subtitle {
@@ -2297,7 +2287,7 @@ body {
 @media (max-width: 600px) {
   .header-container { padding: 10px 14px; }
   .brand { flex: 1 1 auto; }
-  .brand-icon { width: 35px; height: 35px; font-size: 1.4rem; }
+  .brand-icon { width: 58px; height: 58px; flex-basis: 58px; }
   .brand-title { font-size: 1.12rem; }
   .brand-title span { display: block; margin-left: 0; font-size: 0.7rem; }
   .brand-subtitle { font-size: 0.56rem; }

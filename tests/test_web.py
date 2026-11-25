@@ -41,6 +41,29 @@ class WebAppTests(unittest.TestCase):
         if acquired:
             STATE_LOCK.release()
 
+    def test_allocate_members_returns_qualified_workload_report(self):
+        from nexus_core.member_allocator import allocate_faculty_members
+
+        ds = tiny()
+        schedule = tiny_valid()
+        previous = STATE.copy()
+        STATE.update({
+            "dataset": ds,
+            "schedule": schedule,
+            "meta": {},
+        })
+        try:
+            response = self.client.post("/api/allocate-members")
+        finally:
+            STATE.clear()
+            STATE.update(previous)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json["success"])
+        self.assertIn("allocation_stats", response.json)
+        self.assertIn("faculty_summary", response.json)
+        assigned = response.json["faculty_summary"]
+        self.assertTrue(all(row["assigned_hours"] <= row["max_hours"] for row in assigned))
+
     def test_current_schedule_api_loads_baseline_without_optimizing(self):
         previous = STATE.copy()
         STATE.update({
