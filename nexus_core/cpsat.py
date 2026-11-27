@@ -915,6 +915,73 @@ def cpsat(
             sched.enrolment = {stid: {} for stid in ds.students}
             sched.student_categories = {stid: {} for stid in ds.students}
         sched.info["status_b"] = nb
+        # Feed Stage B's unplaced selections back into Stage A. The retries
+        # change only the soft shared-student objective and warm start; Stage
+        # A's hard placement/resource constraints remain unchanged.
+        refinements = 0
+        total_choices = sum(len(student.selections) for student in ds.students.values())
+        best_count = total_choices - len(_unplaced_choices(ds, sched))
+        best_sched = sched
+        best_name = name
+        best_nb = nb
+        if nb in ("OPTIMAL", "FEASIBLE"):
+            for refinement_index in range(2):
+                unplaced = _unplaced_choices(ds, sched)
+                remaining = deadline - time.monotonic()
+                if not unplaced or remaining <= 1.0:
+                    break
+                priority_pairs = _priority_course_pairs(ds, unplaced)
+                if not priority_pairs:
+                    break
+                # Keep enough time for Stage B to evaluate the revised times.
+                round_budget = remaining / (2 - refinement_index)
+                retry_a_limit = max(0.1, round_budget * 0.45)
+                retry_name, retry_sched, retry_info = stage_a(
+                    ds,
+                    limit=retry_a_limit,
+                    seed=seed + refinement_index + 1,
+                    workers=workers,
+                    hint=sched,
+                    priority_pairs=priority_pairs,
+                    deadline=deadline,
+                    **kw,
+                )
+                if retry_name not in ("OPTIMAL", "FEASIBLE"):
+                    break
+                retry_sched.info.update(retry_info)
+                retry_b, retry_b_elapsed = stage_b(
+                    ds,
+                    retry_sched,
+                    limit=max(0.05, deadline - time.monotonic()),
+                    seed=seed + refinement_index + 1,
+                    workers=workers,
+                    deadline=deadline,
+                )
+                retry_sched.info["status_b"] = retry_b
+                retry_sched.info["wall_b"] = retry_b_elapsed
+                if retry_b not in ("OPTIMAL", "FEASIBLE"):
+                    continue
+                retry_unplaced = len(_unplaced_choices(ds, retry_sched))
+                retry_count = sum(
+                    len(student.selections) for student in ds.students.values()
+                ) - retry_unplaced
+                refinements += 1
+                if retry_count > best_count:
+                    best_count = retry_count
+                    best_sched = retry_sched
+                    best_name = retry_name
+                    best_nb = retry_b
+                # Carry a feasible candidate forward as the hint even when it
+                # did not improve the recorded best run.
+                sched = retry_sched
+                name = retry_name
+                nb = retry_b
+            sched = best_sched
+            name = best_name
+            nb = best_nb
+            sched.info["status_b"] = nb
+            sched.info["stage_a_status"] = name
+        sched.info["student_conflict_refinements"] = refinements
         if nb not in ("OPTIMAL", "FEASIBLE"):
             sched.info["complete_allocation_status"] = (
                 "INFEASIBLE" if nb == "INFEASIBLE" else "UNKNOWN"
