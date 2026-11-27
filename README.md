@@ -2,6 +2,10 @@
 
 NEXUS builds and validates university timetables with Google OR-Tools CP-SAT. The solver schedules sections first, then assigns students to the scheduled course sections while enforcing timetable constraints.
 
+## Deployed website
+
+Try NEXUS online: [https://nexus-f9bf.onrender.com/](https://nexus-f9bf.onrender.com/)
+
 ## Requirements
 
 - Python 3.10 or newer
